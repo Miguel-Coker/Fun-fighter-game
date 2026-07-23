@@ -6,9 +6,11 @@ local CAT_enemy = 1
 local CAT_HITBOX = 2
 local CAT_HURTBOX = 2
 
+local player = nil
+
 function enemyFile.load(plr)
     local spritesheet = love.graphics.newImage("player.png")
-    enemy = playerClass.new("enemy", spritesheet, true)
+    enemy = playerClass.new("enemy", spritesheet, true, {x = 700, y = 400})
 
     player = plr
 
@@ -33,14 +35,14 @@ function enemyFile.load(plr)
 end
 
 function enemyFile.update(dt)
-    enemy.anim = enemy.idleAnim
+    enemy.anim = enemy.anims.idleAnim
 
     enemy:update(dt)
 
     enemy.attackCooldown = enemy.attackCooldown - dt
 
     if enemy.blocking then
-        enemy.anim = enemy.blockAnim
+        enemy.anim = enemy.anims.blockAnim
     end
 
     if enemy.attackCooldown <= 0 then
@@ -48,12 +50,12 @@ function enemyFile.update(dt)
     end
 
     if enemy.attacking then
-        enemy.anim = enemy.kickAnim
+        enemy.anim = enemy.anims.kickAnim
     end
 
-    if enemy.anim == enemy.kickAnim and enemy.anim.position == 4 then
+    if enemy.anim == enemy.anims.kickAnim and enemy.anim.position == 4 then
         enemy:endAttack()
-        enemy.kickAnim:gotoFrame(1)
+        enemy.anims.kickAnim:gotoFrame(1)
     end
 
     enemy:lookTowards(player.hurtBox.body:getX())

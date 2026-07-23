@@ -10,9 +10,10 @@ local JUMP_POWER_SCALE = 10
 ---@param spriteSheet table
 ---@param isAI boolean
 ---@return table
-function playerClass.new(name, spriteSheet, isAI)
+function playerClass.new(name, spriteSheet, isAI, pos)
     local player = setmetatable({}, playerClass)
     player.name = name
+    player.anims = {}
     player.spriteSheet = spriteSheet
     player.speed = 90
     player.health = 100
@@ -22,6 +23,7 @@ function playerClass.new(name, spriteSheet, isAI)
     player.jumpPower = -100 * JUMP_POWER_SCALE
     player.blocking = false
     player.attacking = false
+    player.canJump = false
 
     player.isAI = isAI
 
@@ -29,21 +31,21 @@ function playerClass.new(name, spriteSheet, isAI)
 
     local grid = anim.newGrid(64, 105, player.spriteSheet:getWidth(), player.spriteSheet:getHeight())
 
-    player.idleAnim = anim.newAnimation(grid('5-5', '1-1'), 0.15)
-    player.kickAnim = anim.newAnimation(grid('1-4', '3-3'), 0.15)
-    player.blockAnim = anim.newAnimation(grid('7-7', '1-1'), 0.15)
+    player.anims.idleAnim = anim.newAnimation(grid('5-5', '1-1'), 0.15)
+    player.anims.kickAnim = anim.newAnimation(grid('1-4', '3-3'), 0.15)
+    player.anims.blockAnim = anim.newAnimation(grid('7-7', '1-1'), 0.15)
 
-    player.anim = player.idleAnim
+    player.anim = player.anims.idleAnim
 
     player.hurtBox = {}
-    player.hurtBox.body = love.physics.newBody(World, 400, 400, "dynamic")
+    player.hurtBox.body = love.physics.newBody(World, pos.x, pos.y, "dynamic")
     player.hurtBox.shape = love.physics.newRectangleShape(64, 120)
     player.hurtBox.fixture = love.physics.newFixture(player.hurtBox.body, player.hurtBox.shape)
     player.hurtBox.fixture:setUserData(name.."_hurtbox")
     player.hurtBox.body:setFixedRotation(true)
 
     player.hitBox = {}
-    player.hitBox.body = love.physics.newBody(World, 400, 400, "dynamic")
+    player.hitBox.body = love.physics.newBody(World, pos.x, pos.y, "dynamic")
     player.hitBox.shape = love.physics.newRectangleShape(80, 120)
     player.hitBox.fixture = love.physics.newFixture(player.hitBox.body, player.hitBox.shape)
     player.hitBox.body:setFixedRotation(true)

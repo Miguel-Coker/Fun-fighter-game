@@ -1,9 +1,10 @@
 local player = require("player")
 local enemyFile = require("enemy")
+local menu = require("menu")
 
 World = love.physics.newWorld(0, 200)
 
----@enum
+---@enum Collision_categories
 Categories = {
     PLAYER_HURT_BOX = 1,
     PLAYER_HIT_BOX = 2,
@@ -16,7 +17,7 @@ local function beginContact(bodyA, bodyB)
     local userB = bodyB:getUserData()
 
     if userA == "player_hurtbox" and userB == "floor" or userA == "floor" and userB == "player_hurtbox" then
-        player.canJump = true
+        player.player.canJump = true
     end
     
     if (userA == "player_hitbox" and userB == "enemy_hurtbox" or userA == "enemy_hurtbox" and userB == "player_hitbox") then
@@ -29,9 +30,9 @@ local function beginContact(bodyA, bodyB)
 
     if (userA == "enemy_hitbox" and userB == "player_hurtbox" or userA == "player_hurtbox" and userB == "enemy_hitbox") then
         if player.blocking then
-            player.health = player.health - 5
+            player.player.health = player.player.health - 5
         else
-            player.health = player.health - 20
+            player.player.health = player.player.health - 20
         end
     end
 end
@@ -41,9 +42,13 @@ local function endContact(bodyA, bodyB)
     local userB = bodyB:getUserData()
 
     if userA == "player_hurtbox" and userB == "floor" or userA == "floor" and userB == "player_hurtbox" then
-        player.canJump = false
+        player.player.canJump = false
     end
 end
+
+GameStates = {
+    play = false
+}
 
 function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
@@ -74,14 +79,25 @@ function love.load()
     RightWall.fixture:setCategory(Categories.FLOOR)
 
     player.load()
-    enemyFile.load(player)
+    enemyFile.load(player.player)
+
+    menu.load()
 end
 
 function love.keypressed(key)
     player.keypressed(key)
 end
 
+function love.mousepressed(x, y, button)
+    menu.mousepressed(x, y, button)
+end
+
 function love.update(dt)
+    menu.update(dt)
+    if not GameStates.play then
+        return
+    end
+
     player.update(dt)
     enemyFile.update(dt)
 
@@ -89,9 +105,12 @@ function love.update(dt)
 end
 
 function love.draw()
-    love.graphics.setColor(0, 1, 0)
-    love.graphics.polygon("fill", Floor.body:getWorldPoints(Floor.shape:getPoints()))
+    if GameStates.play then
+        love.graphics.setColor(0, 1, 0)
+        love.graphics.polygon("fill", Floor.body:getWorldPoints(Floor.shape:getPoints()))
 
-    player.draw()
-    enemyFile.draw()
+        player.draw()
+        enemyFile.draw()
+    end
+    menu.draw()
 end
