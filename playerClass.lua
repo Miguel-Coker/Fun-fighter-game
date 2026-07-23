@@ -24,6 +24,10 @@ function playerClass.new(name, spriteSheet, isAI, pos)
     player.blocking = false
     player.attacking = false
     player.canJump = false
+    player.dashing = false
+    player.dashTime = 0.2
+    player.baseDashCooldown = 1
+    player.dashCooldown = 0
 
     player.isAI = isAI
 
@@ -54,9 +58,35 @@ function playerClass.new(name, spriteSheet, isAI, pos)
 end
 
 function playerClass:update(dt)
+    self.dashCooldown = self.dashCooldown - dt
+
+    local vx, vy = self.hurtBox.body:getLinearVelocity()
+
+    if vx == 0 then
+        self.moving = false
+    end
+
     self.hitBox.body:setLinearVelocity(0, 0)
     self.hitBox.body:setY(self.hurtBox.body:getY())
     self.hitBox.body:setX(self.hurtBox.body:getX())
+end
+
+function playerClass:dash()
+    if self.dashCooldown > 0 then
+        return
+    end
+
+    local vx, vy = self.hurtBox.body:getLinearVelocity()
+
+    if vx < 0 then
+        vx = -500
+    elseif vx > 0 then
+        vx = 500
+    end
+    self.dashing = true
+    self.dashTime = 0.2
+    self.dashCooldown = self.baseDashCooldown
+    self.hurtBox.body:setLinearVelocity(vx, vy)
 end
 
 function playerClass:AIMoveSys(x)

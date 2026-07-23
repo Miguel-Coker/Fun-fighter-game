@@ -39,10 +39,24 @@ function playerFile.update(dt)
 
     if love.keyboard.isDown("d", "right") then
         player.hurtBox.body:setLinearVelocity(player.speed, vy)
+        player.moving = true
     elseif love.keyboard.isDown("a", "left") then
         player.hurtBox.body:setLinearVelocity(-player.speed, vy)
+        player.moving = true
     else
+        player.moving = false
+    end
+
+    if player.dashing then
+        player.hurtBox.body:setLinearVelocity(vx, vy)
+
+        player.dashTime = player.dashTime - dt
+    elseif not player.moving then
         player.hurtBox.body:setLinearVelocity(0, vy)
+    end
+
+    if player.dashTime <= 0 then
+        player.dashing = false
     end
 
     if love.keyboard.isDown("f") then
@@ -51,7 +65,7 @@ function playerFile.update(dt)
     else
         player.blocking = false
     end
-    
+
     if player.isKicking then
         player.anim = player.anims.kickAnim
         player.hitBox.fixture:setSensor(false)
@@ -65,10 +79,7 @@ function playerFile.update(dt)
         player.anims.kickAnim:gotoFrame(1)
     end
 
-    player.hitBox.body:setLinearVelocity(0, 0)
-    player.hitBox.body:setY(player.hurtBox.body:getY())
-    player.hitBox.body:setX(player.hurtBox.body:getX())
-
+    player:update(dt)
     player:lookTowards(enemy.hurtBox.body:getX())
     player.anim:update(dt)
 end
@@ -81,6 +92,10 @@ function playerFile.keypressed(key)
 
     if (key == "w" or key == "up") and player.canJump then
         player.hurtBox.body:applyLinearImpulse(0, -1000)
+    end
+
+    if (key == "q") then
+        player:dash()
     end
 end
 
