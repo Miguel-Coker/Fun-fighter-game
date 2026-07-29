@@ -1,6 +1,12 @@
 local button = {}
 button.__index = button
 
+---@param text string
+---@param x number
+---@param y number
+---@param width number
+---@param height number
+---@param func function
 function button.new(text, x, y, width, height, func)
     local instance = setmetatable({}, button)
     instance.x = x

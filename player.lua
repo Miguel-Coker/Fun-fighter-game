@@ -1,4 +1,4 @@
-local anim = require("anim8")
+local anim = require("libs.anim8")
 local playerClass = require("playerClass")
 
 local playerFile = {}
@@ -33,37 +33,29 @@ end
 function playerFile.update(dt)
     player.anim = player.anims.idleAnim
 
+    if not player.dashing then
+        player.moving = false
+    end
+
     local vx, vy = player.hurtBox.body:getLinearVelocity()
 
     player.attackCooldown = player.attackCooldown - dt
 
-    if love.keyboard.isDown("d", "right") then
-        player.hurtBox.body:setLinearVelocity(player.speed, vy)
-        player.moving = true
-    elseif love.keyboard.isDown("a", "left") then
-        player.hurtBox.body:setLinearVelocity(-player.speed, vy)
-        player.moving = true
-    else
-        player.moving = false
-    end
+    if not player.dashing then
+        if love.keyboard.isDown("d", "right") then
+            player.moving = true
+            player.vx = player.speed
+        elseif love.keyboard.isDown("a", "left") then
+            player.vx = -player.speed
+            player.moving = true
+        end
 
-    if player.dashing then
-        player.hurtBox.body:setLinearVelocity(vx, vy)
-
-        player.dashTime = player.dashTime - dt
-    elseif not player.moving then
-        player.hurtBox.body:setLinearVelocity(0, vy)
-    end
-
-    if player.dashTime <= 0 then
-        player.dashing = false
-    end
-
-    if love.keyboard.isDown("f") then
-        player.anim = player.anims.blockAnim
-        player.blocking = true
-    else
-        player.blocking = false
+        if love.keyboard.isDown("f") then
+            player.anim = player.anims.blockAnim
+            player.blocking = true
+        else
+            player.blocking = false
+        end
     end
 
     if player.isKicking then

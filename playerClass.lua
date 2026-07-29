@@ -1,4 +1,4 @@
-local anim = require("anim8")
+local anim = require("libs.anim8")
 
 local playerClass = {}
 
@@ -47,6 +47,8 @@ function playerClass.new(name, spriteSheet, isAI, pos)
     player.hurtBox.fixture = love.physics.newFixture(player.hurtBox.body, player.hurtBox.shape)
     player.hurtBox.fixture:setUserData(name.."_hurtbox")
     player.hurtBox.body:setFixedRotation(true)
+    player.vx = 0
+    player.vy = 0
 
     player.hitBox = {}
     player.hitBox.body = love.physics.newBody(World, pos.x, pos.y, "dynamic")
@@ -60,12 +62,21 @@ end
 function playerClass:update(dt)
     self.dashCooldown = self.dashCooldown - dt
 
-    local vx, vy = self.hurtBox.body:getLinearVelocity()
+    local _, vy = self.hurtBox.body:getLinearVelocity()
 
-    if vx == 0 then
-        self.moving = false
+    if not self.moving then
+        self.vx = 0
     end
 
+    if self.dashing then
+        self.dashTime = self.dashTime - dt
+    end
+
+    if self.dashTime <= 0 then
+        self.dashing = false
+    end
+
+    self.hurtBox.body:setLinearVelocity(self.vx, vy)
     self.hitBox.body:setLinearVelocity(0, 0)
     self.hitBox.body:setY(self.hurtBox.body:getY())
     self.hitBox.body:setX(self.hurtBox.body:getX())
@@ -76,7 +87,7 @@ function playerClass:dash()
         return
     end
 
-    local vx, vy = self.hurtBox.body:getLinearVelocity()
+    local vx = self.hurtBox.body:getLinearVelocity()
 
     if vx < 0 then
         vx = -500
@@ -85,23 +96,41 @@ function playerClass:dash()
     end
     self.dashing = true
     self.dashTime = 0.2
+    self.moving = true
     self.dashCooldown = self.baseDashCooldown
-    self.hurtBox.body:setLinearVelocity(vx, vy)
+    
+    self.vx = vx
 end
 
-function playerClass:AIMoveSys(x)
-    local dx = x - self.hurtBox.body:getX()
-    local len = math.sqrt(dx*dx)
-    local vx = dx / len * self.speed
-
-    if len <= 100 and not (self.attackCooldown <= 0.4) then
-        self.blocking = true
-        vx = 0
-    else
-        self.blocking = false
+local function toPositive(x)
+    if x < 0 then
+        x = x * -1
     end
 
-    self.hurtBox.body:setLinearVelocity(vx, 0)
+    return x
+end
+
+---@param x number
+function playerClass:AIMoveSys(x)
+    local dx = x - self.hurtBox.body:getX()
+    local dist = toPositive(dx)
+    local vx = dx / dist * self.speed
+
+    if dist > 200 then
+        self:dash()
+    end
+
+    if dist <= 100 and not (self.attackCooldown <= 0.4) then
+        self.blocking = true
+        self.moving = false
+    else
+        self.blocking = false
+        self.moving = true
+    end
+
+    if not self.dashing then
+        self.vx = vx
+    end
 end
 
 function playerClass:startAttack(category)
