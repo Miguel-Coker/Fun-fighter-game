@@ -5,6 +5,7 @@ local playerClass = {}
 
 playerClass.__index = playerClass
 
+---@enum attacksEnum
 local attacksEnum = {
     kick = 1,
     punch = 2
