@@ -22,6 +22,7 @@ function button.new(text, x, y, width, height, func)
     return instance
 end
 
+---@return boolean
 function button:checkPressed()
     if love.mouse.getX() >= self.x and love.mouse.getX() <= self.x + self.baseWidth then
         if love.mouse.getY() >= self.y and love.mouse.getY() <= self.y + self.baseHeight then

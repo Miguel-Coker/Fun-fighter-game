@@ -5,7 +5,7 @@ local button = require("button")
 function menu.load()
     menu.buttons = {
         start = button.new("Play", 10, 10, 40, 20, function() GameStates.play = true end),
-        pause = button.new("Pause", 60, 10, 40, 20, function()GameStates.play = false end)
+        pause = button.new("Pause", 60, 10, 40, 20, function() GameStates.pause = not GameStates.pause end)
     }
 end
 

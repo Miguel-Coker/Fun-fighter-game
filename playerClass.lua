@@ -1,8 +1,14 @@
 local anim = require("libs.anim8")
+local attackClass = require("attackClass")
 
 local playerClass = {}
 
 playerClass.__index = playerClass
+
+local attacksEnum = {
+    kick = 1,
+    punch = 2
+}
 
 local JUMP_POWER_SCALE = 10
 
@@ -38,6 +44,11 @@ function playerClass.new(name, spriteSheet, isAI, pos)
     player.anims.idleAnim = anim.newAnimation(grid('5-5', '1-1'), 0.15)
     player.anims.kickAnim = anim.newAnimation(grid('1-4', '3-3'), 0.15)
     player.anims.blockAnim = anim.newAnimation(grid('7-7', '1-1'), 0.15)
+
+    player.attack = nil
+    player.attacks = {
+        attackClass.new(20, player.anims.kickAnim)
+    }
 
     player.anim = player.anims.idleAnim
 
@@ -126,6 +137,9 @@ function playerClass:AIMoveSys(x)
     else
         self.blocking = false
         self.moving = true
+        if self.attack == nil then
+            self.attack = self.attacks[Rng:random(1, #attacksEnum)]
+        end
     end
 
     if not self.dashing then
@@ -135,7 +149,6 @@ end
 
 function playerClass:startAttack(category)
     self.hitBox.fixture:setCategory(category)
-
     self.attackCooldown = self.baseAttackCooldown
     self.attacking = true
 end
@@ -143,6 +156,7 @@ end
 function playerClass:endAttack()
     self.hitBox.fixture:setCategory(Categories.NONE)
 
+    self.attack = nil
     self.attacking = false
 end
 
@@ -156,7 +170,7 @@ function playerClass:lookTowards(x)
     end
 end
 
-function  playerClass:draw()
+function playerClass:draw()
     self.anim:draw(self.spriteSheet, self.hurtBox.body:getX() - 60, self.hurtBox.body:getY() - 90, 0, 1.5, 1.5)
 end
 

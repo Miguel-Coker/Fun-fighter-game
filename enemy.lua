@@ -11,7 +11,6 @@ local player = nil
 function enemyFile.load(plr)
     local spritesheet = love.graphics.newImage("player.png")
     enemy = playerClass.new("enemy", spritesheet, true, {x = 700, y = 400})
-
     player = plr
 
     if player == nil then
@@ -49,8 +48,8 @@ function enemyFile.update(dt)
         enemy:startAttack(Categories.PLAYER_HURT_BOX)
     end
 
-    if enemy.attacking then
-        enemy.anim = enemy.anims.kickAnim
+    if enemy.attacking and enemy.attack ~= nil then
+        enemy.anim = enemy.attack.anim
     end
 
     if enemy.anim == enemy.anims.kickAnim and enemy.anim.position == 4 then

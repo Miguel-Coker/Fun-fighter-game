@@ -30,9 +30,9 @@ local function beginContact(bodyA, bodyB)
 
     if (userA == "enemy_hitbox" and userB == "player_hurtbox" or userA == "player_hurtbox" and userB == "enemy_hitbox") then
         if player.blocking then
-            player.player.health = player.player.health - 5
+            player.player.health = player.player.health - enemy.attack.damage / 2
         else
-            player.player.health = player.player.health - 20
+            player.player.health = player.player.health - enemy.attack.damage
         end
     end
 end
@@ -47,11 +47,14 @@ local function endContact(bodyA, bodyB)
 end
 
 GameStates = {
-    play = false
+    play = false,
+    pause = false
 }
 
 function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
+
+    Rng = love.math.newRandomGenerator()
 
     World:setCallbacks(beginContact, endContact)
 
@@ -78,13 +81,16 @@ function love.load()
     RightWall.fixture:setUserData("right_wall")
     RightWall.fixture:setCategory(Categories.FLOOR)
 
+    menu.load()
     player.load()
     enemyFile.load(player.player)
-
-    menu.load()
 end
 
 function love.keypressed(key)
+    if key == "p" then
+        GameStates.pause = not GameStates.pause
+    end
+
     player.keypressed(key)
 end
 
@@ -94,23 +100,26 @@ end
 
 function love.update(dt)
     menu.update(dt)
-    if not GameStates.play then
-        return
+    if GameStates.play and not GameStates.pause then
+        player.update(dt)
+        enemyFile.update(dt)
+
+        World:update(dt)
     end
-
-    player.update(dt)
-    enemyFile.update(dt)
-
-    World:update(dt)
 end
 
 function love.draw()
     if GameStates.play then
         love.graphics.setColor(0, 1, 0)
         love.graphics.polygon("fill", Floor.body:getWorldPoints(Floor.shape:getPoints()))
-
         player.draw()
         enemyFile.draw()
+
+        if GameStates.pause then
+            love.graphics.setColor(0, 1, 0)
+            love.graphics.print("PAUSED", love.graphics.getWidth() / 2 - 20, love.graphics.getHeight() / 2)
+            love.graphics.setColor(1, 1, 1)
+        end
     end
     menu.draw()
 end
