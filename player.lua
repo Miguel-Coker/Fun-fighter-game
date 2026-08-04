@@ -50,7 +50,7 @@ function playerFile.update(dt)
             player.moving = true
         end
 
-        if love.keyboard.isDown("f") then
+        if love.keyboard.isDown("f") or love.keyboard.isDown("space") then
             player.anim = player.anims.blockAnim
             player.blocking = true
         else
@@ -86,7 +86,7 @@ function playerFile.keypressed(key)
         player.hurtBox.body:applyLinearImpulse(0, -1000)
     end
 
-    if (key == "q") then
+    if (key == "q" or key == "lshift") then
         player:dash()
     end
 end
@@ -97,9 +97,9 @@ function playerFile.draw()
     love.graphics.setColor(1 - percent, percent, 0)
     love.graphics.rectangle("fill", 0, 0, percent * 100, 20)
 
-    love.graphics.setColor(1, 1, 1)
+    love.graphics.setColor(0.6, 0.6, 1)
     --love.graphics.polygon("fill", player.body:getWorldPoints(player.shape:getPoints()))
-    player.anim:draw(player.spriteSheet, player.hurtBox.body:getX() - 60, player.hurtBox.body:getY() - 90, 0, 1.5, 1.5)
+    player:draw()
 end
 
 return playerFile

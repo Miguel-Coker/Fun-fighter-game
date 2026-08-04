@@ -68,6 +68,8 @@ function playerClass.new(name, spriteSheet, isAI, pos)
     player.hitBox.fixture = love.physics.newFixture(player.hitBox.body, player.hitBox.shape)
     player.hitBox.body:setFixedRotation(true)
     player.hitBox.fixture:setUserData(name.."_hitbox")
+
+    player.showCollisionBoxes = false
     return player
 end
 
@@ -172,6 +174,10 @@ function playerClass:lookTowards(x)
 end
 
 function playerClass:draw()
+    if self.showCollisionBoxes then
+        love.graphics.polygon("line", self.hitBox.body:getWorldPoints(self.hitBox.shape:getPoints()))
+    end
+
     self.anim:draw(self.spriteSheet, self.hurtBox.body:getX() - 60, self.hurtBox.body:getY() - 90, 0, 1.5, 1.5)
 end
 

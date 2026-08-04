@@ -69,7 +69,7 @@ function enemyFile.draw()
     love.graphics.setColor(1 - percent, percent, 0)
     love.graphics.rectangle("fill", 700, 0, percent * 100, 20)
 
-    love.graphics.setColor(1, 1, 1)
+    love.graphics.setColor(1, 0.6, 0.6)
     enemy:draw()
 end
 

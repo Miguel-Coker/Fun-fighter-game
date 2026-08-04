@@ -48,7 +48,8 @@ end
 
 GameStates = {
     play = false,
-    pause = false
+    pause = false,
+    settings = false
 }
 
 function love.load()
@@ -90,6 +91,15 @@ function love.keypressed(key)
     if key == "p" then
         GameStates.pause = not GameStates.pause
     end
+
+    if key == "escape" then
+        menu.main.settings.func()
+    end
+
+    if key == "h" then
+        player.player.showCollisionBoxes = not player.player.showCollisionBoxes
+        enemy.showCollisionBoxes = not enemy.showCollisionBoxes
+    end 
 
     player.keypressed(key)
 end

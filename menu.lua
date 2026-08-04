@@ -3,17 +3,33 @@ local menu = {}
 local button = require("button")
 
 function menu.load()
-    menu.buttons = {
+    menu.main = {
         start = button.new("Play", 10, 10, 40, 20, function() GameStates.play = true end),
-        pause = button.new("Pause", 60, 10, 40, 20, function() GameStates.pause = not GameStates.pause end),
-        exit = button.new("Exit", 110, 10, 40, 20, love.event.quitdddd)
+        pause = button.new("Pause", 120, 10, 40, 20, function() GameStates.pause = not GameStates.pause end),
+        settings = button.new("Settings", 60, 10, 50, 20, function() 
+                GameStates.settings = not GameStates.settings 
+                GameStates.pause = not GameStates.pause 
+                
+                if menu.selectedMenu == menu.settings then
+                    menu.selectedMenu = menu.main
+                else
+                    menu.selectedMenu = menu.settings
+                end
+            end)
     }
+    menu.settings = {
+        exit = button.new("Exit", 10, 10, 40, 20, love.event.quit)
+    }
+
+    menu.selectedMenu = menu.main
 end
 
 local selectedButton = nil
 function menu.update(dt)
-    for _, b in pairs(menu.buttons) do
-        if b:checkPressed() then
+    for _, b in pairs(menu.selectedMenu) do
+        if menu.main.settings:checkPressed() then
+            selectedButton = menu.main.settings
+        elseif b:checkPressed() then
             selectedButton = b
         end
     end
@@ -26,7 +42,8 @@ function menu.mousepressed(x, y, mButton)
 end
 
 function menu.draw()
-    for _, b in pairs(menu.buttons) do
+    menu.main.settings:draw()
+    for _, b in pairs(menu.selectedMenu) do
         b:draw()
     end
 end
