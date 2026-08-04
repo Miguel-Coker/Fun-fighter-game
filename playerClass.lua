@@ -5,8 +5,8 @@ local playerClass = {}
 
 playerClass.__index = playerClass
 
----@enum attacksEnum
-local attacksEnum = {
+---@enum playerClass.attacksEnum
+playerClass.attacksEnum = {
     kick = 1,
     punch = 2
 }
@@ -45,10 +45,12 @@ function playerClass.new(name, spriteSheet, isAI, pos)
     player.anims.idleAnim = anim.newAnimation(grid('5-5', '1-1'), 0.15)
     player.anims.kickAnim = anim.newAnimation(grid('1-4', '3-3'), 0.15)
     player.anims.blockAnim = anim.newAnimation(grid('7-7', '1-1'), 0.15)
+    player.anims.punchAnim = anim.newAnimation(grid('4-8', '2-2'), 0.15)
 
     player.attack = nil
     player.attacks = {
-        attackClass.new(20, player.anims.kickAnim)
+        attackClass.new(20, player.anims.kickAnim),
+        attackClass.new(20, player.anims.punchAnim)
     }
 
     player.anim = player.anims.idleAnim
@@ -141,7 +143,7 @@ function playerClass:AIMoveSys(x)
         self.blocking = false
         self.moving = true
         if self.attack == nil then
-            self.attack = self.attacks[Rng:random(1, #attacksEnum)]
+            self.attack = self.attacks[Rng:random(1, #playerClass.attacksEnum)]
         end
     end
 
@@ -154,6 +156,10 @@ function playerClass:startAttack(category)
     self.hitBox.fixture:setCategory(category)
     self.attackCooldown = self.baseAttackCooldown
     self.attacking = true
+    
+    if self.attack then
+        self.anim = self.attack.anim
+    end
 end
 
 function playerClass:endAttack()

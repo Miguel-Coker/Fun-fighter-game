@@ -31,15 +31,13 @@ function playerFile.load()
 end
 
 function playerFile.update(dt)
-    player.anim = player.anims.idleAnim
+    player.attackCooldown = player.attackCooldown - dt
 
     if not player.dashing then
         player.moving = false
     end
 
     local vx, vy = player.hurtBox.body:getLinearVelocity()
-
-    player.attackCooldown = player.attackCooldown - dt
 
     if not player.dashing then
         if love.keyboard.isDown("d", "right") then
@@ -49,27 +47,31 @@ function playerFile.update(dt)
             player.vx = -player.speed
             player.moving = true
         end
-
-        if love.keyboard.isDown("f") or love.keyboard.isDown("space") then
-            player.anim = player.anims.blockAnim
-            player.blocking = true
-        else
-            player.blocking = false
-        end
     end
 
-    if player.isKicking then
-        player.anim = player.anims.kickAnim
-        player.hitBox.fixture:setSensor(false)
+    if love.keyboard.isDown("f") or love.keyboard.isDown("space") and not player.attacking then
+        player.anim = player.anims.blockAnim
+        player.blocking = true
     else
-        player.hitBox.fixture:setSensor(true)
+        player.blocking = false
+    end
+ 
+    if not player.attacking and not player.blocking then
+        player.anim = player.anims.idleAnim
+    end
+
+    if player.anim.position == 4 and player.attacking then
+        player.anim:gotoFrame(1)
         player:endAttack()
     end
 
-    if player.anim == player.anims.kickAnim and player.anim.position == 4 then
-        player.isKicking = false
-        player.anims.kickAnim:gotoFrame(1)
+    if player.attacking then
+        player.hitBox.fixture:setSensor(false)
+    else
+        player.hitBox.fixture:setSensor(true)
     end
+
+    print(player.attacking, player.blocking)
 
     player:update(dt)
     player:lookTowards(enemy.hurtBox.body:getX())
@@ -77,10 +79,14 @@ function playerFile.update(dt)
 end
 
 function playerFile.keypressed(key)
-    if key == "l" and player.attackCooldown <= 0 and not player.blocking then
-        player.isKicking = true
+    if key == "l" and not player.blocking and player.attackCooldown <= 0 then
+        player.attack = player.attacks[playerClass.attacksEnum.kick]
         player:startAttack(Categories.PLAYER_HIT_BOX)
     end
+
+    --[[if key == "j" and not player.blocking then
+        player.attack = player.attacks[playerClass.attacksEnum.punch]
+    end]]
 
     if (key == "w" or key == "up") and player.canJump then
         player.hurtBox.body:applyLinearImpulse(0, -1000)
