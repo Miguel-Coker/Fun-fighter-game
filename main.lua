@@ -1,6 +1,7 @@
 local player = require("player")
 local enemyFile = require("enemy")
 local menu = require("menu")
+local game = require("game")
 
 World = love.physics.newWorld(0, 200)
 
@@ -22,14 +23,14 @@ local function beginContact(bodyA, bodyB)
     
     if (userA == "player_hitbox" and userB == "enemy_hurtbox" or userA == "enemy_hurtbox" and userB == "player_hitbox") then
         if enemy.blocking then
-            enemy.health = enemy.health - 5
+            enemy.health = enemy.health - player.player.attack.damage / 2
         else
-            enemy.health = enemy.health - 20
+            enemy.health = enemy.health - player.player.attack.damage
         end
     end
 
     if (userA == "enemy_hitbox" and userB == "player_hurtbox" or userA == "player_hurtbox" and userB == "enemy_hitbox") then
-        if player.blocking then
+        if player.player.blocking then
             player.player.health = player.player.health - enemy.attack.damage / 2
         else
             player.player.health = player.player.health - enemy.attack.damage
@@ -60,6 +61,8 @@ function love.load()
     World:setCallbacks(beginContact, endContact)
 
     Joysticks = love.joystick.getJoysticks()
+
+    game.load()
 
     Floor = {}
     Floor.body = love.physics.newBody(World, 400, 500, "static")
@@ -111,6 +114,7 @@ end
 function love.update(dt)
     menu.update(dt)
     if GameStates.play and not GameStates.pause then
+        game.update(dt)
         player.update(dt)
         enemyFile.update(dt)
 
@@ -120,11 +124,7 @@ end
 
 function love.draw()
     if GameStates.play then
-        love.graphics.setColor(0, 1, 0)
-        love.graphics.polygon("fill", Floor.body:getWorldPoints(Floor.shape:getPoints()))
-        player.draw()
-        enemyFile.draw()
-
+        game.draw()
         if GameStates.pause then
             love.graphics.setColor(0, 1, 0)
             love.graphics.print("PAUSED", love.graphics.getWidth() / 2 - 20, love.graphics.getHeight() / 2)

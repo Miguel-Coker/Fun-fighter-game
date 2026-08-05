@@ -55,7 +55,7 @@ function playerFile.update(dt)
     else
         player.blocking = false
     end
- 
+
     if not player.attacking and not player.blocking then
         player.anim = player.anims.idleAnim
     end
@@ -70,8 +70,6 @@ function playerFile.update(dt)
     else
         player.hitBox.fixture:setSensor(true)
     end
-
-    print(player.attacking, player.blocking)
 
     player:update(dt)
     player:lookTowards(enemy.hurtBox.body:getX())
@@ -97,11 +95,11 @@ function playerFile.keypressed(key)
     end
 end
 
-function playerFile.draw()
+function playerFile.draw(cam)
     local percent = player.health / 100
 
     love.graphics.setColor(1 - percent, percent, 0)
-    love.graphics.rectangle("fill", 0, 0, percent * 100, 20)
+    love.graphics.rectangle("fill", cam:screenX(0), cam:screenY(0), percent * 100, 20)
 
     love.graphics.setColor(0.6, 0.6, 1)
     --love.graphics.polygon("fill", player.body:getWorldPoints(player.shape:getPoints()))

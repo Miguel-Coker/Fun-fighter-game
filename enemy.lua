@@ -63,11 +63,11 @@ function enemyFile.update(dt)
     enemy.anim:update(dt)
 end
 
-function enemyFile.draw()
+function enemyFile.draw(cam)
     local percent = enemy.health / enemy.maxHealth
 
     love.graphics.setColor(1 - percent, percent, 0)
-    love.graphics.rectangle("fill", 700, 0, percent * 100, 20)
+    love.graphics.rectangle("fill", cam:screenX(700), cam:screenY(0), percent * 100, 20)
 
     love.graphics.setColor(1, 0.6, 0.6)
     enemy:draw()
