@@ -3,6 +3,11 @@ local enemyFile = require("enemy")
 
 local game = {}
 
+---@class Camera
+---@field x number
+---@field y number
+---@field speed number
+---@field zoom number
 game.camera = {}
 
 ---@enum game.cameraModes
@@ -76,7 +81,7 @@ function game.draw()
     love.graphics.polygon("fill", LeftWall.body:getWorldPoints(LeftWall.shape:getPoints()))
     love.graphics.polygon("fill", RightWall.body:getWorldPoints(RightWall.shape:getPoints()))
     --love.graphics.setColor(1, 1, 1)
-    love.graphics.draw(background, 0, 0, 0, 8, 8)
+    love.graphics.draw(background, 0, 50, 0, 8, 8)
 
     player.draw(game.camera)
     enemyFile.draw(game.camera)

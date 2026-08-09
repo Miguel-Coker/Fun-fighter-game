@@ -1,8 +1,32 @@
 local anim = require("libs.anim8")
 local attackClass = require("attackClass")
 
+---@class Player
+---@field name string
+---@field anims table
+---@field spriteSheet table
+---@field speed number
+---@field health number
+---@field maxHealth number
+---@field baseAttackCooldown number
+---@field attackCooldown number
+---@field jumpPower number
+---@field blocking boolean
+---@field attacking boolean
+---@field canJump boolean
+---@field dashing boolean
+---@field dashTime number
+---@field baseDashCooldown number
+---@field dashCooldown number
+---@field isAI boolean
+---@field attack table
+---@field attacks table
+---@field hurtBox table
+---@field hitBox table
+---@field vx number
+---@field vy number
+---@field showCollisionBoxes boolean
 local playerClass = {}
-
 playerClass.__index = playerClass
 
 ---@enum playerClass.attacksEnum
@@ -16,7 +40,7 @@ local JUMP_POWER_SCALE = 10
 ---@param name string
 ---@param spriteSheet table
 ---@param isAI boolean
----@return table
+---@return Player
 function playerClass.new(name, spriteSheet, isAI, pos)
     local player = setmetatable({}, playerClass)
     player.name = name
@@ -30,7 +54,6 @@ function playerClass.new(name, spriteSheet, isAI, pos)
     player.jumpPower = -100 * JUMP_POWER_SCALE
     player.blocking = false
     player.attacking = false
-    player.canJump = false
     player.dashing = false
     player.dashTime = 0.2
     player.baseDashCooldown = 1

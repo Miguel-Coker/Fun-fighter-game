@@ -6,6 +6,7 @@ local CAT_enemy = 1
 local CAT_HITBOX = 2
 local CAT_HURTBOX = 2
 
+---@type Player
 local player = nil
 
 function enemyFile.load(plr)
@@ -63,7 +64,8 @@ function enemyFile.update(dt)
     enemy.anim:update(dt)
 end
 
-function enemyFile.draw()
+---@param cam Camera
+function enemyFile.draw(cam)
     love.graphics.setColor(1, 0.6, 0.6)
     enemy:draw()
 end

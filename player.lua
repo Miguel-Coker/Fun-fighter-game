@@ -3,9 +3,10 @@ local playerClass = require("playerClass")
 
 local playerFile = {}
 
---- @class player
+---@type Player
 playerFile.player = nil
 
+---@type Player
 local player = nil
 
 function playerFile.load()
@@ -95,6 +96,7 @@ function playerFile.keypressed(key)
     end
 end
 
+---@param cam Camera
 function playerFile.draw(cam)
     local percent = player.health / 100
 
