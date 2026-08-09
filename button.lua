@@ -1,3 +1,14 @@
+---@class Button
+---@field x number
+---@field y number
+---@field text string
+---@field width number
+---@field height number
+---@field baseWidth number
+---@field baseHeight number
+---@field colour table
+---@field func function
+---@field hide boolean
 local button = {}
 button.__index = button
 
@@ -7,6 +18,7 @@ button.__index = button
 ---@param width number
 ---@param height number
 ---@param func function
+---@return Button
 function button.new(text, x, y, width, height, func)
     local instance = setmetatable({}, button)
     instance.x = x
