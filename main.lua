@@ -66,7 +66,7 @@ function love.load()
 
     Floor = {}
     Floor.body = love.physics.newBody(World, 400, 500, "static")
-    Floor.shape = love.physics.newRectangleShape(800, 100)
+    Floor.shape = love.physics.newRectangleShape(1200, 100)
     Floor.fixture = love.physics.newFixture(Floor.body, Floor.shape)
     Floor.fixture:setUserData("floor")
     Floor.fixture:setCategory(Categories.FLOOR)
@@ -79,7 +79,7 @@ function love.load()
     LeftWall.fixture:setCategory(Categories.FLOOR)
 
     RightWall = {}
-    RightWall.body = love.physics.newBody(World, 800, 400, "static")
+    RightWall.body = love.physics.newBody(World, 1000, 400, "static")
     RightWall.shape = love.physics.newRectangleShape(50, 600)
     RightWall.fixture = love.physics.newFixture(RightWall.body, RightWall.shape)
     RightWall.fixture:setUserData("right_wall")

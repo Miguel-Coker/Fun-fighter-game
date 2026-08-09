@@ -132,7 +132,7 @@ function playerClass:AIMoveSys(x)
     local dist = toPositive(dx)
     local vx = dx / dist * self.speed
 
-    if dist > 200 then
+    if dist > 250 then
         self:dash()
     end
 

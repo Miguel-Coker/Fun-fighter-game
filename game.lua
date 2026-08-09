@@ -12,14 +12,14 @@ game.cameraModes = {
 }
 local cameraOffsetX
 local cameraOffsetY
+local background
 function game.load()
     game.camera.x = 0
     game.camera.y = 0
     game.camera.speed = 10
-    game.camera.zoom = 1.2
+    game.camera.zoom = 1
 
-    cameraOffsetX = (love.graphics.getWidth() / 2 - 20) / game.camera.zoom
-    cameraOffsetY = (love.graphics.getHeight() / 1.5) / game.camera.zoom
+    background = love.graphics.newImage("sprites/background.png")
 end
 
 ---@param mode game.cameraModes
@@ -44,22 +44,48 @@ function game.camera:screenY(y)
     return y + self.y
 end
 
+function game.camera:zoomLerp(x, dt)
+    local dx = x - self.zoom
+    self.zoom = self.zoom + dx * dt
+end
+
+function game.camera:clamp(minX, maxX, minY, maxY)
+    self.x = math.max(minX, math.min(maxX, self.x))
+    self.y = math.max(minY, math.min(maxY, self.y))
+end
+
 function game.update(dt)
+    if player.player.dashing then
+        game.camera:zoomLerp(0.8, dt)
+    else
+        game.camera:zoomLerp(1, dt)
+    end
+    cameraOffsetX = (love.graphics.getWidth() / 2 - 20) / game.camera.zoom
+    cameraOffsetY = 800  / game.camera.zoom
+
     game.camera:attach(player.player.hurtBox.body:getX() - cameraOffsetX, player.player.hurtBox.body:getY() - cameraOffsetY, game.cameraModes.FOLLOW, dt)
+    game.camera:clamp(0, 220, 0, 800)
 end
 
 function game.draw()
     love.graphics.push()
     love.graphics.translate(-game.camera.x * game.camera.zoom, -game.camera.y * game.camera.zoom)
     love.graphics.scale(game.camera.zoom, game.camera.zoom)
-    love.graphics.setColor(0, 1, 0)
-    love.graphics.polygon("fill", Floor.body:getWorldPoints(Floor.shape:getPoints()))
+    --love.graphics.setColor(0, 1, 0)
+    --love.graphics.polygon("fill", Floor.body:getWorldPoints(Floor.shape:getPoints()))
     love.graphics.polygon("fill", LeftWall.body:getWorldPoints(LeftWall.shape:getPoints()))
     love.graphics.polygon("fill", RightWall.body:getWorldPoints(RightWall.shape:getPoints()))
+    --love.graphics.setColor(1, 1, 1)
+    love.graphics.draw(background, 0, 0, 0, 8, 8)
 
     player.draw(game.camera)
     enemyFile.draw(game.camera)
     love.graphics.pop()
+
+    local percent = enemy.health / enemy.maxHealth
+    love.graphics.setColor(1 - percent, percent, 0)
+    love.graphics.rectangle("fill", 700, 0, percent * 100, 20)
+    love.graphics.setColor(1, 0.6, 0.6)
 end
 
 return game
