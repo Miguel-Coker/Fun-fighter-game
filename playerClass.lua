@@ -72,8 +72,8 @@ function playerClass.new(name, spriteSheet, isAI, pos)
 
     player.attack = nil
     player.attacks = {
-        attackClass.new(20, player.anims.kickAnim),
-        attackClass.new(20, player.anims.punchAnim)
+        attackClass.meleeAttack.new(20, player.anims.kickAnim),
+        attackClass.meleeAttack.new(20, player.anims.punchAnim)
     }
 
     player.anim = player.anims.idleAnim
@@ -84,6 +84,7 @@ function playerClass.new(name, spriteSheet, isAI, pos)
     player.hurtBox.fixture = love.physics.newFixture(player.hurtBox.body, player.hurtBox.shape)
     player.hurtBox.fixture:setUserData(name.."_hurtbox")
     player.hurtBox.body:setFixedRotation(true)
+    player.hurtBox.body:setMass(5)
     player.vx = 0
     player.vy = 0
 
