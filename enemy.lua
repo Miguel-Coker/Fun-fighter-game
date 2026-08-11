@@ -1,13 +1,14 @@
 local playerClass = require "playerClass"
-local player = nil
 local enemyFile = {}
 
 local CAT_enemy = 1
 local CAT_HITBOX = 2
 local CAT_HURTBOX = 2
 
+---@type Player
 local player = nil
 
+---@param plr Player
 function enemyFile.load(plr)
     local spritesheet = love.graphics.newImage("player.png")
     enemy = playerClass.new("enemy", spritesheet, true, {x = 700, y = 400})
@@ -63,7 +64,8 @@ function enemyFile.update(dt)
     enemy.anim:update(dt)
 end
 
-function enemyFile.draw()
+---@param cam Camera
+function enemyFile.draw(cam)
     love.graphics.setColor(1, 0.6, 0.6)
     enemy:draw()
 end

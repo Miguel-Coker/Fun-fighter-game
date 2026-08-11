@@ -1,8 +1,14 @@
-local attackClass = {}
-attackClass.__index = attackClass
+local mod = {}
 
-function attackClass.new(damage, anim)
-    local instance = setmetatable({}, attackClass)
+---@class Melee
+---@field anim userdata
+---@field damae number
+---@field damage number
+mod.meleeAttack = {}
+mod.meleeAttack.__index = mod.meleeAttack
+
+function mod.meleeAttack.new(damage, anim)
+    local instance = setmetatable({}, mod.meleeAttack)
     if type(damage) ~= "table" then
         instance.anim = anim
         instance.damage = damage
@@ -14,4 +20,26 @@ function attackClass.new(damage, anim)
     return instance
 end
 
-return attackClass
+---@class Ranged
+---@field damage number
+---@field speed number
+---@field anim userdata
+---@field position table
+mod.rangedAttack = {}
+mod.rangedAttack.__index = mod.rangedAttack
+
+---@param damage number
+---@param anim userdata
+---@param speed number
+---@return Ranged
+function mod.rangedAttack.new(damage, anim, speed)
+    ---@type Ranged
+    local instance = setmetatable({}, mod.rangedAttack)
+    instance.damage = damage
+    instance.anim = anim
+    instance.speed = speed
+    instance.position = {x = 0, y = 0}
+    return instance
+end
+
+return mod

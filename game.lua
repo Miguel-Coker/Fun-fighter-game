@@ -3,6 +3,11 @@ local enemyFile = require("enemy")
 
 local game = {}
 
+---@class Camera
+---@field x number
+---@field y number
+---@field speed number
+---@field zoom number
 game.camera = {}
 
 ---@enum game.cameraModes
@@ -16,7 +21,7 @@ local background
 function game.load()
     game.camera.x = 0
     game.camera.y = 0
-    game.camera.speed = 10
+    game.camera.speed = 8
     game.camera.zoom = 1
 
     background = love.graphics.newImage("sprites/background.png")
@@ -37,11 +42,11 @@ function game.camera:attach(x, y, mode, dt)
 end
 
 function game.camera:screenX(x)
-    return x + self.x
+    return (x + self.x) / self.zoom
 end
 
 function game.camera:screenY(y)
-    return y + self.y
+    return (y + self.y) / self.zoom
 end
 
 function game.camera:zoomLerp(x, dt)
@@ -60,11 +65,11 @@ function game.update(dt)
     else
         game.camera:zoomLerp(1, dt)
     end
-    cameraOffsetX = (love.graphics.getWidth() / 2 - 20) / game.camera.zoom
-    cameraOffsetY = 800  / game.camera.zoom
+    cameraOffsetX = (love.graphics.getWidth() / 2 - 20)
+    cameraOffsetY = love.graphics.getHeight()
 
     game.camera:attach(player.player.hurtBox.body:getX() - cameraOffsetX, player.player.hurtBox.body:getY() - cameraOffsetY, game.cameraModes.FOLLOW, dt)
-    game.camera:clamp(0, 220, 0, 800)
+    game.camera:clamp(0, love.graphics.getWidth() / 2, 0, 800)
 end
 
 function game.draw()
@@ -73,18 +78,25 @@ function game.draw()
     love.graphics.scale(game.camera.zoom, game.camera.zoom)
     --love.graphics.setColor(0, 1, 0)
     --love.graphics.polygon("fill", Floor.body:getWorldPoints(Floor.shape:getPoints()))
-    love.graphics.polygon("fill", LeftWall.body:getWorldPoints(LeftWall.shape:getPoints()))
-    love.graphics.polygon("fill", RightWall.body:getWorldPoints(RightWall.shape:getPoints()))
+    --love.graphics.polygon("fill", LeftWall.body:getWorldPoints(LeftWall.shape:getPoints()))
+    --love.graphics.polygon("fill", RightWall.body:getWorldPoints(RightWall.shape:getPoints()))
     --love.graphics.setColor(1, 1, 1)
-    love.graphics.draw(background, 0, 0, 0, 8, 8)
+    love.graphics.draw(background, 0, 50, 0, love.graphics.getWidth() / background:getWidth(), love.graphics.getHeight() / background:getHeight())
 
     player.draw(game.camera)
     enemyFile.draw(game.camera)
     love.graphics.pop()
 
+    -- Draw player health bar
+    local percentPlayer = player.player.health / 100
+    love.graphics.draw(player.player.healthbar, 60, 60)
+    love.graphics.setColor(1 - percentPlayer, percentPlayer, 0)
+    love.graphics.rectangle("fill", 62, 61, percentPlayer * 120, 29)
+
+    -- draw enemy health bar
     local percent = enemy.health / enemy.maxHealth
     love.graphics.setColor(1 - percent, percent, 0)
-    love.graphics.rectangle("fill", 700, 0, percent * 100, 20)
+    love.graphics.rectangle("fill", love.graphics.getWidth() - 160, 60, percent * 100, 20)
     love.graphics.setColor(1, 0.6, 0.6)
 end
 

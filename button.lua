@@ -1,3 +1,14 @@
+---@class Button
+---@field x number
+---@field y number
+---@field text string
+---@field width number
+---@field height number
+---@field baseWidth number
+---@field baseHeight number
+---@field colour table
+---@field func function
+---@field hide boolean
 local button = {}
 button.__index = button
 
@@ -7,6 +18,7 @@ button.__index = button
 ---@param width number
 ---@param height number
 ---@param func function
+---@return Button
 function button.new(text, x, y, width, height, func)
     local instance = setmetatable({}, button)
     instance.x = x
@@ -16,6 +28,7 @@ function button.new(text, x, y, width, height, func)
     instance.height = height
     instance.baseWidth = width
     instance.baseHeight = height
+    instance.hide = false
     instance.colour = {0.7, 0.7, 0.7}
     instance.func = func or function () end
     instance.hide = false
@@ -26,18 +39,24 @@ end
 function button:checkPressed()
     if love.mouse.getX() >= self.x and love.mouse.getX() <= self.x + self.baseWidth then
         if love.mouse.getY() >= self.y and love.mouse.getY() <= self.y + self.baseHeight then
-            self.width = self.baseWidth * 0.9
-            self.height = self.baseHeight * 0.9
+            --[[self.width = self.baseWidth * 0.9
+            self.height = self.baseHeight * 0.9]]
+            self.colour = {0.6, 0.6, 0.6}
             return true
         end
     end
 
-    self.width = self.baseWidth
-    self.height = self.baseHeight
+    --[[self.width = self.baseWidth
+    self.height = self.baseHeight]]
+    self.colour = {0.7, 0.7, 0.7}
     return false
 end
 
 function button:draw()
+    if self.hide then
+        return
+    end
+
     love.graphics.setColor(unpack(self.colour))
     love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
     love.graphics.setColor(0, 0, 0)

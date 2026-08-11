@@ -3,9 +3,10 @@ local playerClass = require("playerClass")
 
 local playerFile = {}
 
---- @class player
+---@type Player
 playerFile.player = nil
 
+---@type Player
 local player = nil
 
 function playerFile.load()
@@ -27,6 +28,7 @@ function playerFile.load()
     player.hitBox.fixture:setCategory(Categories.NONE)
     player.hitBox.fixture:setMask(Categories.PLAYER_HURT_BOX)
 
+    player.healthbar = love.graphics.newImage("sprites/healthbar.png")
     playerFile.player = player
 end
 
@@ -95,14 +97,9 @@ function playerFile.keypressed(key)
     end
 end
 
+---@param cam Camera
 function playerFile.draw(cam)
-    local percent = player.health / 100
-
-    love.graphics.setColor(1 - percent, percent, 0)
-    love.graphics.rectangle("fill", cam:screenX(0), cam:screenY(0), percent * 100, 20)
-
     love.graphics.setColor(0.6, 0.6, 1)
-    --love.graphics.polygon("fill", player.body:getWorldPoints(player.shape:getPoints()))
     player:draw()
 end
 
