@@ -46,7 +46,7 @@ function playerClass.new(name, spriteSheet, isAI, pos)
     player.name = name
     player.anims = {}
     player.spriteSheet = spriteSheet
-    player.speed = 90
+    player.speed = 100
     player.health = 100
     player.maxHealth = 100
     player.baseAttackCooldown = 0.8
@@ -80,7 +80,7 @@ function playerClass.new(name, spriteSheet, isAI, pos)
 
     player.hurtBox = {}
     player.hurtBox.body = love.physics.newBody(World, pos.x, pos.y, "dynamic")
-    player.hurtBox.shape = love.physics.newRectangleShape(64, 120)
+    player.hurtBox.shape = love.physics.newRectangleShape(128, 240)
     player.hurtBox.fixture = love.physics.newFixture(player.hurtBox.body, player.hurtBox.shape)
     player.hurtBox.fixture:setUserData(name.."_hurtbox")
     player.hurtBox.body:setFixedRotation(true)
@@ -90,7 +90,7 @@ function playerClass.new(name, spriteSheet, isAI, pos)
 
     player.hitBox = {}
     player.hitBox.body = love.physics.newBody(World, pos.x, pos.y, "dynamic")
-    player.hitBox.shape = love.physics.newRectangleShape(80, 120)
+    player.hitBox.shape = love.physics.newRectangleShape(160, 240)
     player.hitBox.fixture = love.physics.newFixture(player.hitBox.body, player.hitBox.shape)
     player.hitBox.body:setFixedRotation(true)
     player.hitBox.fixture:setUserData(name.."_hitbox")
@@ -156,7 +156,7 @@ function playerClass:AIMoveSys(x)
     local dist = toPositive(dx)
     local vx = dx / dist * self.speed
 
-    if dist > 250 then
+    if dist > 275 then
         self:dash()
     end
 
@@ -208,7 +208,7 @@ function playerClass:draw()
         love.graphics.polygon("line", self.hitBox.body:getWorldPoints(self.hitBox.shape:getPoints()))
     end
 
-    self.anim:draw(self.spriteSheet, self.hurtBox.body:getX() - 60, self.hurtBox.body:getY() - 90, 0, 2.5, 2.5)
+    self.anim:draw(self.spriteSheet, self.hurtBox.body:getX() - 96, self.hurtBox.body:getY() - 120, 0, 2.5, 2.5)
 end
 
 return playerClass
