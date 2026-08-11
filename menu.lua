@@ -3,13 +3,21 @@ local menu = {}
 local button = require("button")
 
 function menu.load()
+    menu.sprites = {
+        play = love.graphics.newImage("sprites/buttons/play.png"),
+        settings = love.graphics.newImage("sprites/buttons/settings.png"),
+        --pause = love.graphics.newImage("sprites/buttons/pause.png"),
+        exit = love.graphics.newImage("sprites/buttons/exit.png"),
+        fullscreen = love.graphics.newImage("sprites/buttons/fullscreen.png")
+
+    }
+
     local windowWidth = love.graphics.getWidth()
     local windowHeight = love.graphics.getHeight()
     
     menu.main = {
-        start = button.new("Play", windowWidth / 2 - 60, windowHeight / 4, 110, 50, function(self) GameStates.play = true self.hide = true end),
-        pause = button.new("Pause", 10, 10, 40, 20, function() GameStates.pause = not GameStates.pause end),
-        settings = button.new("Settings", 60, 10, 50, 20, function() 
+        start = button.new(windowWidth / 2 - 60, windowHeight / 4, menu.sprites.play, function(self) GameStates.play = true self.hide = true end),
+        settings = button.new(60, 10, menu.sprites.settings, function() 
                 GameStates.settings = not GameStates.settings 
                 GameStates.pause = not GameStates.pause 
                 
@@ -21,8 +29,8 @@ function menu.load()
             end)
     }
     menu.settings = {
-        exit = button.new("Exit", 10, 10, 40, 20, love.event.quit),
-        toggleFullscreen = button.new("Toggle Fullscreen", 10, 40, 100, 20, function()love.window.setFullscreen(not love.window.getFullscreen()) end)
+        exit = button.new(windowWidth / 2, windowHeight / 2, menu.sprites.exit, love.event.quit),
+        toggleFullscreen = button.new(windowWidth / 2, windowHeight / 2 - 94, menu.sprites.fullscreen, function()love.window.setFullscreen(not love.window.getFullscreen()) end)
     }
 
     menu.selectedMenu = menu.main
@@ -42,6 +50,12 @@ end
 function menu.mousepressed(x, y, mButton)
     if selectedButton and mButton == 1 and selectedButton:checkPressed() then
         selectedButton.func(selectedButton)
+    end
+end
+
+function menu.keypressed(key)
+    if key == "escape" then
+        menu.main.settings.func(menu.main.settings)
     end
 end
 

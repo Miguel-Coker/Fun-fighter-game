@@ -160,7 +160,7 @@ function playerClass:AIMoveSys(x)
         self:dash()
     end
 
-    if dist <= 100 and not (self.attackCooldown <= 0.4) then
+    if dist <= 180 and not (self.attackCooldown <= 0.4) then
         self.blocking = true
         self.moving = false
     else

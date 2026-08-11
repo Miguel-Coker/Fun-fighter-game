@@ -2,8 +2,7 @@
 ---@field x number
 ---@field y number
 ---@field text string
----@field width number
----@field height number
+---@field sprite userdata
 ---@field baseWidth number
 ---@field baseHeight number
 ---@field colour table
@@ -19,17 +18,15 @@ button.__index = button
 ---@param height number
 ---@param func function
 ---@return Button
-function button.new(text, x, y, width, height, func)
+function button.new(x, y, sprite, func)
     local instance = setmetatable({}, button)
     instance.x = x
     instance.y = y
-    instance.text = text
-    instance.width = width
-    instance.height = height
-    instance.baseWidth = width
-    instance.baseHeight = height
+    instance.sprite = sprite
+    instance.baseWidth = sprite:getWidth()
+    instance.baseHeight = sprite:getHeight()
     instance.hide = false
-    instance.colour = {0.7, 0.7, 0.7}
+    instance.colour = {1, 1, 1}
     instance.func = func or function () end
     instance.hide = false
     return instance
@@ -41,14 +38,14 @@ function button:checkPressed()
         if love.mouse.getY() >= self.y and love.mouse.getY() <= self.y + self.baseHeight then
             --[[self.width = self.baseWidth * 0.9
             self.height = self.baseHeight * 0.9]]
-            self.colour = {0.6, 0.6, 0.6}
+            self.colour = {0.7, 0.7, 0.7}
             return true
         end
     end
 
     --[[self.width = self.baseWidth
     self.height = self.baseHeight]]
-    self.colour = {0.7, 0.7, 0.7}
+    self.colour = {1, 1, 1}
     return false
 end
 
@@ -58,9 +55,7 @@ function button:draw()
     end
 
     love.graphics.setColor(unpack(self.colour))
-    love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
-    love.graphics.setColor(0, 0, 0)
-    love.graphics.print(self.text, self.x, self.y)
+    love.graphics.draw(self.sprite, self.x, self.y)
     love.graphics.setColor(1, 1, 1)
 end
 

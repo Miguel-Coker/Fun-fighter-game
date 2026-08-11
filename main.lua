@@ -92,12 +92,10 @@ function love.load()
 end
 
 function love.keypressed(key)
+    menu.keypressed(key)
+
     if key == "p" then
         GameStates.pause = not GameStates.pause
-    end
-
-    if key == "escape" then
-        menu.main.settings.func()
     end
 
     if key == "h" then
