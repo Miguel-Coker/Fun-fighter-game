@@ -208,7 +208,7 @@ function playerClass:draw()
         love.graphics.polygon("line", self.hitBox.body:getWorldPoints(self.hitBox.shape:getPoints()))
     end
 
-    self.anim:draw(self.spriteSheet, self.hurtBox.body:getX() - 60, self.hurtBox.body:getY() - 90, 0, 1.5, 1.5)
+    self.anim:draw(self.spriteSheet, self.hurtBox.body:getX() - 60, self.hurtBox.body:getY() - 90, 0, 2.5, 2.5)
 end
 
 return playerClass

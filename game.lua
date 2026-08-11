@@ -66,10 +66,9 @@ function game.update(dt)
         game.camera:zoomLerp(1, dt)
     end
     cameraOffsetX = (love.graphics.getWidth() / 2 - 20)
-    cameraOffsetY = love.graphics.getHeight()
+    cameraOffsetY = love.graphics.getHeight() / 2.3
 
     game.camera:attach(player.player.hurtBox.body:getX() - cameraOffsetX, player.player.hurtBox.body:getY() - cameraOffsetY, game.cameraModes.FOLLOW, dt)
-    game.camera:clamp(0, love.graphics.getWidth() / 2, 0, 800)
 end
 
 function game.draw()

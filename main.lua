@@ -66,7 +66,7 @@ function love.load()
     game.load()
 
     Floor = {}
-    Floor.body = love.physics.newBody(World, 1000, 500, "static")
+    Floor.body = love.physics.newBody(World, 1000, love.graphics.getHeight() - 350, "static")
     Floor.shape = love.physics.newRectangleShape(2000, 100)
     Floor.fixture = love.physics.newFixture(Floor.body, Floor.shape)
     Floor.fixture:setUserData("floor")
