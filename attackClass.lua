@@ -24,7 +24,9 @@ end
 ---@field damage number
 ---@field speed number
 ---@field anim userdata
----@field position table
+---@field position {x: number, y: number}
+---@field sprite userdata
+---@field lifeTime number
 mod.rangedAttack = {}
 mod.rangedAttack.__index = mod.rangedAttack
 
@@ -32,14 +34,19 @@ mod.rangedAttack.__index = mod.rangedAttack
 ---@param anim userdata
 ---@param speed number
 ---@return Ranged
-function mod.rangedAttack.new(damage, anim, speed)
-    ---@type Ranged
+function mod.rangedAttack.new(pos, damage, anim, speed, sprite)
     local instance = setmetatable({}, mod.rangedAttack)
     instance.damage = damage
     instance.anim = anim
     instance.speed = speed
-    instance.position = {x = 0, y = 0}
+    instance.sprite = sprite
+    instance.lifeTime = 5
+    instance.position = {x = pos.x, y = pos.y}
     return instance
+end
+
+function mod.rangedAttack:draw()
+    love.graphics.draw(self.sprite, self.position.x, self.position.y)
 end
 
 return mod

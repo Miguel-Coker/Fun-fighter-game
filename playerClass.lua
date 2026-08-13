@@ -21,11 +21,16 @@ local attackClass = require("attackClass")
 ---@field isAI boolean
 ---@field attack table
 ---@field attacks table
+---@field rangedAttacks table
 ---@field hurtBox table
+---@field rangedAttack Ranged
 ---@field hitBox table
 ---@field vx number
 ---@field vy number
 ---@field showCollisionBoxes boolean
+---@field baseRangedAttackCooldown number
+---@field rangedAttackCooldown number
+---@field rangedWeapons Ranged[]
 local playerClass = {}
 playerClass.__index = playerClass
 
@@ -36,6 +41,8 @@ playerClass.attacksEnum = {
 }
 
 local JUMP_POWER_SCALE = 10
+
+local fireball = love.graphics.newImage("sprites/fireball.png")
 
 ---@param name string
 ---@param spriteSheet table
@@ -70,7 +77,15 @@ function playerClass.new(name, spriteSheet, isAI, pos)
     player.anims.blockAnim = anim.newAnimation(grid('7-7', '1-1'), 0.15)
     player.anims.punchAnim = anim.newAnimation(grid('4-8', '2-2'), 0.15)
 
+    ---@type Melee
     player.attack = nil
+
+    ---@type Ranged
+    player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.blockAnim, 400, fireball)
+    player.rangedAttackCooldown = 0
+    player.baseRangedAttackCooldown = 5
+    player.rangedWeapons = {}
+
     player.attacks = {
         attackClass.meleeAttack.new(20, player.anims.kickAnim),
         attackClass.meleeAttack.new(20, player.anims.punchAnim)
@@ -97,29 +112,6 @@ function playerClass.new(name, spriteSheet, isAI, pos)
 
     player.showCollisionBoxes = false
     return player
-end
-
-function playerClass:update(dt)
-    self.dashCooldown = self.dashCooldown - dt
-
-    local _, vy = self.hurtBox.body:getLinearVelocity()
-
-    if not self.moving then
-        self.vx = 0
-    end
-
-    if self.dashing then
-        self.dashTime = self.dashTime - dt
-    end
-
-    if self.dashTime <= 0 then
-        self.dashing = false
-    end
-
-    self.hurtBox.body:setLinearVelocity(self.vx, vy)
-    self.hitBox.body:setLinearVelocity(0, 0)
-    self.hitBox.body:setY(self.hurtBox.body:getY())
-    self.hitBox.body:setX(self.hurtBox.body:getX())
 end
 
 function playerClass:dash()
@@ -156,7 +148,7 @@ function playerClass:AIMoveSys(x)
     local dist = toPositive(dx)
     local vx = dx / dist * self.speed
 
-    if dist > 275 then
+    if dist > 300 then
         self:dash()
     end
 
@@ -186,6 +178,34 @@ function playerClass:startAttack(category)
     end
 end
 
+function playerClass:startRangedAttack()
+    self.anim = self.rangedAttack.anim
+    self.attacking = true
+    self.attackCooldown = self.baseAttackCooldown
+    
+    local speed = 0
+    if self.anim.direction == "left" then
+        speed = -self.rangedAttack.speed
+    else
+        speed = self.rangedAttack.speed
+    end
+
+    local weapon = attackClass.rangedAttack.new(
+        {x = self.hurtBox.body:getX(), y = self.hurtBox.body:getY()}, 
+        self.rangedAttack.damage, 
+        self.rangedAttack.anim,
+        speed,
+        self.rangedAttack.sprite
+    )
+    table.insert(self.rangedWeapons, weapon)
+end
+
+---@param index integer
+function playerClass:endRangedAttack(index)
+    self.attacking = false
+    table.remove(self.rangedWeapons, index)
+end
+
 function playerClass:endAttack()
     self.hitBox.fixture:setCategory(Categories.NONE)
 
@@ -203,9 +223,46 @@ function playerClass:lookTowards(x)
     end
 end
 
+function playerClass:update(dt)
+    self.dashCooldown = self.dashCooldown - dt
+
+    local _, vy = self.hurtBox.body:getLinearVelocity()
+
+    if not self.moving then
+        self.vx = 0
+    end
+
+    if self.dashing then
+        self.dashTime = self.dashTime - dt
+    end
+
+    if self.dashTime <= 0 then
+        self.dashing = false
+    end
+
+    for i, r in ipairs(self.rangedWeapons) do
+        r.lifeTime = r.lifeTime - dt
+        r.position.x = r.position.x + r.speed * dt
+
+        if r.lifeTime <= 0 then
+            table.remove(self.rangedWeapons, i)
+            break
+        end
+    end
+
+    self.hurtBox.body:setLinearVelocity(self.vx, vy)
+    self.hitBox.body:setLinearVelocity(0, 0)
+    self.hitBox.body:setY(self.hurtBox.body:getY())
+    self.hitBox.body:setX(self.hurtBox.body:getX())
+end
+
 function playerClass:draw()
     if self.showCollisionBoxes then
         love.graphics.polygon("line", self.hitBox.body:getWorldPoints(self.hitBox.shape:getPoints()))
+    end
+
+    for _, r in ipairs(self.rangedWeapons) do
+        r:draw()
     end
 
     self.anim:draw(self.spriteSheet, self.hurtBox.body:getX() - 96, self.hurtBox.body:getY() - 120, 0, 2.5, 2.5)

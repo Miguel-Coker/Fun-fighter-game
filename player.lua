@@ -84,6 +84,10 @@ function playerFile.keypressed(key)
         player:startAttack(Categories.PLAYER_HIT_BOX)
     end
 
+    if key == "i" and not player.blocking and player.rangedAttackCooldown <= 0 then
+        player:startRangedAttack()
+    end
+
     --[[if key == "j" and not player.blocking then
         player.attack = player.attacks[playerClass.attacksEnum.punch]
     end]]
