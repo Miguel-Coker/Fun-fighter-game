@@ -11,11 +11,8 @@
 local button = {}
 button.__index = button
 
----@param text string
 ---@param x number
 ---@param y number
----@param width number
----@param height number
 ---@param func function
 ---@return Button
 function button.new(x, y, sprite, func)

@@ -46,7 +46,7 @@ function mod.rangedAttack.new(pos, damage, anim, speed, sprite)
 end
 
 function mod.rangedAttack:draw()
-    love.graphics.draw(self.sprite, self.position.x, self.position.y)
+    self.anim:draw(self.sprite, self.position.x, self.position.y)
 end
 
 return mod
