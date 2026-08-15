@@ -71,17 +71,19 @@ function playerClass.new(name, spriteSheet, isAI, pos)
     player.canJump = true
 
     local grid = anim.newGrid(64, 105, player.spriteSheet:getWidth(), player.spriteSheet:getHeight())
+    local fireballGrid = anim.newGrid(64, 64, fireball:getWidth(), fireball:getHeight())
 
     player.anims.idleAnim = anim.newAnimation(grid('5-5', '1-1'), 0.15)
     player.anims.kickAnim = anim.newAnimation(grid('1-4', '3-3'), 0.15)
     player.anims.blockAnim = anim.newAnimation(grid('7-7', '1-1'), 0.15)
     player.anims.punchAnim = anim.newAnimation(grid('4-8', '2-2'), 0.15)
+    player.anims.fireball = anim.newAnimation(fireballGrid('1-2', '1-2'), 0.15)
 
     ---@type Melee
     player.attack = nil
 
     ---@type Ranged
-    player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.blockAnim, 400, fireball)
+    player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.fireball, 400, fireball)
     player.rangedAttackCooldown = 0
     player.baseRangedAttackCooldown = 5
     player.rangedWeapons = {}
@@ -179,9 +181,7 @@ function playerClass:startAttack(category)
 end
 
 function playerClass:startRangedAttack()
-    self.anim = self.rangedAttack.anim
-    self.attacking = true
-    self.attackCooldown = self.baseAttackCooldown
+    self.rangedAttackCooldown = self.baseRangedAttackCooldown
     
     local speed = 0
     if self.anim.direction == "left" then
@@ -191,19 +191,18 @@ function playerClass:startRangedAttack()
     end
 
     local weapon = attackClass.rangedAttack.new(
-        {x = self.hurtBox.body:getX(), y = self.hurtBox.body:getY()}, 
+        {x = self.hurtBox.body:getX(), y = self.hurtBox.body:getY() - 70}, 
         self.rangedAttack.damage, 
         self.rangedAttack.anim,
         speed,
         self.rangedAttack.sprite
     )
+    weapon.anim.direction = self.anim.direction
     table.insert(self.rangedWeapons, weapon)
 end
 
----@param index integer
-function playerClass:endRangedAttack(index)
+function playerClass:endRangedAttack()
     self.attacking = false
-    table.remove(self.rangedWeapons, index)
 end
 
 function playerClass:endAttack()
@@ -225,6 +224,7 @@ end
 
 function playerClass:update(dt)
     self.dashCooldown = self.dashCooldown - dt
+    self.rangedAttackCooldown = self.rangedAttackCooldown - dt
 
     local _, vy = self.hurtBox.body:getLinearVelocity()
 
@@ -243,6 +243,7 @@ function playerClass:update(dt)
     for i, r in ipairs(self.rangedWeapons) do
         r.lifeTime = r.lifeTime - dt
         r.position.x = r.position.x + r.speed * dt
+        r.anim:update(dt)
 
         if r.lifeTime <= 0 then
             table.remove(self.rangedWeapons, i)
