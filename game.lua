@@ -90,7 +90,7 @@ function game.draw()
     --love.graphics.polygon("fill", LeftWall.body:getWorldPoints(LeftWall.shape:getPoints()))
     --love.graphics.polygon("fill", RightWall.body:getWorldPoints(RightWall.shape:getPoints()))
     --love.graphics.setColor(1, 1, 1)
-    love.graphics.draw(background, 0, 50, 0, love.graphics.getWidth() / background:getWidth(), love.graphics.getHeight() / background:getHeight())
+    love.graphics.draw(background, 0, 0, 0, love.graphics.getWidth() / background:getWidth(), love.graphics.getHeight() / background:getHeight())
 
     player.draw(Camera)
     enemyFile.draw(Camera)
