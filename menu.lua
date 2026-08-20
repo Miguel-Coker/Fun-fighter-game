@@ -17,7 +17,7 @@ function menu.load()
     
     menu.main = {
         start = button.new(windowWidth / 2 - 60, windowHeight / 4, menu.sprites.play, function(self) GameStates.play = true self.hide = true end),
-        settings = button.new(60, 10, menu.sprites.settings, function() 
+        settings = button.new(40, 0, menu.sprites.settings, function() 
                 GameStates.settings = not GameStates.settings 
                 GameStates.pause = not GameStates.pause 
                 

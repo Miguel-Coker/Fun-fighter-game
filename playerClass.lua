@@ -30,6 +30,7 @@ local attackClass = require("attackClass")
 ---@field showCollisionBoxes boolean
 ---@field baseRangedAttackCooldown number
 ---@field rangedAttackCooldown number
+---@field fireballshader userdata
 ---@field rangedWeapons Ranged[]
 local playerClass = {}
 playerClass.__index = playerClass
@@ -83,7 +84,7 @@ function playerClass.new(name, spriteSheet, isAI, pos)
     player.attack = nil
 
     ---@type Ranged
-    player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.fireball, 400, fireball)
+    player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.fireball, 500, fireball)
     player.rangedAttackCooldown = 0
     player.baseRangedAttackCooldown = 5
     player.rangedWeapons = {}
@@ -113,6 +114,9 @@ function playerClass.new(name, spriteSheet, isAI, pos)
     player.hitBox.fixture:setUserData(name.."_hitbox")
 
     player.showCollisionBoxes = false
+    player.fireballshader = love.graphics.newShader("shaders/fireball.glsl")
+    player.fireballshader:send("light_colour", {1, 1, 1})
+    player.fireballshader:send("ambient_light", 0)
     return player
 end
 
@@ -239,12 +243,12 @@ function playerClass:update(dt)
     if self.dashTime <= 0 then
         self.dashing = false
     end
-
+    
     for i, r in ipairs(self.rangedWeapons) do
         r.lifeTime = r.lifeTime - dt
         r.position.x = r.position.x + r.speed * dt
         r.anim:update(dt)
-
+        self.fireballshader:send("fireball_pos", {Camera:worldX(r.position.x), Camera:worldY(r.position.y)})
         if r.lifeTime <= 0 then
             table.remove(self.rangedWeapons, i)
             break
@@ -261,8 +265,9 @@ function playerClass:draw()
     if self.showCollisionBoxes then
         love.graphics.polygon("line", self.hitBox.body:getWorldPoints(self.hitBox.shape:getPoints()))
     end
-
+    
     for _, r in ipairs(self.rangedWeapons) do
+        love.graphics.setShader(self.fireballshader)
         r:draw()
     end
 

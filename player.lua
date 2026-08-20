@@ -28,7 +28,6 @@ function playerFile.load()
     player.hitBox.fixture:setCategory(Categories.NONE)
     player.hitBox.fixture:setMask(Categories.PLAYER_HURT_BOX)
 
-    player.healthbar = love.graphics.newImage("sprites/healthbar.png")
     playerFile.player = player
 end
 
@@ -105,6 +104,7 @@ end
 function playerFile.draw(cam)
     love.graphics.setColor(0.6, 0.6, 1)
     player:draw()
+    love.graphics.setColor(1, 1, 1)
 end
 
 return playerFile
