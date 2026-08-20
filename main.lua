@@ -2,6 +2,7 @@ local player = require("player")
 local enemyFile = require("enemy")
 local menu = require("menu")
 local game = require("game")
+local systems = require("systems")
 
 World = love.physics.newWorld(0, 300)
 
@@ -21,20 +22,16 @@ local function beginContact(bodyA, bodyB)
         player.player.canJump = true
     end
     
+    if (userA == "player_fireball" and userB == "enemy_hurtbox" or userB == "player_fireball" and userA == "enemy_hurtbox") then
+        enemy.health = enemy.health - player.player.rangedAttack.damage
+    end
+
     if (userA == "player_hitbox" and userB == "enemy_hurtbox" or userA == "enemy_hurtbox" and userB == "player_hitbox") then
-        if enemy.blocking then
-            enemy.health = enemy.health - player.player.attack.damage / 2
-        else
-            enemy.health = enemy.health - player.player.attack.damage
-        end
+        enemy:takeDamage(player.player.attack.damage)
     end
 
     if (userA == "enemy_hitbox" and userB == "player_hurtbox" or userA == "player_hurtbox" and userB == "enemy_hitbox") then
-        if player.player.blocking then
-            player.player.health = player.player.health - enemy.attack.damage / 2
-        else
-            player.player.health = player.player.health - enemy.attack.damage
-        end
+        player.player:takeDamage(enemy.attack.damage)
     end
 end
 

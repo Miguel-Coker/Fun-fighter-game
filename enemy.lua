@@ -11,9 +11,8 @@ local player = nil
 ---@param plr Player
 function enemyFile.load(plr)
     local spritesheet = love.graphics.newImage("player.png")
-    enemy = playerClass.new("enemy", spritesheet, true, {x = 700, y = 400})
+    enemy = playerClass.new("enemy", spritesheet, true, {x = 700, y = 400}, Categories.PLAYER_HURT_BOX, {1, 0.6, 0.6})
     player = plr
-
     if player == nil then
         error("Failed to load player")
     end
@@ -64,9 +63,7 @@ function enemyFile.update(dt)
     enemy.anim:update(dt)
 end
 
----@param cam Camera
-function enemyFile.draw(cam)
-    love.graphics.setColor(1, 0.6, 0.6)
+function enemyFile.draw()
     enemy:draw()
 end
 

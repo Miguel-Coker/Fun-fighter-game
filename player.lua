@@ -10,7 +10,7 @@ playerFile.player = nil
 local player = nil
 
 function playerFile.load()
-    player = playerClass.new("player", love.graphics.newImage("player.png"), false, {x = 100, y = 400})
+    player = playerClass.new("player", love.graphics.newImage("player.png"), false, {x = 100, y = 400}, Categories.PLAYER_HIT_BOX, {0.6, 0.6, 1})
 
     if player == nil then
         error("Failed to create player")
@@ -100,11 +100,8 @@ function playerFile.keypressed(key)
     end
 end
 
----@param cam Camera
-function playerFile.draw(cam)
-    love.graphics.setColor(0.6, 0.6, 1)
+function playerFile.draw()
     player:draw()
-    love.graphics.setColor(1, 1, 1)
 end
 
 return playerFile

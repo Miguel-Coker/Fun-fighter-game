@@ -71,4 +71,16 @@ function mod.tween.sine(start, amplitude, angle)
     return start + amplitude * math.sin(angle)
 end
 
+---@param min number
+---@param max number
+---@param value number
+---@return boolean
+function mod.between(min, max, value)
+    if value <= max and value >= min then
+        return true
+    end
+
+    return false
+end
+
 return mod

@@ -24,8 +24,10 @@ end
 ---@field damage number
 ---@field speed number
 ---@field anim userdata
----@field position {x: number, y: number}
----@field sprite userdata
+---@field sprite love.Image
+---@field body love.Body
+---@field fixture love.Fixture
+---@field shape love.PolygonShape
 ---@field lifeTime number
 mod.rangedAttack = {}
 mod.rangedAttack.__index = mod.rangedAttack
@@ -34,19 +36,24 @@ mod.rangedAttack.__index = mod.rangedAttack
 ---@param anim userdata
 ---@param speed number
 ---@return Ranged
-function mod.rangedAttack.new(pos, damage, anim, speed, sprite)
+function mod.rangedAttack.new(pos, damage, anim, speed, sprite, name, cat)
     local instance = setmetatable({}, mod.rangedAttack)
     instance.damage = damage
     instance.anim = anim
     instance.speed = speed
     instance.sprite = sprite
+    instance.body = love.physics.newBody(World, pos.x, pos.y, "dynamic")
+    instance.shape = love.physics.newRectangleShape(instance.sprite:getWidth(), instance.sprite:getHeight())
+    instance.fixture = love.physics.newFixture(instance.body, instance.shape)
+    instance.fixture:setUserData(name)
+    instance.fixture:setCategory(cat)
     instance.lifeTime = 5
-    instance.position = {x = pos.x, y = pos.y}
+    instance.fixture:setSensor(true)
     return instance
 end
 
 function mod.rangedAttack:draw()
-    self.anim:draw(self.sprite, self.position.x - 32, self.position.y - 32)
+    self.anim:draw(self.sprite, self.body:getX() - 32, self.body:getY() - 32)
 end
 
 return mod

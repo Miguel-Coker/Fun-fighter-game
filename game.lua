@@ -97,7 +97,7 @@ function game.draw()
     love.graphics.pop()
 
     -- Draw player health bar
-    local percentPlayer = player.player.health / 100
+    local percentPlayer = player.player.health / player.player.maxHealth
     love.graphics.draw(healthbar, 60, 65)
     love.graphics.setColor(1 - percentPlayer, percentPlayer, 0)
     love.graphics.rectangle("fill", 62, 66, percentPlayer * 120, 29)
@@ -107,7 +107,7 @@ function game.draw()
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(healthbar, love.graphics.getWidth() - 140, 65)
     love.graphics.setColor(1 - percent, percent, 0)
-    love.graphics.rectangle("fill", love.graphics.getWidth() - 140, 65, percent * 100, 29)
+    love.graphics.rectangle("fill", love.graphics.getWidth() - 138, 65, percent * 120, 29)
 end
 
 return game

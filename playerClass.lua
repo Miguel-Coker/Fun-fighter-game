@@ -30,8 +30,9 @@ local attackClass = require("attackClass")
 ---@field showCollisionBoxes boolean
 ---@field baseRangedAttackCooldown number
 ---@field rangedAttackCooldown number
----@field fireballshader userdata
+---@field fireballshader love.Shader
 ---@field rangedWeapons Ranged[]
+---@field colour number[4]
 local playerClass = {}
 playerClass.__index = playerClass
 
@@ -49,12 +50,12 @@ local fireball = love.graphics.newImage("sprites/fireball.png")
 ---@param spriteSheet table
 ---@param isAI boolean
 ---@return Player
-function playerClass.new(name, spriteSheet, isAI, pos)
+function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     local player = setmetatable({}, playerClass)
     player.name = name
     player.anims = {}
     player.spriteSheet = spriteSheet
-    player.speed = 100
+    player.speed = 120
     player.health = 100
     player.maxHealth = 100
     player.baseAttackCooldown = 0.8
@@ -66,6 +67,7 @@ function playerClass.new(name, spriteSheet, isAI, pos)
     player.dashTime = 0.2
     player.baseDashCooldown = 1
     player.dashCooldown = 0
+    player.colour = colour
 
     player.isAI = isAI
 
@@ -84,7 +86,7 @@ function playerClass.new(name, spriteSheet, isAI, pos)
     player.attack = nil
 
     ---@type Ranged
-    player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.fireball, 500, fireball)
+    player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.fireball, 700, fireball, name.."fireballbase", cat)
     player.rangedAttackCooldown = 0
     player.baseRangedAttackCooldown = 5
     player.rangedWeapons = {}
@@ -118,6 +120,15 @@ function playerClass.new(name, spriteSheet, isAI, pos)
     player.fireballshader:send("light_colour", {1, 1, 1})
     player.fireballshader:send("ambient_light", 0)
     return player
+end
+
+---@param damage  number
+function playerClass:takeDamage(damage)
+    if self.blocking then
+        self.health = self.health - damage / 2
+    else
+        self.health = self.health - damage
+    end
 end
 
 function playerClass:dash()
@@ -154,7 +165,9 @@ function playerClass:AIMoveSys(x)
     local dist = toPositive(dx)
     local vx = dx / dist * self.speed
 
-    if dist > 300 then
+    if dist > 325 and self.rangedAttackCooldown <= 0 then
+        self:startRangedAttack()
+    elseif dist > 300 then
         self:dash()
     end
 
@@ -195,11 +208,13 @@ function playerClass:startRangedAttack()
     end
 
     local weapon = attackClass.rangedAttack.new(
-        {x = self.hurtBox.body:getX(), y = self.hurtBox.body:getY() - 70}, 
+        {x = self.hurtBox.body:getX(), y = self.hurtBox.body:getY() - 50}, 
         self.rangedAttack.damage, 
         self.rangedAttack.anim,
         speed,
-        self.rangedAttack.sprite
+        self.rangedAttack.sprite,
+        self.name.."_fireball",
+        self.rangedAttack.fixture:getCategory()
     )
     weapon.anim.direction = self.anim.direction
     table.insert(self.rangedWeapons, weapon)
@@ -246,9 +261,9 @@ function playerClass:update(dt)
     
     for i, r in ipairs(self.rangedWeapons) do
         r.lifeTime = r.lifeTime - dt
-        r.position.x = r.position.x + r.speed * dt
+        r.body:setLinearVelocity(r.speed, 0)
         r.anim:update(dt)
-        self.fireballshader:send("fireball_pos", {Camera:worldX(r.position.x), Camera:worldY(r.position.y)})
+        self.fireballshader:send("fireball_pos", {Camera:worldX(r.body:getX()), Camera:worldY(r.body:getY())})
         if r.lifeTime <= 0 then
             table.remove(self.rangedWeapons, i)
             break
@@ -271,7 +286,9 @@ function playerClass:draw()
         r:draw()
     end
 
+    love.graphics.setColor(unpack(self.colour))
     self.anim:draw(self.spriteSheet, self.hurtBox.body:getX() - 96, self.hurtBox.body:getY() - 120, 0, 2.5, 2.5)
+    love.graphics.setColor(1, 1, 1)
 end
 
 return playerClass
