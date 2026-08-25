@@ -1,6 +1,7 @@
 local anim = require("libs.anim8")
 local attackClass = require("attackClass")
 local audio = require("audio")
+local sone = require("libs.sone")
 
 ---@class Player
 ---@field name string
@@ -34,6 +35,7 @@ local audio = require("audio")
 ---@field fireballshader love.Shader
 ---@field rangedWeapons Ranged[]
 ---@field colour number[4]
+---@field wantsToAttack boolean
 local playerClass = {}
 playerClass.__index = playerClass
 
@@ -70,6 +72,9 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.dashCooldown = 0
     player.colour = colour
 
+    -- For AI only
+    player.wantsToAttack = false
+
     player.isAI = isAI
 
     player.canJump = true
@@ -86,8 +91,9 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     ---@type Melee
     player.attack = nil
 
+    local fireballSound = sone.copy(audio.data.fireball)
     ---@type Ranged
-    player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.fireball, 600, fireball, name.."fireballbase", cat, audio.bank.fireball)
+    player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.fireball, 600, fireball, name.."fireballbase", cat, love.audio.newSource(fireballSound))
     player.rangedAttackCooldown = 5
     player.baseRangedAttackCooldown = 5
     player.rangedWeapons = {}
@@ -172,6 +178,10 @@ function playerClass:AIMoveSys(x)
         self:dash()
         if dist > 400 then
             self:startRangedAttack()
+        end
+    else
+        if dist > 300 then
+            self:dash()
         end
     end
 

@@ -31,6 +31,12 @@ function game.load()
     healthbar = love.graphics.newImage("sprites/healthbar.png")
 end
 
+---@param amplitude number
+function Camera:shake(amplitude)
+    self.x = self.x + Rng:random(1, amplitude)
+    self.y = self.y + Rng:random(1, amplitude)
+end
+
 ---@param mode CameraModes
 function Camera:attach(x, y, mode, dt)
     if mode == CameraModes.FIXED then
