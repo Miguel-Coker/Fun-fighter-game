@@ -165,9 +165,11 @@ local function parseIntervals(durations)
   return result, time
 end
 
+---@class Animation
 local Animationmt = { __index = Animation }
 local nop = function() end
 
+---@return Animation
 local function newAnimation(frames, durations, onLoop)
   local td = type(durations);
   if (td ~= 'number' or durations <= 0) and td ~= 'table' then

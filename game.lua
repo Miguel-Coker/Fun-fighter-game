@@ -1,5 +1,6 @@
 local player = require("player")
 local enemyFile = require("enemy")
+local audio = require("audio")
 
 local game = {}
 
@@ -20,6 +21,7 @@ local cameraOffsetY
 local background
 local healthbar
 function game.load()
+    audio.load()
     Camera.x = 0
     Camera.y = 0
     Camera.speed = 8

@@ -28,6 +28,7 @@ end
 ---@field body love.Body
 ---@field fixture love.Fixture
 ---@field shape love.PolygonShape
+---@field sound love.Source
 ---@field lifeTime number
 mod.rangedAttack = {}
 mod.rangedAttack.__index = mod.rangedAttack
@@ -36,12 +37,13 @@ mod.rangedAttack.__index = mod.rangedAttack
 ---@param anim userdata
 ---@param speed number
 ---@return Ranged
-function mod.rangedAttack.new(pos, damage, anim, speed, sprite, name, cat)
+function mod.rangedAttack.new(pos, damage, anim, speed, sprite, name, cat, sound)
     local instance = setmetatable({}, mod.rangedAttack)
     instance.damage = damage
     instance.anim = anim
     instance.speed = speed
     instance.sprite = sprite
+    instance.sound = sound
     instance.body = love.physics.newBody(World, pos.x, pos.y, "dynamic")
     instance.shape = love.physics.newRectangleShape(instance.sprite:getWidth(), instance.sprite:getHeight())
     instance.fixture = love.physics.newFixture(instance.body, instance.shape)

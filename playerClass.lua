@@ -1,5 +1,6 @@
 local anim = require("libs.anim8")
 local attackClass = require("attackClass")
+local audio = require("audio")
 
 ---@class Player
 ---@field name string
@@ -86,8 +87,8 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.attack = nil
 
     ---@type Ranged
-    player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.fireball, 700, fireball, name.."fireballbase", cat)
-    player.rangedAttackCooldown = 0
+    player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.fireball, 700, fireball, name.."fireballbase", cat, audio.bank.fireball)
+    player.rangedAttackCooldown = 5
     player.baseRangedAttackCooldown = 5
     player.rangedWeapons = {}
 
@@ -165,10 +166,13 @@ function playerClass:AIMoveSys(x)
     local dist = toPositive(dx)
     local vx = dx / dist * self.speed
 
-    if dist > 325 and self.rangedAttackCooldown <= 0 then
-        self:startRangedAttack()
-    elseif dist > 300 then
+    if self.rangedAttackCooldown <= 0 then
+        vx = vx * -1
+
         self:dash()
+        if dist > 400 then
+            self:startRangedAttack()
+        end
     end
 
     if dist <= 240 and not (self.attackCooldown <= 0.4) then
@@ -199,7 +203,8 @@ end
 
 function playerClass:startRangedAttack()
     self.rangedAttackCooldown = self.baseRangedAttackCooldown
-    
+    self.rangedAttack.sound:play()
+
     local speed = 0
     if self.anim.direction == "left" then
         speed = -self.rangedAttack.speed
