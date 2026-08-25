@@ -91,9 +91,8 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     ---@type Melee
     player.attack = nil
 
-    local fireballSound = sone.copy(audio.data.fireball)
     ---@type Ranged
-    player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.fireball, 600, fireball, name.."fireballbase", cat, love.audio.newSource(fireballSound))
+    player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.fireball, 600, fireball, name.."fireballbase", cat, love.audio.newSource(audio.data.fireball))
     player.rangedAttackCooldown = 5
     player.baseRangedAttackCooldown = 5
     player.rangedWeapons = {}
