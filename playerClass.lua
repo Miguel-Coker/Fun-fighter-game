@@ -87,7 +87,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.attack = nil
 
     ---@type Ranged
-    player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.fireball, 700, fireball, name.."fireballbase", cat, audio.bank.fireball)
+    player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.fireball, 600, fireball, name.."fireballbase", cat, audio.bank.fireball)
     player.rangedAttackCooldown = 5
     player.baseRangedAttackCooldown = 5
     player.rangedWeapons = {}
