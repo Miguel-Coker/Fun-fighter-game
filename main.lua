@@ -72,6 +72,7 @@ GameStates = {
     settings = false
 }
 
+---@diagnostic disable-next-line: duplicate-set-field
 function love.load()
     love.window.setFullscreen(true)
     love.graphics.setDefaultFilter("nearest", "nearest")
@@ -110,6 +111,7 @@ function love.load()
     enemyFile.load(player.player)
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function love.keypressed(key)
     menu.keypressed(key)
 
@@ -130,10 +132,12 @@ function love.keypressed(key)
     end
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function love.mousepressed(x, y, button)
     menu.mousepressed(x, y, button)
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function love.update(dt)
     attackCooldown = attackCooldown - dt
     menu.update(dt)
@@ -146,6 +150,7 @@ function love.update(dt)
     end
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function love.draw()
     if GameStates.play then
         game.draw()

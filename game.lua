@@ -100,8 +100,8 @@ function game.draw()
     --love.graphics.setColor(1, 1, 1)
     love.graphics.draw(background, 0, 0, 0, love.graphics.getWidth() / background:getWidth(), love.graphics.getHeight() / background:getHeight())
 
-    player.draw(Camera)
-    enemyFile.draw(Camera)
+    player.draw()
+    enemyFile.draw()
     love.graphics.pop()
 
     -- Draw player health bar

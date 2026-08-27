@@ -23,7 +23,7 @@ end
 ---@class Ranged
 ---@field damage number
 ---@field speed number
----@field anim userdata
+---@field anim Animation
 ---@field sprite love.Image
 ---@field body love.Body
 ---@field fixture love.Fixture
@@ -34,7 +34,7 @@ mod.rangedAttack = {}
 mod.rangedAttack.__index = mod.rangedAttack
 
 ---@param damage number
----@param anim userdata
+---@param anim Animation
 ---@param speed number
 ---@return Ranged
 function mod.rangedAttack.new(pos, damage, anim, speed, sprite, name, cat, sound)

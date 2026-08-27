@@ -125,9 +125,15 @@ local function newGrid(frameWidth, frameHeight, imageWidth, imageHeight, left, t
   )
   return grid
 end
-
 -----------------------------------------------------------
-
+---@class Animation
+---@field frames table
+---@field durations number
+---@field onLoop boolean
+---@field totalDuration number
+---@field intervals any
+---@field direction string
+---@
 local Animation = {}
 
 local function cloneArray(arr)
@@ -165,7 +171,6 @@ local function parseIntervals(durations)
   return result, time
 end
 
----@class Animation
 local Animationmt = { __index = Animation }
 local nop = function() end
 

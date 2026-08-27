@@ -34,7 +34,7 @@ local sone = require("libs.sone")
 ---@field rangedAttackCooldown number
 ---@field fireballshader love.Shader
 ---@field rangedWeapons Ranged[]
----@field colour number[4]
+---@field colour[number, number, number, number?]
 ---@field wantsToAttack boolean
 ---@field reactionTime number
 ---@field mood AIMood
