@@ -142,10 +142,7 @@ end
 
 ---@param damage  number
 function playerClass:takeDamage(damage)
-    if self.attacking then
-        self.health = self.health - damage * 1.5
-
-    elseif self.blocking then
+    if self.blocking then
         self.health = self.health - damage / 3
         
     else
@@ -217,12 +214,11 @@ function playerClass:AIMoveSys(plr, dt)
             if self.reactionTime > 0 then
                 self.blocking = true
             else
+                self.blocking = false
                 self.attack = self.attacks[playerClass.attacksEnum.kick]
                 self.wantsToAttack = true
-                self.reactionTime = 0.1
+                self.reactionTime = 0.08
             end
-        else
-            self.blocking = false
         end
 
     elseif self.mood == playerClass.AIMood.AGGRESIVE then
