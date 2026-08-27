@@ -45,7 +45,7 @@ function mod.rangedAttack.new(pos, damage, anim, speed, sprite, name, cat, sound
     instance.sprite = sprite
     instance.sound = sound
     instance.body = love.physics.newBody(World, pos.x, pos.y, "dynamic")
-    instance.shape = love.physics.newRectangleShape(instance.sprite:getWidth(), instance.sprite:getHeight())
+    instance.shape = love.physics.newRectangleShape(instance.sprite:getWidth() / 2, instance.sprite:getHeight() / 2)
     instance.fixture = love.physics.newFixture(instance.body, instance.shape)
     instance.fixture:setUserData(name)
     instance.fixture:setCategory(cat)

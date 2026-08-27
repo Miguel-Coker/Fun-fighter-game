@@ -23,6 +23,7 @@ function enemyFile.load(plr)
     enemy.hitBox.fixture:setMask(Categories.PLAYER_HIT_BOX)
 
     enemy.baseAttackCooldown = 2
+    enemy.rangedAttack.damage = enemy.rangedAttack.damage * 2
 
     --[[enemy.hitBox = {}
     enemy.hitBox.body = love.physics.newBody(World, 500, 400, "dynamic")
@@ -44,7 +45,7 @@ function enemyFile.update(dt)
         enemy.anim = enemy.anims.blockAnim
     end
 
-    if enemy.attackCooldown <= 0 then
+    if enemy.wantsToAttack and enemy.attackCooldown <= 0 and enemy.attack then
         enemy:startAttack(Categories.PLAYER_HURT_BOX)
     end
 

@@ -63,7 +63,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.maxHealth = 100
     player.baseAttackCooldown = 0.8
     player.attackCooldown = 0
-    player.jumpPower = -100 * JUMP_POWER_SCALE
+    player.jumpPower = -200 * JUMP_POWER_SCALE
     player.blocking = false
     player.attacking = false
     player.dashing = false
@@ -88,9 +88,6 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.anims.punchAnim = anim.newAnimation(grid('4-8', '2-2'), 0.15)
     player.anims.fireball = anim.newAnimation(fireballGrid('1-2', '1-2'), 0.15)
 
-    ---@type Melee
-    player.attack = nil
-
     ---@type Ranged
     player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.fireball, 600, fireball, name.."fireballbase", cat, love.audio.newSource(audio.data.fireball))
     player.rangedAttackCooldown = 5
@@ -101,6 +98,9 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
         attackClass.meleeAttack.new(20, player.anims.kickAnim),
         attackClass.meleeAttack.new(20, player.anims.punchAnim)
     }
+
+    ---@type Melee
+    player.attack = player.attacks[playerClass.attacksEnum.kick]
 
     player.anim = player.anims.idleAnim
 
@@ -120,6 +120,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.hitBox.fixture = love.physics.newFixture(player.hitBox.body, player.hitBox.shape)
     player.hitBox.body:setFixedRotation(true)
     player.hitBox.fixture:setUserData(name.."_hitbox")
+    player.hitBox.fixture:setCategory(Categories.NONE)
 
     player.showCollisionBoxes = false
     player.fireballshader = love.graphics.newShader("shaders/fireball.glsl")
@@ -130,31 +131,39 @@ end
 
 ---@param damage  number
 function playerClass:takeDamage(damage)
-    if self.blocking then
+    if self.attacking then
+        self.health = self.health - damage * 1.5
+
+    elseif self.blocking then
         self.health = self.health - damage / 2
+        
     else
         self.health = self.health - damage
     end
 end
 
-function playerClass:dash()
-    if self.dashCooldown > 0 then
+function playerClass:jump()
+    if self.canJump == false then
         return
     end
 
-    local vx = self.hurtBox.body:getLinearVelocity()
+    self.hurtBox.body:applyLinearImpulse(0, self.jumpPower)
+end
 
-    if vx < 0 then
-        vx = -500
-    elseif vx > 0 then
-        vx = 500
+function playerClass:dash()
+    if self.dashCooldown > 0 or self.dashing then
+        return
     end
+
     self.dashing = true
     self.dashTime = 0.2
     self.moving = true
     self.dashCooldown = self.baseDashCooldown
-    
-    self.vx = vx
+    if self.vx < 0 then
+        self.vx = -500
+    elseif self.vx > 0 then
+        self.vx = 500
+    end
 end
 
 local function toPositive(x)
@@ -193,6 +202,7 @@ function playerClass:AIMoveSys(x)
         if self.attack == nil then
             self.attack = self.attacks[Rng:random(1, #playerClass.attacksEnum)]
         end
+        self.wantsToAttack = true
     end
 
     if not self.dashing then
@@ -222,7 +232,7 @@ function playerClass:startRangedAttack()
     end
 
     local weapon = attackClass.rangedAttack.new(
-        {x = self.hurtBox.body:getX(), y = self.hurtBox.body:getY() - 50}, 
+        {x = self.hurtBox.body:getX(), y = self.hurtBox.body:getY() - 20}, 
         self.rangedAttack.damage, 
         self.rangedAttack.anim,
         speed,
@@ -271,6 +281,7 @@ function playerClass:update(dt)
 
     if self.dashTime <= 0 then
         self.dashing = false
+        self.moving = false
     end
     
     for i, r in ipairs(self.rangedWeapons) do
@@ -297,6 +308,7 @@ function playerClass:draw()
     
     for _, r in ipairs(self.rangedWeapons) do
         love.graphics.setShader(self.fireballshader)
+        love.graphics.polygon("line", r.body:getWorldPoints(r.shape:getPoints()))
         r:draw()
     end
 

@@ -4,7 +4,7 @@ local menu = require("menu")
 local game = require("game")
 local systems = require("systems")
 
-World = love.physics.newWorld(0, 300)
+World = love.physics.newWorld(0, 400)
 
 ---@enum Collision_categories
 Categories = {
@@ -18,12 +18,18 @@ local function beginContact(bodyA, bodyB)
     local userA = bodyA:getUserData()
     local userB = bodyB:getUserData()
 
+    print(userA, userB)
+
     if userA == "player_hurtbox" and userB == "floor" or userA == "floor" and userB == "player_hurtbox" then
         player.player.canJump = true
     end
-    
+
     if (userA == "player_fireball" and userB == "enemy_hurtbox" or userB == "player_fireball" and userA == "enemy_hurtbox") then
         enemy.health = enemy.health - player.player.rangedAttack.damage
+    end
+
+    if (userA == "player_hurtbox" and userB == "enemy_fireball" or userA == "enemy_fireball" and userB == "player_hurtbox") then
+        player.player.health = player.player.health - enemy.rangedAttack.damage
     end
 
     if (userA == "player_hitbox" and userB == "enemy_hurtbox" or userA == "enemy_hurtbox" and userB == "player_hitbox") then

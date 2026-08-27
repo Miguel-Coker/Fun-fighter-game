@@ -91,8 +91,8 @@ function playerFile.keypressed(key)
         player.attack = player.attacks[playerClass.attacksEnum.punch]
     end]]
 
-    if (key == "w" or key == "up") and player.canJump then
-        player.hurtBox.body:applyLinearImpulse(0, -1000)
+    if (key == "w" or key == "up") then
+        player:jump()
     end
 
     if (key == "q" or key == "lshift") then
