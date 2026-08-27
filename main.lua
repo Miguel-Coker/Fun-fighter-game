@@ -24,6 +24,10 @@ local function beginContact(bodyA, bodyB)
         player.player.canJump = true
     end
 
+    if (userA == "enemy_hurtbox" and userB == "floor" or userA == "floor" and userB == "enemy_hurtbox") then
+        enemy.canJump = true
+    end
+
     if (userA == "player_fireball" and userB == "enemy_hurtbox" or userB == "player_fireball" and userA == "enemy_hurtbox") then
         enemy.health = enemy.health - player.player.rangedAttack.damage
     end
@@ -47,6 +51,10 @@ local function endContact(bodyA, bodyB)
 
     if userA == "player_hurtbox" and userB == "floor" or userA == "floor" and userB == "player_hurtbox" then
         player.player.canJump = false
+    end
+
+    if (userA == "enemy_hurtbox" and userB == "floor" or userA == "floor" and userB == "enemy_hurtbox") then
+        enemy.canJump = false
     end
 end
 
@@ -107,6 +115,11 @@ function love.keypressed(key)
     end 
 
     player.keypressed(key)
+
+    if key == "i" and player.player.rangedAttackCooldown == 5 then
+        enemy:dash()
+        enemy:jump()
+    end
 end
 
 function love.mousepressed(x, y, button)
