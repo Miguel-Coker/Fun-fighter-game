@@ -58,8 +58,12 @@ function enemyFile.update(dt)
         enemy.anims.kickAnim:gotoFrame(1)
     end
 
+    if enemy.health < 50 then
+        enemy.mood = playerClass.AIMood.DEFENSIVE
+    end
+
     enemy:lookTowards(player.hurtBox.body:getX())
-    enemy:AIMoveSys(player.hurtBox.body:getX())
+    enemy:AIMoveSys(player, dt)
 
     enemy.anim:update(dt)
 end

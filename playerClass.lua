@@ -36,6 +36,8 @@ local sone = require("libs.sone")
 ---@field rangedWeapons Ranged[]
 ---@field colour number[4]
 ---@field wantsToAttack boolean
+---@field reactionTime number
+---@field mood AIMood
 local playerClass = {}
 playerClass.__index = playerClass
 
@@ -43,6 +45,13 @@ playerClass.__index = playerClass
 playerClass.attacksEnum = {
     kick = 1,
     punch = 2
+}
+
+---@enum AIMood
+playerClass.AIMood = {
+    AGGRESIVE = 1,
+    DEFENSIVE = 2,
+    NORMAL = 3
 }
 
 local JUMP_POWER_SCALE = 10
@@ -71,6 +80,8 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.baseDashCooldown = 1
     player.dashCooldown = 0
     player.colour = colour
+    player.reactionTime = 0.1
+    player.mood = playerClass.AIMood.AGGRESIVE
 
     -- For AI only
     player.wantsToAttack = false
@@ -135,7 +146,7 @@ function playerClass:takeDamage(damage)
         self.health = self.health - damage * 1.5
 
     elseif self.blocking then
-        self.health = self.health - damage / 2
+        self.health = self.health - damage / 5
         
     else
         self.health = self.health - damage
@@ -174,17 +185,18 @@ local function toPositive(x)
     return x
 end
 
----@param x number
-function playerClass:AIMoveSys(x)
-    local dx = x - self.hurtBox.body:getX()
+---@param plr Player
+---@param dt number
+function playerClass:AIMoveSys(plr, dt)
+    local dx = plr.hurtBox.body:getX() - self.hurtBox.body:getX()
     local dist = toPositive(dx)
     local vx = dx / dist * self.speed
 
     if self.rangedAttackCooldown <= 0 then
-        vx = vx * -1
+        vx = -vx
 
         self:dash()
-        if dist > 400 then
+        if dist > 325 then
             self:startRangedAttack()
         end
     else
@@ -194,14 +206,28 @@ function playerClass:AIMoveSys(x)
     end
 
     if dist <= 240 and not (self.attackCooldown <= 0.4) then
-        self.blocking = true
         self.moving = false
     else
-        self.blocking = false
         self.moving = true
-        if self.attack == nil then
-            self.attack = self.attacks[Rng:random(1, #playerClass.attacksEnum)]
+    end
+
+    if self.mood == playerClass.AIMood.DEFENSIVE then
+        if plr.attacking then
+            self.reactionTime = self.reactionTime - dt
+            if self.reactionTime > 0 then
+                self.blocking = true
+            else
+                self.attack = self.attacks[playerClass.attacksEnum.kick]
+                self.wantsToAttack = true
+                self.reactionTime = 0.1
+            end
+        else
+            self.blocking = false
         end
+
+    elseif self.mood == playerClass.AIMood.AGGRESIVE then
+        self.moving = true
+        self.attack = self.attacks[playerClass.attacksEnum.kick]
         self.wantsToAttack = true
     end
 
@@ -253,6 +279,7 @@ function playerClass:endAttack()
 
     self.attack = nil
     self.attacking = false
+    self.wantsToAttack = false
 end
 
 function playerClass:lookTowards(x)
@@ -308,7 +335,7 @@ function playerClass:draw()
     
     for _, r in ipairs(self.rangedWeapons) do
         love.graphics.setShader(self.fireballshader)
-        love.graphics.polygon("line", r.body:getWorldPoints(r.shape:getPoints()))
+        --love.graphics.polygon("line", r.body:getWorldPoints(r.shape:getPoints()))
         r:draw()
     end
 
