@@ -146,7 +146,7 @@ function playerClass:takeDamage(damage)
         self.health = self.health - damage * 1.5
 
     elseif self.blocking then
-        self.health = self.health - damage / 5
+        self.health = self.health - damage / 3
         
     else
         self.health = self.health - damage
