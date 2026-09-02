@@ -55,7 +55,7 @@ playerClass.AIMood = {
 
 local JUMP_POWER_SCALE = 10
 
-local fireball = love.graphics.newImage("sprites/fireball.png")
+local fireball = love.graphics.newImage("sprites/fireball2.png")
 
 ---@param name string
 ---@param spriteSheet table
@@ -79,7 +79,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.baseDashCooldown = 1
     player.dashCooldown = 0
     player.colour = colour
-    player.reactionTime = 0.1
+    player.reactionTime = 0
     player.mood = playerClass.AIMood.AGGRESIVE
 
     -- For AI only
@@ -177,6 +177,40 @@ local function toPositive(x)
     return x
 end
 
+---@param self Player
+---@param plr Player
+---@param dt number
+local function processDefensiveMood(self, plr, dt)
+    if plr.attacking == false then
+        return
+    end
+    
+    if self.reactionTime <= 0 then
+        self.attack = self.attacks[playerClass.attacksEnum.kick]
+        self.wantsToAttack = true
+        self.reactionTime = 0.08
+    else
+        self.reactionTime = self.reactionTime - dt
+        self.blocking = true
+    end
+end
+
+---@param self Player
+---@param plr Player
+---@param dt number
+local function processAggresiveMood(self, plr, dt)
+    self.moving = true
+    self.attack = self.attacks[playerClass.attacksEnum.kick]
+    self.wantsToAttack = true
+end
+
+local function processNormalMood(self, plr, dt)
+    if plr.attacking then
+        self.vx = -self.vx
+        self.moving = true
+    end
+end
+
 ---@param plr Player
 ---@param dt number
 function playerClass:AIMoveSys(plr, dt)
@@ -204,22 +238,13 @@ function playerClass:AIMoveSys(plr, dt)
     end
 
     if self.mood == playerClass.AIMood.DEFENSIVE then
-        if plr.attacking then
-            self.reactionTime = self.reactionTime - dt
-            if self.reactionTime > 0 then
-                self.blocking = true
-            else
-                self.blocking = false
-                self.attack = self.attacks[playerClass.attacksEnum.kick]
-                self.wantsToAttack = true
-                self.reactionTime = 0.08
-            end
-        end
+        processDefensiveMood(self, plr, dt)
 
     elseif self.mood == playerClass.AIMood.AGGRESIVE then
-        self.moving = true
-        self.attack = self.attacks[playerClass.attacksEnum.kick]
-        self.wantsToAttack = true
+        processAggresiveMood(self, plr, dt)
+
+    elseif self.mood == playerClass.AIMood.NORMAL then
+        processNormalMood(self, plr, dt)
     end
 
     if not self.dashing then

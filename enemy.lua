@@ -23,7 +23,7 @@ function enemyFile.load(plr)
     enemy.hitBox.fixture:setMask(Categories.PLAYER_HIT_BOX)
 
     enemy.baseAttackCooldown = 2
-    enemy.rangedAttack.damage = enemy.rangedAttack.damage * 2
+    enemy.rangedAttack.damage = enemy.rangedAttack.damage * 1.5
 
     --[[enemy.hitBox = {}
     enemy.hitBox.body = love.physics.newBody(World, 500, 400, "dynamic")
@@ -35,9 +35,7 @@ function enemyFile.load(plr)
 end
 
 function enemyFile.update(dt)
-    if not enemy.attacking and not enemy.blocking then
-        enemy.anim = enemy.anims.idleAnim
-    end
+    enemy.anim = enemy.anims.idleAnim
 
     enemy.attackCooldown = enemy.attackCooldown - dt
 
