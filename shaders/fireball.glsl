@@ -1,22 +1,27 @@
-uniform vec2 fireball_pos;
-uniform vec3 light_colour;
-uniform float ambient_light;
+uniform vec3 fireball_positions[8];
+uniform int num_lights;
 
 vec4 effect(vec4 colour, Image tex, vec2 texture_coords, vec2 pixel_coords)
 {
-    vec4 base_colour = Texel(tex, texture_coords) * colour;
-    
-    float light_radius = 50;
-    float dist = distance(pixel_coords, fireball_pos);
-    
-    float attenuation = 0.0;
+    vec4 pixel = Texel(tex, texture_coords);
 
-    if (dist < light_radius)
+    float total_light = 0.0;
+
+    for (int i = 0; i < num_lights; i++)
     {
-        attenuation = 1.0f - (dist / light_radius);
-        attenuation = clamp(attenuation, 0.0, 1.0);
+        vec2 light_pos = fireball_positions[i].xy;
+        float light_radius = fireball_positions[i].z;
+        
+        float distance = length(pixel_coords - light_pos);
+        float fade = clamp(distance / light_radius, 0.0, 1.0);
+
+        float light_amount = 1.0 - fade;
+
+        total_light += light_amount;
     }
 
-    vec3 final_light = ambient_light + (light_colour + attenuation);
-    return vec4(base_colour.rgb * final_light, base_colour.a);
+    total_light = clamp(total_light, 0.0, 1.0);
+    pixel.a = pixel.a * (1.0 +total_light);
+
+    return pixel * colour;
 }

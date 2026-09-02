@@ -35,9 +35,9 @@ function enemyFile.load(plr)
 end
 
 function enemyFile.update(dt)
-    enemy.anim = enemy.anims.idleAnim
-
-    enemy:update(dt)
+    if not enemy.attacking and not enemy.blocking then
+        enemy.anim = enemy.anims.idleAnim
+    end
 
     enemy.attackCooldown = enemy.attackCooldown - dt
 
@@ -62,9 +62,9 @@ function enemyFile.update(dt)
         enemy.mood = playerClass.AIMood.DEFENSIVE
     end
 
+    enemy:update(dt)
     enemy:lookTowards(player.hurtBox.body:getX())
     enemy:AIMoveSys(player, dt)
-
     enemy.anim:update(dt)
 end
 

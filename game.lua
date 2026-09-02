@@ -11,11 +11,14 @@ local game = {}
 ---@field zoom number
 Camera = {}
 
+local fireballPositions = {}
+
 ---@enum CameraModes
 CameraModes = {
     FIXED = 0,
     FOLLOW = 1
 }
+
 local cameraOffsetX
 local cameraOffsetY
 local background
@@ -26,6 +29,12 @@ function game.load()
     Camera.y = 0
     Camera.speed = 8
     Camera.zoom = 1
+
+    ---@type Ranged[]
+    Fireballs = {}
+
+    FireballShader = love.graphics.newShader("shaders/fireball.glsl")
+    FireballShader:send("num_lights", 2)
 
     background = love.graphics.newImage("sprites/background.png")
     healthbar = love.graphics.newImage("sprites/healthbar.png")
@@ -86,7 +95,29 @@ function game.update(dt)
     cameraOffsetX = (love.graphics.getWidth() / 2 - 20)
     cameraOffsetY = 0
 
+    for i, r in ipairs(Fireballs) do
+        r.lifeTime = r.lifeTime - dt
+        r.body:setLinearVelocity(r.speed, 0)
+        r.anim:update(dt)
+
+        fireballPositions[i] = {r.body:getX(), r.body:getY(), 20}
+        if r.lifeTime <= 0 then
+            table.remove(Fireballs, i)
+            break
+        end
+    end
+
+    if fireballPositions[1] then
+        FireballShader:send("fireball_positions", unpack(fireballPositions))
+    end
+
     Camera:attach(player.player.hurtBox.body:getX() - cameraOffsetX, cameraOffsetY, CameraModes.FOLLOW, dt)
+end
+
+local function drawFireballs()
+    for _, fb in ipairs(Fireballs) do
+        fb:draw()
+    end
 end
 
 function game.draw()
@@ -99,9 +130,9 @@ function game.draw()
     --love.graphics.polygon("fill", RightWall.body:getWorldPoints(RightWall.shape:getPoints()))
     --love.graphics.setColor(1, 1, 1)
     love.graphics.draw(background, 0, 0, 0, love.graphics.getWidth() / background:getWidth(), love.graphics.getHeight() / background:getHeight())
-
     player.draw()
     enemyFile.draw()
+    drawFireballs()
     love.graphics.pop()
 
     -- Draw player health bar

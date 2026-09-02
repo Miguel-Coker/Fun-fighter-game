@@ -32,7 +32,6 @@ local sone = require("libs.sone")
 ---@field showCollisionBoxes boolean
 ---@field baseRangedAttackCooldown number
 ---@field rangedAttackCooldown number
----@field fireballshader love.Shader
 ---@field rangedWeapons Ranged[]
 ---@field colour[number, number, number, number?]
 ---@field wantsToAttack boolean
@@ -103,7 +102,6 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.fireball, 600, fireball, name.."fireballbase", cat, love.audio.newSource(audio.data.fireball))
     player.rangedAttackCooldown = 5
     player.baseRangedAttackCooldown = 5
-    player.rangedWeapons = {}
 
     player.attacks = {
         attackClass.meleeAttack.new(20, player.anims.kickAnim),
@@ -134,9 +132,6 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.hitBox.fixture:setCategory(Categories.NONE)
 
     player.showCollisionBoxes = false
-    player.fireballshader = love.graphics.newShader("shaders/fireball.glsl")
-    player.fireballshader:send("light_colour", {1, 1, 1})
-    player.fireballshader:send("ambient_light", 0)
     return player
 end
 
@@ -263,7 +258,7 @@ function playerClass:startRangedAttack()
         self.rangedAttack.fixture:getCategory()
     )
     weapon.anim.direction = self.anim.direction
-    table.insert(self.rangedWeapons, weapon)
+    table.insert(Fireballs, weapon)
 end
 
 function playerClass:endRangedAttack()
@@ -306,17 +301,6 @@ function playerClass:update(dt)
         self.dashing = false
         self.moving = false
     end
-    
-    for i, r in ipairs(self.rangedWeapons) do
-        r.lifeTime = r.lifeTime - dt
-        r.body:setLinearVelocity(r.speed, 0)
-        r.anim:update(dt)
-        self.fireballshader:send("fireball_pos", {Camera:worldX(r.body:getX()), Camera:worldY(r.body:getY())})
-        if r.lifeTime <= 0 then
-            table.remove(self.rangedWeapons, i)
-            break
-        end
-    end
 
     self.hurtBox.body:setLinearVelocity(self.vx, vy)
     self.hitBox.body:setLinearVelocity(0, 0)
@@ -327,12 +311,6 @@ end
 function playerClass:draw()
     if self.showCollisionBoxes then
         love.graphics.polygon("line", self.hitBox.body:getWorldPoints(self.hitBox.shape:getPoints()))
-    end
-    
-    for _, r in ipairs(self.rangedWeapons) do
-        love.graphics.setShader(self.fireballshader)
-        --love.graphics.polygon("line", r.body:getWorldPoints(r.shape:getPoints()))
-        r:draw()
     end
 
     love.graphics.setColor(unpack(self.colour))
