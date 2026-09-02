@@ -74,15 +74,15 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.baseAttackCooldown = 0.8
     player.attackCooldown = 0
     player.jumpPower = -200 * JUMP_POWER_SCALE
-    player.blocking = false
     player.attacking = false
     player.dashing = false
     player.dashTime = 0.2
     player.baseDashCooldown = 1
     player.dashCooldown = 0
 
+    player.blocking = false
     player.blockTime = 0
-    player.baseBlockTime = 0.5
+    player.baseBlockTime = 0.2
 
     player.colour = colour
     player.reactionTime = 0
@@ -189,7 +189,6 @@ end
 ---@param dt number
 local function processDefensiveMood(self, plr, dt)
     if plr.attacking == false then
-        self.blocking = false
         return
     end
     
@@ -199,7 +198,7 @@ local function processDefensiveMood(self, plr, dt)
         self.reactionTime = 0.08
     else
         self.reactionTime = self.reactionTime - dt
-        self.blocking = true
+        self:block()
     end
 end
 
@@ -307,8 +306,13 @@ function playerClass:endAttack()
 end
 
 function playerClass:block()
+    if self.blocking or self.blockTime > 0 then
+        return
+    end
+
     self.blocking = true
     self.anim = self.anims.blockAnim
+    self.blockTime = self.baseBlockTime
 end
 
 function playerClass:lookTowards(x)
@@ -321,9 +325,23 @@ function playerClass:lookTowards(x)
     end
 end
 
+---@param self Player
+local function processBlock(self, dt)
+    self.blockTime = self.blockTime - dt
+
+    if self.blockTime <= 0 then
+        self.blocking = false
+        self.anim = self.anims.idleAnim
+    end
+end
+
 function playerClass:update(dt)
     self.dashCooldown = self.dashCooldown - dt
     self.rangedAttackCooldown = self.rangedAttackCooldown - dt
+    
+    if self.blocking then
+        processBlock(self, dt)
+    end
 
     local _, vy = self.hurtBox.body:getLinearVelocity()
 
