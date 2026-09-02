@@ -29,8 +29,8 @@ function menu.load()
             end)
     }
     menu.settings = {
-        exit = button.new(windowWidth / 2, windowHeight / 2, menu.sprites.exit, love.event.quit),
-        toggleFullscreen = button.new(windowWidth / 2, windowHeight / 2 - 94, menu.sprites.fullscreen, function()love.window.setFullscreen(not love.window.getFullscreen()) end)
+        exit = button.new(windowWidth / 2 - menu.sprites.exit:getWidth() / 2, windowHeight / 2, menu.sprites.exit, love.event.quit),
+        toggleFullscreen = button.new(windowWidth / 2 - menu.sprites.fullscreen:getHeight(), windowHeight / 2 - 94, menu.sprites.fullscreen, function()love.window.setFullscreen(not love.window.getFullscreen()) end)
     }
 
     menu.selectedMenu = menu.main
