@@ -5,7 +5,8 @@ local sone = require("libs.sone")
 
 ---@class Player
 ---@field name string
----@field anims table
+---@field anims { [string]: Animation }
+---@field anim Animation
 ---@field spriteSheet table
 ---@field speed number
 ---@field health number
@@ -14,6 +15,8 @@ local sone = require("libs.sone")
 ---@field attackCooldown number
 ---@field jumpPower number
 ---@field blocking boolean
+---@field blockTime number
+---@field baseBlockTime number
 ---@field attacking boolean
 ---@field canJump boolean
 ---@field dashing boolean
@@ -64,7 +67,6 @@ local fireball = love.graphics.newImage("sprites/fireball2.png")
 function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     local player = setmetatable({}, playerClass)
     player.name = name
-    player.anims = {}
     player.spriteSheet = spriteSheet
     player.speed = 120
     player.health = 100
@@ -78,6 +80,10 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.dashTime = 0.2
     player.baseDashCooldown = 1
     player.dashCooldown = 0
+
+    player.blockTime = 0
+    player.baseBlockTime = 0.5
+
     player.colour = colour
     player.reactionTime = 0
     player.mood = playerClass.AIMood.AGGRESIVE
@@ -92,6 +98,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     local grid = anim.newGrid(64, 105, player.spriteSheet:getWidth(), player.spriteSheet:getHeight())
     local fireballGrid = anim.newGrid(64, 64, fireball:getWidth(), fireball:getHeight())
 
+    player.anims = {}
     player.anims.idleAnim = anim.newAnimation(grid('5-5', '1-1'), 0.15)
     player.anims.kickAnim = anim.newAnimation(grid('1-4', '3-3'), 0.15)
     player.anims.blockAnim = anim.newAnimation(grid('7-7', '1-1'), 0.15)
@@ -182,6 +189,7 @@ end
 ---@param dt number
 local function processDefensiveMood(self, plr, dt)
     if plr.attacking == false then
+        self.blocking = false
         return
     end
     
@@ -296,6 +304,11 @@ function playerClass:endAttack()
     self.attack = nil
     self.attacking = false
     self.wantsToAttack = false
+end
+
+function playerClass:block()
+    self.blocking = true
+    self.anim = self.anims.blockAnim
 end
 
 function playerClass:lookTowards(x)

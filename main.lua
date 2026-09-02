@@ -133,6 +133,11 @@ function love.keypressed(key)
 end
 
 ---@diagnostic disable-next-line: duplicate-set-field
+function love.keyreleased(key)
+    player.keyreleased(key)
+end
+
+---@diagnostic disable-next-line: duplicate-set-field
 function love.mousepressed(x, y, button)
     menu.mousepressed(x, y, button)
 end

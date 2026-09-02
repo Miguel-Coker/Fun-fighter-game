@@ -2,7 +2,7 @@
 ---@field x number
 ---@field y number
 ---@field text string
----@field sprite userdata
+---@field sprite love.Image
 ---@field baseWidth number
 ---@field baseHeight number
 ---@field colour table

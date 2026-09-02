@@ -6,12 +6,13 @@ local mod = {}
 mod.vector2 = {}
 mod.vector2.__index = mod.vector2
 
----@param _x number
----@param _y number
+---@param x number
+---@param y number
 ---@return Vector2
-function mod.vector2.new(_x, _y)
-    ---@type Vector2
-    local vec2 = {x = _x, y = _y}
+function mod.vector2.new(x, y)
+    local vec2 = setmetatable({}, mod.vector2)
+    vec2.x = x
+    vec2.y = y
     return vec2
 end
 

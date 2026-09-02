@@ -50,13 +50,6 @@ function playerFile.update(dt)
         end
     end
 
-    if love.keyboard.isDown("f") or love.keyboard.isDown("space") and not player.attacking then
-        player.anim = player.anims.blockAnim
-        player.blocking = true
-    else
-        player.blocking = false
-    end
-
     if not player.attacking and not player.blocking then
         player.anim = player.anims.idleAnim
     end
@@ -87,6 +80,10 @@ function playerFile.keypressed(key)
         player:startRangedAttack()
     end
 
+    if key == "space" and player.attacking == false then
+        player:block()
+    end
+
     --[[if key == "j" and not player.blocking then
         player.attack = player.attacks[playerClass.attacksEnum.punch]
     end]]
@@ -98,6 +95,10 @@ function playerFile.keypressed(key)
     if (key == "q" or key == "lshift") then
         player:dash()
     end
+end
+
+function playerFile.keyreleased(key)
+
 end
 
 function playerFile.draw()
