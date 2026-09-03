@@ -120,6 +120,15 @@ local function drawFireballs()
     end
 end
 
+---@param plr Player
+local function drawHealthBar(plr, x, y)
+    local percentPlayer = plr.health / plr.maxHealth
+    love.graphics.draw(healthbar, x, y)
+    love.graphics.setColor(1 - percentPlayer, percentPlayer, 0)
+    love.graphics.rectangle("fill", x + 2, y + 1, percentPlayer * 120, 29)
+    love.graphics.setColor(1, 1, 1)
+end
+
 function game.draw()
     love.graphics.push()
     love.graphics.translate(-Camera.x * Camera.zoom, -Camera.y * Camera.zoom)
@@ -135,18 +144,8 @@ function game.draw()
     drawFireballs()
     love.graphics.pop()
 
-    -- Draw player health bar
-    local percentPlayer = player.player.health / player.player.maxHealth
-    love.graphics.draw(healthbar, 60, 65)
-    love.graphics.setColor(1 - percentPlayer, percentPlayer, 0)
-    love.graphics.rectangle("fill", 62, 66, percentPlayer * 120, 29)
-
-    -- draw enemy health bar
-    local percent = enemy.health / enemy.maxHealth
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.draw(healthbar, love.graphics.getWidth() - 140, 65)
-    love.graphics.setColor(1 - percent, percent, 0)
-    love.graphics.rectangle("fill", love.graphics.getWidth() - 138, 65, percent * 120, 29)
+    drawHealthBar(player.player, 60, 65)
+    drawHealthBar(enemy, love.graphics.getWidth() - 140, 65)
 end
 
 return game

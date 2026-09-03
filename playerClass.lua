@@ -3,6 +3,10 @@ local attackClass = require("attackClass")
 local audio = require("audio")
 local sone = require("libs.sone")
 
+local BASE_BLOCK_COOLDOWN = 0.5
+local BASE_DASH_TIME = 0.3
+local DASH_SPEED = 600
+
 ---@class Player
 ---@field name string
 ---@field anims { [string]: Animation }
@@ -13,6 +17,7 @@ local sone = require("libs.sone")
 ---@field maxHealth number
 ---@field baseAttackCooldown number
 ---@field attackCooldown number
+---@field blockCooldown number
 ---@field jumpPower number
 ---@field blocking boolean
 ---@field blockTime number
@@ -76,13 +81,14 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.jumpPower = -200 * JUMP_POWER_SCALE
     player.attacking = false
     player.dashing = false
-    player.dashTime = 0.2
+    player.dashTime = BASE_DASH_TIME
     player.baseDashCooldown = 1
     player.dashCooldown = 0
 
     player.blocking = false
     player.blockTime = 0
     player.baseBlockTime = 0.2
+    player.blockCooldown = 0
 
     player.colour = colour
     player.reactionTime = 0
@@ -166,13 +172,13 @@ function playerClass:dash()
     end
 
     self.dashing = true
-    self.dashTime = 0.2
+    self.dashTime = BASE_DASH_TIME
     self.moving = true
     self.dashCooldown = self.baseDashCooldown
     if self.vx < 0 then
-        self.vx = -500
+        self.vx = -DASH_SPEED
     elseif self.vx > 0 then
-        self.vx = 500
+        self.vx = DASH_SPEED
     end
 end
 
@@ -184,6 +190,17 @@ local function toPositive(x)
     return x
 end
 
+function playerClass:block()
+    if self.blocking or self.blockCooldown > 0 then
+        return
+    end
+
+    self.blocking = true
+    self.anim = self.anims.blockAnim
+    self.blockTime = self.baseBlockTime
+    self.blockCooldown = BASE_BLOCK_COOLDOWN
+end
+
 ---@param self Player
 ---@param plr Player
 ---@param dt number
@@ -191,14 +208,16 @@ local function processDefensiveMood(self, plr, dt)
     if plr.attacking == false then
         return
     end
-    
+
     if self.reactionTime <= 0 then
-        self.attack = self.attacks[playerClass.attacksEnum.kick]
-        self.wantsToAttack = true
-        self.reactionTime = 0.08
+        self:block()
+        
+        if self.blocking then
+            self.attack = self.attacks[playerClass.attacksEnum.kick]
+            self.wantsToAttack = true
+        end
     else
         self.reactionTime = self.reactionTime - dt
-        self:block()
     end
 end
 
@@ -302,17 +321,8 @@ function playerClass:endAttack()
 
     self.attack = nil
     self.attacking = false
+    self.anim = self.anims.idleAnim
     self.wantsToAttack = false
-end
-
-function playerClass:block()
-    if self.blocking or self.blockTime > 0 then
-        return
-    end
-
-    self.blocking = true
-    self.anim = self.anims.blockAnim
-    self.blockTime = self.baseBlockTime
 end
 
 function playerClass:lookTowards(x)
@@ -338,7 +348,8 @@ end
 function playerClass:update(dt)
     self.dashCooldown = self.dashCooldown - dt
     self.rangedAttackCooldown = self.rangedAttackCooldown - dt
-    
+    self.blockCooldown = self.blockCooldown - dt
+
     if self.blocking then
         processBlock(self, dt)
     end

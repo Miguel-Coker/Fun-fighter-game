@@ -70,15 +70,28 @@ function playerFile.update(dt)
     player.anim:update(dt)
 end
 
+---@param attack playerClass.attacksEnum
+local function tryAttack(attack)
+    if player.blocking or player.attackCooldown > 0 then
+        return
+    end
+
+    player.attack = player.attacks[attack]
+    player:startAttack(Categories.PLAYER_HIT_BOX)
+end
+
 function playerFile.keypressed(key)
-    if key == "l" and not player.blocking and player.attackCooldown <= 0 then
-        player.attack = player.attacks[playerClass.attacksEnum.kick]
-        player:startAttack(Categories.PLAYER_HIT_BOX)
+    if key == "l" then
+        tryAttack(playerClass.attacksEnum.kick)
     end
 
     if key == "i" and not player.blocking and player.rangedAttackCooldown <= 0 then
         player:startRangedAttack()
     end
+
+    --[[if key == "j" then
+        tryAttack(playerClass.attacksEnum.punch)
+    end]]
 
     if key == "space" and player.attacking == false then
         player:block()
