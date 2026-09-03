@@ -462,8 +462,8 @@ end
     sone.pan(sound, 0.85)
 ```
 --]=]
---- @param SoundData sound
---- @param number pan How to pan the input (range: -1.0 to 1.0), where -1.0 is far left, 1.0 is far right, and 0.0 is dead center.
+--- @param sound SoundData
+--- @param pan number How to pan the input (range: -1.0 to 1.0), where -1.0 is far left, 1.0 is far right, and 0.0 is dead center.
 --- @return SoundData
 function sone.pan(sound, pan)
     assert(sound:getChannels() == 2, "Pan only works for stereo sounds.")
@@ -499,9 +499,9 @@ end
     sone.fadeIn(sound, 10, "inOutExpo")
 ```
 --]=]
---- @param SoundData sound
---- @param number seconds How long the fade will take.
---- @param FadeType fadeType (optional) Which fade curve to use. Default is linear.
+--- @param sound SoundData
+--- @param seconds number How long the fade will take.
+--- @param fadeType FadeType (optional) Which fade curve to use. Default is linear.
 --- @return SoundData
 function sone.fadeIn(sound, seconds, fadeType)
     fadeType = fadeType or "linear"
@@ -535,9 +535,9 @@ end
     sone.fadeOut(sound, 10, "inOutExpo")
 ```
 --]=]
---- @param SoundData sound
---- @param number seconds How long the fade will take.
---- @param FadeType fadeType (optional) Which fade curve to use. Default is linear.
+--- @param sound SoundData
+--- @param seconds number How long the fade will take.
+--- @param fadeType FadeType (optional) Which fade curve to use. Default is linear.
 --- @return SoundData
 function sone.fadeOut(sound, seconds, fadeType)
     fadeType = fadeType or "linear"
@@ -569,9 +569,9 @@ end
     sone.fadeInOut(sound, 5)
 ```
 --]=]
---- @param SoundData sound
---- @param number seconds How long the fade will take.
---- @param FadeType fadeType (optional) Which fade curve to use. Default is linear.
+--- @param sound SoundData
+--- @param seconds number How long the fade will take.
+--- @param fadeType FadeType (optional) Which fade curve to use. Default is linear.
 --- @return SoundData
 function sone.fadeInOut(sound, seconds, fadeType)
     sone.fadeIn(sound, seconds, fadeType)
@@ -587,8 +587,8 @@ end
     copy = sone.copy(sound)
 ```
 --]=]
---- @param SoundData sound The sound to copy.
---- @param boolean copyOverData (optional) If false, only a new SoundData will be created with the same sample count, sample rate, bit depth, and channels. The actual signal data will not be copied.
+--- @param sound SoundData The sound to copy.
+--- @param copyOverData boolean (optional) If false, only a new SoundData will be created with the same sample count, sample rate, bit depth, and channels. The actual signal data will not be copied.
 --- @return SoundData The copied sound.
 function sone.copy(sound, copyOverData)
     local copy = love.sound.newSoundData(sound:getSampleCount(), sound:getSampleRate(), sound:getBitDepth(), sound:getChannels())
@@ -650,81 +650,70 @@ end
 ```
 --]=]
 
---- @type FilterType
+--- @class FilterType
 --- Filters that are able to be used with the filter function. (`sone.filter`)
 -- TODO: descriptions for these
---- @field string lowpass
---- @field string highpass
---- @field string bandpass
---- @field string notch
---- @field string allpass
---- @field string peakeq
---- @field string lowshelf
---- @field string highshelf
---- @end type
+--- @field lowpass string
+--- @field highpass string
+--- @field bandpass string
+--- @field notch string
+--- @field allpass string
+--- @field peakeq string
+--- @field lowshelf string
+--- @field highshelf string
 
---- @type FadeType
---- @field string linear
---- @field string inQuad
---- @field string outQuad
---- @field string inOutQuad
---- @field string outInQuad
---- @field string inCubic
---- @field string outCubic
---- @field string inOutCubic
---- @field string outInCubic
---- @field string inQuart
---- @field string outQuart
---- @field string inOutQuart
---- @field string outInQuart
---- @field string inQuint
---- @field string outQuint
---- @field string inOutQuint
---- @field string outInQuint
---- @field string inSine
---- @field string outSine
---- @field string inOutSine
---- @field string outInSine
---- @field string inExpo
---- @field string outExpo
---- @field string inOutExpo
---- @field string outInExpo
---- @field string inCirc
---- @field string outCirc
---- @field string inOutCirc
---- @field string outInCirc
+--- @class FadeType
+--- @field linear string
+--- @field inQuad string
+--- @field outQuad string
+--- @field inOutQuad string
+--- @field outInQuad string
+--- @field inCubic string
+--- @field outCubic string
+--- @field inOutCubic string
+--- @field outInCubic string
+--- @field inQuart string
+--- @field outQuart string
+--- @field inOutQuart string
+--- @field outInQuart string
+--- @field inQuint string
+--- @field outQuint string
+--- @field inOutQuint string
+--- @field outInQuint string
+--- @field inSine string
+--- @field outSine string
+--- @field inOutSine string
+--- @field outInSine string
+--- @field inExpo string
+--- @field outExpo string
+--- @field inOutExpo string
+--- @field outInExpo string
+--- @field inCirc string
+--- @field outCirc string
+--- @field inOutCirc string
+--- @field outInCirc string
 
---- @type FilterParameters
+--- @class FilterParameters
 --- A table of the possible parameters for the filter function.
 --- @field FilterType type **REQUIRED** The type of filter to use.
-
---- @field number frequency **REQUIRED** The center/target frequency (in Hz).
+--- @field frequency number **REQUIRED** The center/target frequency (in Hz).
 --- Ranges from 0Hz to (Sampling rate) / 2 Hz.
-
---- @field number Q (optional) The quality factor to use.
+--- @field Q number (optional) The quality factor to use.
 --- Ranges from 0 to 100. Default: 1.
-
---- @field number gain (optional) The gain (in dB) to use for EQ filters.
+--- @field gain number (optional) The gain (in dB) to use for EQ filters.
 --- Ranges from -60dB to 60dB. Default: 0dB.
-
---- @field number start (optional) The time (in seconds) for the start of the filtered section.
+--- @field start number (optional) The time (in seconds) for the start of the filtered section.
 --- Default: 0 seconds.
-
---- @field number finish (optional) The time (in seconds) for the finish of the filtered section.
+--- @field finish number (optional) The time (in seconds) for the finish of the filtered section.
 --- Default: the duration of the sound.
-
---- @field number startSample (optional) The start (in samples) of the filtered section.
+--- @field startSample number (optional) The start (in samples) of the filtered section.
 --- Default: 0.
-
---- @field number finishSample (optional) The finish (in samples) of the filtered section.
+--- @field finishSample number (optional) The finish (in samples) of the filtered section.
 --- Default: the number of samples in the sound.
-
---- @field number wet (optional) The wetness of the filtered sound, or the percentage of the effect that will be applied.
+--- @field wet number (optional) The wetness of the filtered sound, or the percentage of the effect that will be applied.
 --- Default: 1 (100%). Ranges from 0 (0%) to 1 (100%).
-
---- @type SoundData
+--- @alias SoundData love.SoundData
 --- A SoundData object from LOVE. 
 --- https://www.love2d.org/wiki/SoundData
---- @end type
 
 return sone
