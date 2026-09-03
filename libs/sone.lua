@@ -1,4 +1,3 @@
---- @module sone
 local sone = {
     _VERSION     = 'sone v1.0.0',
     _DESCRIPTION = 'Sound processing library for LOVE.',
@@ -274,12 +273,13 @@ local function clamp(val, low, hi)
     return max(min(val, hi), low)
 end
 
+---@param sound SoundData
 -- Biquad filter
 -- Taken from (http://www.musicdsp.org/files/Audio-EQ-Cookbook.txt)
 local function biquadFilter(sound, parameters)
     -- Sample rate
     local sr = sound:getSampleRate()
-    local ch = sound:getChannels()
+    local ch = sound:getChannelCount()
     -- Center frequency
     assert(parameters.frequency, "Frequency must be specified for filter")
     local freq = clamp(parameters.frequency, 0, sr / 2)
@@ -421,8 +421,8 @@ end
     })
 ```
 --]=]
---- @param SoundData sound
---- @param FilterParameters parameters
+--- @param sound SoundData
+--- @param parameters FilterParameters
 --- @return SoundData
 function sone.filter(sound, parameters)
     return biquadFilter(sound, parameters)
@@ -441,10 +441,11 @@ end
     sone.amplify(sound, -2.5)
 ```
 --]=]
---- @param SoundData sound
---- @param number gain Amplification amount in decibels.
+--- @param sound SoundData
+--- @param gain number Amplification amount in decibels.
 --- @return SoundData
 function sone.amplify(sound, gain)
+---@diagnostic disable-next-line: missing-fields
     return sone.filter(sound, {
         type = "highshelf",
         frequency = 0,
@@ -466,7 +467,7 @@ end
 --- @param pan number How to pan the input (range: -1.0 to 1.0), where -1.0 is far left, 1.0 is far right, and 0.0 is dead center.
 --- @return SoundData
 function sone.pan(sound, pan)
-    assert(sound:getChannels() == 2, "Pan only works for stereo sounds.")
+    assert(sound:getChannelCount() == 2, "Pan only works for stereo sounds.")
 
     pan = clamp((1 + pan) * 0.5, 0, 1)
 
@@ -478,7 +479,7 @@ function sone.pan(sound, pan)
         [1] = leftGain,
     }
 
-    local sampleCount = sound:getSampleCount() * sound:getChannels() - 1
+    local sampleCount = sound:getSampleCount() * sound:getChannelCount() - 1
     for i=0, sampleCount do
         sound:setSample(i, sound:getSample(i) * gains[i%2])
     end
@@ -507,9 +508,9 @@ function sone.fadeIn(sound, seconds, fadeType)
     fadeType = fadeType or "linear"
     local ease = easing[fadeType]
 
-    local sampleCount = sound:getSampleCount() * sound:getChannels() - 1
+    local sampleCount = sound:getSampleCount() * sound:getChannelCount() - 1
     local start = 0
-    local finish = seconds * sound:getSampleRate() * sound:getChannels()
+    local finish = seconds * sound:getSampleRate() * sound:getChannelCount()
     local t
 
     assert(finish <= sampleCount, "Fade in cannot be longer than the sound")
@@ -543,9 +544,9 @@ function sone.fadeOut(sound, seconds, fadeType)
     fadeType = fadeType or "linear"
     local ease = easing[fadeType]
 
-    local sampleCount = sound:getSampleCount() * sound:getChannels() - 1
-    local duration = seconds * sound:getSampleRate() * sound:getChannels()
-    local finish = sound:getSampleCount() * sound:getChannels() - 1
+    local sampleCount = sound:getSampleCount() * sound:getChannelCount() - 1
+    local duration = seconds * sound:getSampleRate() * sound:getChannelCount()
+    local finish = sound:getSampleCount() * sound:getChannelCount() - 1
     local start = finish - duration
     local t
 
@@ -591,11 +592,11 @@ end
 --- @param copyOverData boolean (optional) If false, only a new SoundData will be created with the same sample count, sample rate, bit depth, and channels. The actual signal data will not be copied.
 --- @return SoundData The copied sound.
 function sone.copy(sound, copyOverData)
-    local copy = love.sound.newSoundData(sound:getSampleCount(), sound:getSampleRate(), sound:getBitDepth(), sound:getChannels())
+    local copy = love.sound.newSoundData(sound:getSampleCount(), sound:getSampleRate(), sound:getBitDepth(), sound:getChannelCount())
     copyOverData = copyOverData == nil and true or copyOverData
    
     if copyOverData then
-        local sampleCount = sound:getSampleCount() * sound:getChannels() - 1
+        local sampleCount = sound:getSampleCount() * sound:getChannelCount() - 1
         for i=0, sampleCount do
             copy:setSample(i, sound:getSample(i))
         end
