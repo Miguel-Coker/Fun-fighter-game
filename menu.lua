@@ -16,7 +16,6 @@ function menu.load()
     local windowHeight = love.graphics.getHeight()
     
     menu.main = {
-        start = button.new(windowWidth / 2 - 60, windowHeight / 4, menu.sprites.play, function(self) GameStates.play = true self.hide = true end),
         settings = button.new(40, 0, menu.sprites.settings, function() 
                 GameStates.settings = not GameStates.settings 
                 GameStates.pause = not GameStates.pause 
@@ -26,7 +25,8 @@ function menu.load()
                 else
                     menu.selectedMenu = menu.settings
                 end
-            end)
+            end),
+        start = button.new(windowWidth / 2 - 60, windowHeight / 4, menu.sprites.play, function(self) GameStates.play = true self.hide = true end)
     }
     menu.settings = {
         exit = button.new(windowWidth / 2 - menu.sprites.exit:getWidth() / 2, windowHeight / 2, menu.sprites.exit, love.event.quit),
