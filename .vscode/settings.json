@@ -1,10 +1,11 @@
 {
+    "Lua.addonManager.enable": true,
+    "Lua.workspace.library": [
+        "${3rd}/love2d/library"
+    ],
     "Lua.diagnostics.globals": [
         "love",
         "enemy"
-    ],
-    "Lua.workspace.library": [
-        "${addons}/love2d/module/library"
     ],
     "Lua.runtime.version": "LuaJIT",
     "Lua.runtime.special": {

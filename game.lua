@@ -21,7 +21,9 @@ CameraModes = {
 
 local cameraOffsetX
 local cameraOffsetY
+---@type love.Image
 local background
+
 local healthbar
 function game.load()
     audio.load()

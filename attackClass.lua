@@ -2,7 +2,6 @@ local mod = {}
 
 ---@class Melee
 ---@field anim userdata
----@field damae number
 ---@field damage number
 mod.meleeAttack = {}
 mod.meleeAttack.__index = mod.meleeAttack

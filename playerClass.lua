@@ -11,7 +11,7 @@ local DASH_SPEED = 600
 ---@field name string
 ---@field anims { [string]: Animation }
 ---@field anim Animation
----@field spriteSheet table
+---@field spriteSheet love.Image
 ---@field speed number
 ---@field health number
 ---@field maxHealth number
