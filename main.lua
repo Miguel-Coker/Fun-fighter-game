@@ -34,22 +34,22 @@ local function beginContact(bodyA, bodyB)
 
     if (userA == "player_fireball" and userB == "enemy_hurtbox" or userB == "player_fireball" and userA == "enemy_hurtbox") then
         enemy.health = enemy.health - player.player.rangedAttack.damage
-        attackCooldown = 0.1
+        attackCooldown = 0.2
     end
 
     if (userA == "player_hurtbox" and userB == "enemy_fireball" or userA == "enemy_fireball" and userB == "player_hurtbox") then
         player.player.health = player.player.health - enemy.rangedAttack.damage
-        attackCooldown = 0.1
+        attackCooldown = 0.2
     end
 
     if (userA == "player_hitbox" and userB == "enemy_hurtbox" or userA == "enemy_hurtbox" and userB == "player_hitbox") then
         enemy:takeDamage(player.player.attack.damage)
-        attackCooldown = 0.1
+        attackCooldown = 0.2
     end
 
     if (userA == "enemy_hitbox" and userB == "player_hurtbox" or userA == "player_hurtbox" and userB == "enemy_hitbox") then
         player.player:takeDamage(enemy.attack.damage)
-        attackCooldown = 0.1
+        attackCooldown = 0.2
     end
 end
 
