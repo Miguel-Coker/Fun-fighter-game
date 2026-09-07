@@ -6,6 +6,7 @@ local sone = require("libs.sone")
 local BASE_BLOCK_COOLDOWN = 0.5
 local BASE_DASH_TIME = 0.3
 local DASH_SPEED = 600
+local BASE_REACTION_TIME = 0.08
 
 ---@class Player
 ---@field name string
@@ -211,13 +212,13 @@ local function processDefensiveMood(self, plr, dt)
 
     if self.reactionTime <= 0 then
         self:block()
-        
-        if self.blocking then
+
+        if self.blocking == false then
             self.attack = self.attacks[playerClass.attacksEnum.kick]
             self.wantsToAttack = true
         end
-    else
-        self.reactionTime = self.reactionTime - dt
+
+        self.reactionTime = BASE_REACTION_TIME
     end
 end
 
