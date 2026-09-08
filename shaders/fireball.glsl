@@ -1,32 +1,26 @@
-uniform vec3 fireball_positions[8];
-uniform int num_lights;
+uniform vec3 light_positions[16]; // x, y, radius
+uniform int num_lights; // total number of lights
 
-vec4 effect(vec4 colour, Image tex, vec2 texture_coords, vec2 pixel_coords)
-{
-    vec4 pixel = Texel(tex, texture_coords) * colour;
-
-    float total_light = 0.0;
-
-    float attenuation = 0.0;
-
-    for (int i = 0; i < num_lights; i++)
-    {
-        vec2 light_pos = fireball_positions[i].xy;
-        float light_radius = fireball_positions[i].z;
+vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
+    vec4 pixel = Texel(texture, texture_coords);
+    
+    float totalLight = 0.0;
+    
+    for (int i = 0; i < num_lights; i++) {
+        vec2 lightPos = light_positions[i].xy;
+        float radius = light_positions[i].z;
         
-        float dist = distance(pixel_coords, light_pos);
-
-        if (dist < light_radius)
-        {
-            attenuation = 1.0 - (dist / light_radius);
-            attenuation = clamp(attenuation, 0.0, 1.0);
-        }
-
-        total_light += attenuation;
+        float distance = length(screen_coords - lightPos);
+        float fade = clamp(distance / radius, 0.0, 1.0);
+        
+        // Invert fade so light is 1.0 at center, 0.0 at edge
+        float lightAmount = 1.0 - fade;
+        totalLight += lightAmount;
     }
-
-    total_light = clamp(total_light, 0.0, 1.0);
-    pixel.a = pixel.a * (1.0 + total_light);
-
-    return vec4(pixel.rgb * total_light, pixel.a);
+    
+    // Clamp total light and use it to reduce darkness
+    totalLight = clamp(totalLight, 0.0, 1.0);
+    pixel.a = pixel.a * (1.0 - totalLight);
+    
+    return pixel * color;
 }

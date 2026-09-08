@@ -12,7 +12,7 @@ local game = {}
 Camera = {}
 
 local fireballPositions = {}
-local FIREBALL_LIGHT_RADIUS = 20
+local FIREBALL_LIGHT_RADIUS = 50
 
 ---@enum CameraModes
 CameraModes = {
@@ -103,16 +103,17 @@ function game.update(dt)
         r.body:setLinearVelocity(r.speed, 0)
         r.anim:update(dt)
 
-        fireballPositions[i] = {r.body:getX(), r.body:getY(), FIREBALL_LIGHT_RADIUS}
+        fireballPositions[i] = {Camera:worldX(r.body:getX()), Camera:worldY(r.body:getY()), FIREBALL_LIGHT_RADIUS}
         if r.lifeTime <= 0 then
             table.remove(Fireballs, i)
+            table.remove(fireballPositions, i)
             break
         end
     end
 
-    FireballShader:send("fireball_positions", {love.mouse.getX(), love.mouse.getY(), 200})
+    
     if #fireballPositions > 0 then
-        
+        FireballShader:send("light_positions", unpack(fireballPositions))
     end
 
     Camera:attach(player.player.hurtBox.body:getX() - cameraOffsetX, cameraOffsetY, CameraModes.FOLLOW, dt)
