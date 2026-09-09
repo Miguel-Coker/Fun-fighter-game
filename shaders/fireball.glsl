@@ -1,8 +1,9 @@
 uniform vec3 light_positions[16]; // x, y, radius
 uniform int num_lights; // total number of lights
+uniform vec3 light_colour;
 
 vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
-    vec4 pixel = Texel(texture, texture_coords);
+    vec4 pixel = Texel(texture, texture_coords) * color;
     
     float totalLight = 0.0;
     
@@ -20,7 +21,8 @@ vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) 
     
     // Clamp total light and use it to reduce darkness
     totalLight = clamp(totalLight, 0.0, 1.0);
-    pixel.a = pixel.a * (1.0 - totalLight);
     
-    return pixel * color;
+    vec3 final_light = totalLight + light_colour;
+
+    return vec4(pixel.rgb * final_light, pixel.a);
 }

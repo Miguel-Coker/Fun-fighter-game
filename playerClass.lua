@@ -113,7 +113,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.anims.fireball = anim.newAnimation(fireballGrid('1-2', '1-2'), 0.15)
 
     ---@type Ranged
-    player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.fireball, 100, fireball, name.."fireballbase", cat, love.audio.newSource(audio.data.fireball))
+    player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.fireball, 600, fireball, name.."fireballbase", cat, love.audio.newSource(audio.data.fireball))
     player.rangedAttackCooldown = 5
     player.baseRangedAttackCooldown = 5
 

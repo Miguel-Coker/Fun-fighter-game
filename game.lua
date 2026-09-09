@@ -37,7 +37,8 @@ function game.load()
     Fireballs = {}
 
     FireballShader = love.graphics.newShader("shaders/fireball.glsl")
-    FireballShader:send("num_lights", 1)
+    FireballShader:send("num_lights", 2)
+    FireballShader:send("light_colour", {1, 1, 1})
 
     background = love.graphics.newImage("sprites/background.png")
     healthbar = love.graphics.newImage("sprites/healthbar.png")
