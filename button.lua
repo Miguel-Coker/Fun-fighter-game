@@ -46,6 +46,10 @@ function button:checkPressed()
     return false
 end
 
+function button:activate()
+    self.func(self)
+end
+
 function button:draw()
     if self.hide then
         return

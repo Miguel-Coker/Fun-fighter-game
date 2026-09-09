@@ -55,7 +55,7 @@ end
 
 function menu.keypressed(key)
     if key == "escape" then
-        menu.main.settings.func(menu.main.settings)
+        menu.main.settings:activate()
     end
 end
 
