@@ -25,12 +25,13 @@ local BASE_REACTION_TIME = 0.08
 ---@field baseBlockTime number
 ---@field attacking boolean
 ---@field canJump boolean
+---@field attackCategory integer
 ---@field dashing boolean
 ---@field dashTime number
 ---@field baseDashCooldown number
 ---@field dashCooldown number
 ---@field isAI boolean
----@field attack table
+---@field attack Melee
 ---@field attacks table
 ---@field rangedAttacks table
 ---@field hurtBox table
@@ -85,6 +86,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.dashTime = BASE_DASH_TIME
     player.baseDashCooldown = 1
     player.dashCooldown = 0
+    player.attackCategory = cat
 
     player.blocking = false
     player.blockTime = 0
@@ -279,11 +281,9 @@ function playerClass:AIMoveSys(plr, dt)
     end
 end
 
-function playerClass:startAttack(category)
-    self.hitBox.fixture:setCategory(category)
+function playerClass:startAttack()
     self.attackCooldown = self.baseAttackCooldown
     self.attacking = true
-    
     if self.attack then
         self.anim = self.attack.anim
     end
@@ -346,10 +346,25 @@ local function processBlock(self, dt)
     end
 end
 
+local function processAttack(self)
+    if self.anim.position == self.attack.attackFrame then
+        self.hitBox.fixture:setCategory(self.attackCategory)
+    end
+end
+
 function playerClass:update(dt)
     self.dashCooldown = self.dashCooldown - dt
     self.rangedAttackCooldown = self.rangedAttackCooldown - dt
     self.blockCooldown = self.blockCooldown - dt
+
+    if self.attack then
+        processAttack(self)
+    end
+
+    if self.attacking and self.anim.position == #self.anim.frames then
+        self.anim:gotoFrame(1)
+        self:endAttack()
+    end
 
     if self.blocking then
         processBlock(self, dt)

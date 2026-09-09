@@ -1,8 +1,9 @@
 local mod = {}
 
 ---@class Melee
----@field anim userdata
+---@field anim Animation
 ---@field damage number
+---@field attackFrame integer
 mod.meleeAttack = {}
 mod.meleeAttack.__index = mod.meleeAttack
 
@@ -11,10 +12,12 @@ function mod.meleeAttack.new(damage, anim)
     if type(damage) ~= "table" then
         instance.anim = anim
         instance.damage = damage
+        instance.attackFrame = #instance.anim.frames - 1
     else
         local data = damage
         instance.damage = data.damage
         instance.anim = data.anim
+        instance.attackFrame = #instance.anim.frames - 1
     end
     return instance
 end

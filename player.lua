@@ -54,11 +54,6 @@ function playerFile.update(dt)
         player.anim = player.anims.idleAnim
     end
 
-    if player.anim.position == 4 and player.attacking then
-        player.anim:gotoFrame(1)
-        player:endAttack()
-    end
-
     if player.attacking then
         player.hitBox.fixture:setSensor(false)
     else
@@ -77,7 +72,7 @@ local function tryAttack(attack)
     end
 
     player.attack = player.attacks[attack]
-    player:startAttack(Categories.PLAYER_HIT_BOX)
+    player:startAttack()
 end
 
 function playerFile.keypressed(key)

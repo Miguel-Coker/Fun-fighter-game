@@ -1,10 +1,6 @@
 local playerClass = require "playerClass"
 local enemyFile = {}
 
-local CAT_enemy = 1
-local CAT_HITBOX = 2
-local CAT_HURTBOX = 2
-
 ---@type Player
 local player = nil
 
@@ -38,16 +34,11 @@ function enemyFile.update(dt)
     enemy.attackCooldown = enemy.attackCooldown - dt
 
     if enemy.wantsToAttack and enemy.attackCooldown <= 0 and enemy.attack then
-        enemy:startAttack(Categories.PLAYER_HURT_BOX)
+        enemy:startAttack()
     end
 
     if enemy.attacking and enemy.attack ~= nil then
         enemy.anim = enemy.attack.anim
-    end
-
-    if enemy.anim == enemy.anims.kickAnim and enemy.anim.position == 4 then
-        enemy:endAttack()
-        enemy.anims.kickAnim:gotoFrame(1)
     end
 
     if enemy.health < 50 then
