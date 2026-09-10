@@ -2,6 +2,17 @@ local menu = {}
 
 local button = require("button")
 
+local function adjustButtons()
+    local windowWidth = love.graphics.getWidth()
+    local windowHeight = love.graphics.getHeight()
+
+    menu.settings.toggleFullscreen.x = windowWidth / 2 - menu.sprites.fullscreen:getHeight()
+    menu.settings.toggleFullscreen.y = windowHeight / 2 - 94
+
+    menu.settings.exit.x = windowWidth / 2 - menu.sprites.exit:getWidth() / 2
+    menu.settings.exit.y = windowHeight / 2
+end
+
 function menu.load()
     menu.sprites = {
         play = love.graphics.newImage("sprites/buttons/play.png"),
@@ -30,7 +41,7 @@ function menu.load()
     }
     menu.settings = {
         exit = button.new(windowWidth / 2 - menu.sprites.exit:getWidth() / 2, windowHeight / 2, menu.sprites.exit, love.event.quit),
-        toggleFullscreen = button.new(windowWidth / 2 - menu.sprites.fullscreen:getHeight(), windowHeight / 2 - 94, menu.sprites.fullscreen, function()love.window.setFullscreen(not love.window.getFullscreen()) end)
+        toggleFullscreen = button.new(windowWidth / 2 - menu.sprites.fullscreen:getHeight(), windowHeight / 2 - 94, menu.sprites.fullscreen, function()love.window.setFullscreen(not love.window.getFullscreen()) adjustButtons() end)
     }
 
     menu.selectedMenu = menu.main

@@ -16,12 +16,6 @@ function playerFile.load()
         error("Failed to create player")
     end
 
-
-    local grid = anim.newGrid(64, 105, player.spriteSheet:getWidth(), player.spriteSheet:getHeight())
-    player.anims.kickAnim = anim.newAnimation(grid('1-4', '3-3'), 0.15)
-    player.anims.punchAnim = anim.newAnimation(grid('5-8', '2-2'), 0.15)
-    player.anims.idleAnim = anim.newAnimation(grid('5-5', '1-1'), 0.1)
-
     player.hurtBox.fixture:setCategory(Categories.PLAYER_HURT_BOX)
     player.hurtBox.fixture:setMask(Categories.PLAYER_HIT_BOX, Categories.NONE)
 
@@ -78,6 +72,10 @@ end
 function playerFile.keypressed(key)
     if key == "l" then
         tryAttack(playerClass.attacksEnum.kick)
+    end
+
+    if key == "j" then
+        tryAttack(playerClass.attacksEnum.punch)
     end
 
     if key == "i" and not player.blocking and player.rangedAttackCooldown <= 0 then

@@ -111,7 +111,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.anims.idleAnim = anim.newAnimation(grid('5-5', '1-1'), 0.15)
     player.anims.kickAnim = anim.newAnimation(grid('1-4', '3-3'), 0.15)
     player.anims.blockAnim = anim.newAnimation(grid('7-7', '1-1'), 0.15)
-    player.anims.punchAnim = anim.newAnimation(grid('4-8', '2-2'), 0.15)
+    player.anims.punchAnim = anim.newAnimation(grid('6-9', '2-2'), 0.15)
     player.anims.fireball = anim.newAnimation(fireballGrid('1-2', '1-2'), 0.15)
 
     ---@type Ranged
@@ -120,8 +120,8 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.baseRangedAttackCooldown = 5
 
     player.attacks = {
-        attackClass.meleeAttack.new(10, player.anims.kickAnim),
-        attackClass.meleeAttack.new(15, player.anims.punchAnim)
+        attackClass.meleeAttack.new(15, player.anims.kickAnim),
+        attackClass.meleeAttack.new(10, player.anims.punchAnim)
     }
 
     ---@type Melee
