@@ -131,7 +131,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
 
     player.hurtBox = {}
     player.hurtBox.body = love.physics.newBody(World, pos.x, pos.y, "dynamic")
-    player.hurtBox.shape = love.physics.newRectangleShape(128, 280)
+    player.hurtBox.shape = love.physics.newRectangleShape(128, 220)
     player.hurtBox.fixture = love.physics.newFixture(player.hurtBox.body, player.hurtBox.shape)
     player.hurtBox.fixture:setUserData(name.."_hurtbox")
     player.hurtBox.body:setFixedRotation(true)
@@ -141,7 +141,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
 
     player.hitBox = {}
     player.hitBox.body = love.physics.newBody(World, pos.x, pos.y, "dynamic")
-    player.hitBox.shape = love.physics.newRectangleShape(128, 280)
+    player.hitBox.shape = love.physics.newRectangleShape(128, 220)
     player.hitBox.fixture = love.physics.newFixture(player.hitBox.body, player.hitBox.shape)
     player.hitBox.body:setFixedRotation(true)
     player.hitBox.fixture:setUserData(name.."_hitbox")
@@ -211,6 +211,8 @@ local function processDefensiveMood(self, plr, dt)
     if plr.attacking == false then
         return
     end
+
+    self.reactionTime = self.reactionTime - dt
 
     if self.reactionTime <= 0 then
         self:block()
@@ -396,13 +398,8 @@ function playerClass:draw()
         love.graphics.polygon("line", self.hitBox.body:getWorldPoints(self.hitBox.shape:getPoints()))
     end
 
-    local windowWidth, windowHeight = love.graphics.getDimensions()
-    local size = windowHeight + windowWidth
-    local spriteSize = self.spriteSheet:getWidth() + self.spriteSheet:getHeight()
-    local scale = size / spriteSize * 1.5
-
     love.graphics.setColor(unpack(self.colour))
-    self.anim:draw(self.spriteSheet, self.hurtBox.body:getX() - 120, self.hurtBox.body:getY() - 160, 0, scale, scale)
+    self.anim:draw(self.spriteSheet, self.hurtBox.body:getX() - 100, self.hurtBox.body:getY() - 130, 0, 2.5, 2.5)
     love.graphics.setColor(1, 1, 1)
 end
 
