@@ -108,10 +108,10 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     local fireballGrid = anim.newGrid(64, 64, fireball:getWidth(), fireball:getHeight())
 
     player.anims = {}
-    player.anims.idleAnim = anim.newAnimation(grid('1-14', 1), 0.1)
-    player.anims.kickAnim = anim.newAnimation(grid('2-13', 2), 0.1)
-    player.anims.blockAnim = anim.newAnimation(grid('4-4', 2), 0.1)
-    player.anims.punchAnim = anim.newAnimation(grid('1-14', 3), 0.1)
+    player.anims.idleAnim = anim.newAnimation(grid('1-14', 1), 0.08)
+    player.anims.kickAnim = anim.newAnimation(grid('2-13', 2), 0.08)
+    player.anims.blockAnim = anim.newAnimation(grid('4-4', 2), 0.08)
+    player.anims.punchAnim = anim.newAnimation(grid('1-14', 3), 0.08)
     player.anims.fireball = anim.newAnimation(fireballGrid('1-2', '1-2'), 0.15)
 
     ---@type Ranged
