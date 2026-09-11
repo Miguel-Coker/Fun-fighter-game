@@ -104,14 +104,14 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
 
     player.canJump = true
 
-    local grid = anim.newGrid(64, 105, player.spriteSheet:getWidth(), player.spriteSheet:getHeight())
+    local grid = anim.newGrid(98, 106, player.spriteSheet:getWidth(), player.spriteSheet:getHeight())
     local fireballGrid = anim.newGrid(64, 64, fireball:getWidth(), fireball:getHeight())
 
     player.anims = {}
-    player.anims.idleAnim = anim.newAnimation(grid('5-5', '1-1'), 0.15)
-    player.anims.kickAnim = anim.newAnimation(grid('1-4', '3-3'), 0.15)
-    player.anims.blockAnim = anim.newAnimation(grid('7-7', '1-1'), 0.15)
-    player.anims.punchAnim = anim.newAnimation(grid('6-9', '2-2'), 0.15)
+    player.anims.idleAnim = anim.newAnimation(grid('1-14', 1), 0.1)
+    player.anims.kickAnim = anim.newAnimation(grid('2-13', 2), 0.1)
+    player.anims.blockAnim = anim.newAnimation(grid('4-4', 2), 0.1)
+    player.anims.punchAnim = anim.newAnimation(grid('1-14', 3), 0.1)
     player.anims.fireball = anim.newAnimation(fireballGrid('1-2', '1-2'), 0.15)
 
     ---@type Ranged
@@ -399,7 +399,7 @@ function playerClass:draw()
     end
 
     love.graphics.setColor(unpack(self.colour))
-    self.anim:draw(self.spriteSheet, self.hurtBox.body:getX() - 100, self.hurtBox.body:getY() - 130, 0, 2.5, 2.5)
+    self.anim:draw(self.spriteSheet, self.hurtBox.body:getX(), self.hurtBox.body:getY(), 0, 2.5, 2.5, 49, 53)
     love.graphics.setColor(1, 1, 1)
 end
 

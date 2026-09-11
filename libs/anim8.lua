@@ -281,18 +281,9 @@ function Animation:getFrameInfo(x, y, r, sx, sy, ox, oy, kx, ky)
     r,sx,sy,ox,oy,kx,ky = r or 0, sx or 1, sy or 1, ox or 0, oy or 0, kx or 0, ky or 0
     local _, _, w = frame:getViewport()
     sx = -sx
-    ox = w + w / 4
-    kx = kx * -1
-    ky = ky * -1
-  end
-
-  if self.direction == "left" then
-    r,sx,sy,ox,oy,kx,ky = r or 0, sx or 1, sy or 1, ox or 0, oy or 0, kx or 0, ky or 0
-    local _, _, w = frame:getViewport()
-    sx = sx
-    ox = w - w
-    kx = kx * -1
-    ky = ky * -1
+    ox = w - ox
+    kx = -kx
+    ky = -ky
   end
 
   if self.flippedH or self.flippedV then
@@ -301,7 +292,7 @@ function Animation:getFrameInfo(x, y, r, sx, sy, ox, oy, kx, ky)
 
     if self.flippedH then
       sx = sx * -1
-      ox = w - ox
+      ox = w
       kx = kx * -1
       ky = ky * -1
     end
