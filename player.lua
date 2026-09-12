@@ -74,8 +74,12 @@ function playerFile.keypressed(key)
         tryAttack(playerClass.attacksEnum.kick)
     end
 
-    if key == "j" then
+    if key == "k" then
         tryAttack(playerClass.attacksEnum.punch)
+    end
+
+    if key == "j" then
+        tryAttack(playerClass.attacksEnum.spinKick)
     end
 
     if key == "i" and not player.blocking and player.rangedAttackCooldown <= 0 then
