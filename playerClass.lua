@@ -110,11 +110,11 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
 
     player.anims = {}
     player.anims.idleAnim = anim.newAnimation(grid('1-14', 1), 0.1)
-    player.anims.kickAnim = anim.newAnimation(grid('2-13', 2), 0.08)
+    player.anims.kickAnim = anim.newAnimation(grid('2-13', 2), 0.07)
     player.anims.blockAnim = anim.newAnimation(grid('1-14', 4), 0.1)
     player.anims.spinKickAnim = anim.newAnimation(grid('1-14', 3), 0.08)
     player.anims.fireball = anim.newAnimation(fireballGrid('1-2', '1-2'), 0.15)
-    player.anims.punch = anim.newAnimation(grid('5-10', 5), 0.08)
+    player.anims.punch = anim.newAnimation(grid('5-10', 5), 0.07)
 
     ---@type Ranged
     player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.fireball, 600, fireball, name.."fireballbase", cat, love.audio.newSource(audio.data.fireball))
@@ -122,9 +122,9 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.baseRangedAttackCooldown = 5
 
     player.attacks = {
-        attackClass.meleeAttack.new(15, player.anims.kickAnim),
-        attackClass.meleeAttack.new(20, player.anims.spinKickAnim),
-        attackClass.meleeAttack.new(10, player.anims.punch)
+        attackClass.meleeAttack.new(10, player.anims.kickAnim),
+        attackClass.meleeAttack.new(15, player.anims.spinKickAnim),
+        attackClass.meleeAttack.new(5, player.anims.punch)
     }
 
     ---@type Melee
@@ -347,6 +347,7 @@ local function processBlock(self, dt)
 
     if self.blockTime <= 0 then
         self.blocking = false
+        self.anim:gotoFrame(1)
         self.anim = self.anims.idleAnim
     end
 end
