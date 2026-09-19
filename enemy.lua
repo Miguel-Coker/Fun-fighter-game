@@ -17,6 +17,7 @@ function enemyFile.load(plr)
     enemy.hurtBox.fixture:setMask(Categories.PLAYER_HURT_BOX, Categories.NONE)
 
     enemy.hitBox.fixture:setMask(Categories.PLAYER_HIT_BOX)
+    enemy.hitBox.fixture:setCategory(Categories.NONE)
 
     enemy.baseAttackCooldown = 2
     enemy.rangedAttack.damage = enemy.rangedAttack.damage * 1.5

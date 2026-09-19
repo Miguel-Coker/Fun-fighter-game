@@ -128,7 +128,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     }
 
     ---@type Melee
-    player.attack = player.attacks[playerClass.attacksEnum.kick]
+    player.attack = nil
 
     player.anim = player.anims.idleAnim
 
@@ -207,6 +207,10 @@ function playerClass:block()
     self.blockCooldown = BASE_BLOCK_COOLDOWN
 end
 
+function playerClass:getRandomAttack()
+    return self.attacks[Rng:random(1, #self.attacks)]
+end
+
 ---@param self Player
 ---@param plr Player
 ---@param dt number
@@ -221,7 +225,7 @@ local function processDefensiveMood(self, plr, dt)
         self:block()
 
         if self.blocking == false then
-            self.attack = self.attacks[playerClass.attacksEnum.kick]
+            self.attack = self:getRandomAttack()
             self.wantsToAttack = true
         end
 

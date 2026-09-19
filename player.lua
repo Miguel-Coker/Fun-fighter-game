@@ -44,10 +44,6 @@ function playerFile.update(dt)
         end
     end
 
-    if not player.attacking and not player.blocking then
-        player.anim = player.anims.idleAnim
-    end
-
     if player.attacking then
         player.hitBox.fixture:setSensor(false)
     else
