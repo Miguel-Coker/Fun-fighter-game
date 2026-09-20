@@ -3,7 +3,7 @@ local attackClass = require("attackClass")
 local audio = require("audio")
 local sone = require("libs.sone")
 
-local BASE_BLOCK_COOLDOWN = 0.5
+local BASE_BLOCK_COOLDOWN = 0.6
 local BASE_DASH_TIME = 0.3
 local DASH_SPEED = 600
 local BASE_REACTION_TIME = 0.08
@@ -91,7 +91,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
 
     player.blocking = false
     player.blockTime = 0
-    player.baseBlockTime = 0.2
+    player.baseBlockTime = 0.3
     player.blockCooldown = 0
 
     player.colour = colour
@@ -111,7 +111,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.anims = {}
     player.anims.idleAnim = anim.newAnimation(grid('1-14', 1), 0.1)
     player.anims.kickAnim = anim.newAnimation(grid('2-13', 2), 0.07)
-    player.anims.blockAnim = anim.newAnimation(grid('1-14', 4), 0.1)
+    player.anims.blockAnim = anim.newAnimation(grid('4-14', 4), 0.08)
     player.anims.spinKickAnim = anim.newAnimation(grid('1-14', 3), 0.08)
     player.anims.fireball = anim.newAnimation(fireballGrid('1-2', '1-2'), 0.15)
     player.anims.punch = anim.newAnimation(grid('5-10', 5), 0.07)
@@ -236,8 +236,13 @@ end
 ---@param self Player
 ---@param plr Player
 ---@param dt number
-local function processAggresiveMood(self, plr, dt)
-    self.moving = true
+local function processAggresiveMood(self, plr, dist, dt)
+    if dist < 100 then
+        self.moving = false
+    else
+        self.moving = true
+    end
+
     self.attack = self.attacks[playerClass.attacksEnum.kick]
     self.wantsToAttack = true
 end
@@ -279,7 +284,7 @@ function playerClass:AIMoveSys(plr, dt)
         processDefensiveMood(self, plr, dt)
 
     elseif self.mood == playerClass.AIMood.AGGRESIVE then
-        processAggresiveMood(self, plr, dt)
+        processAggresiveMood(self, plr, dist, dt)
 
     elseif self.mood == playerClass.AIMood.NORMAL then
         processNormalMood(self, plr, dt)
