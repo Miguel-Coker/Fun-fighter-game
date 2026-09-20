@@ -30,7 +30,6 @@ local BASE_REACTION_TIME = 0.08
 ---@field dashTime number
 ---@field baseDashCooldown number
 ---@field dashCooldown number
----@field isAI boolean
 ---@field attack Melee
 ---@field attacks table
 ---@field rangedAttacks table
@@ -100,8 +99,6 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
 
     -- For AI only
     player.wantsToAttack = false
-
-    player.isAI = isAI
 
     player.canJump = true
 
