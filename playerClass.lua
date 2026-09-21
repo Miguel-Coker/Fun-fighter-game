@@ -220,9 +220,8 @@ local function processDefensiveMood(self, plr, dt)
     if self.reactionTime <= 0 then
         self:block()
 
-        if self.blocking == false then
-            self.attack = self:getRandomAttack()
-            self.wantsToAttack = true
+        if self:canAttack() then
+            self:setupAttack(playerClass.attacksEnum.punch)
         end
 
         self.reactionTime = BASE_REACTION_TIME
