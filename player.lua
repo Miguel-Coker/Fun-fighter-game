@@ -57,11 +57,8 @@ end
 
 ---@param attack playerClass.attacksEnum
 local function tryAttack(attack)
-    if player.blocking or player.attackCooldown > 0 then
-        return
-    end
-
-    player.attack = player.attacks[attack]
+    player:canAttack()
+    player:setupAttack(attack)
     player:startAttack()
 end
 

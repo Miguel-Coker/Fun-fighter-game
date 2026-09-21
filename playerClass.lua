@@ -1,7 +1,6 @@
 local anim = require("libs.anim8")
 local attackClass = require("attackClass")
 local audio = require("audio")
-local sone = require("libs.sone")
 
 local BASE_BLOCK_COOLDOWN = 0.6
 local BASE_DASH_TIME = 0.3
@@ -230,6 +229,17 @@ local function processDefensiveMood(self, plr, dt)
     end
 end
 
+function playerClass:canAttack()
+    return (self.attackCooldown <= 0 and self.blocking == false)
+end
+
+---@param attack playerClass.attacksEnum
+function playerClass:setupAttack(attack)
+    self.attack = self.attacks[attack]
+    self.anim = self.attack.anim
+    self.wantsToAttack = true
+end
+
 ---@param self Player
 ---@param plr Player
 ---@param dt number
@@ -240,8 +250,9 @@ local function processAggresiveMood(self, plr, dist, dt)
         self.moving = true
     end
 
-    self.attack = self.attacks[playerClass.attacksEnum.kick]
-    self.wantsToAttack = true
+    if self:canAttack() then
+        self:setupAttack(playerClass.attacksEnum.kick)
+    end
 end
 
 local function processNormalMood(self, plr, dt)
@@ -295,9 +306,6 @@ end
 function playerClass:startAttack()
     self.attackCooldown = self.baseAttackCooldown
     self.attacking = true
-    if self.attack then
-        self.anim = self.attack.anim
-    end
 end
 
 function playerClass:startRangedAttack()
