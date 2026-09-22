@@ -20,7 +20,6 @@ function enemyFile.load(plr)
     enemy.hitBox.fixture:setCategory(Categories.NONE)
 
     enemy.baseAttackCooldown = 2
-    enemy.rangedAttack.damage = enemy.rangedAttack.damage * 1.5
 
     --[[enemy.hitBox = {}
     enemy.hitBox.body = love.physics.newBody(World, 500, 400, "dynamic")

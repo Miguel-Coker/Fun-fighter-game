@@ -214,14 +214,14 @@ end
 ---@param self Player
 ---@param plr Player
 ---@param dt number
-local function processDefensiveMood(self, plr, dt)
+local function processDefensiveMood(self, dist, plr, dt)
     if plr.attacking == false then
         return
     end
 
     self.reactionTime = self.reactionTime - dt
 
-    if self.reactionTime <= 0 then
+    if self.reactionTime <= 0 and dist <= 150 then
         self:block()
 
         if self:canAttack() then
@@ -308,7 +308,7 @@ function playerClass:AIMoveSys(plr, dt)
     end
 
     if self.mood == playerClass.AIMood.DEFENSIVE then
-        processDefensiveMood(self, plr, dt)
+        processDefensiveMood(self, dist, plr, dt)
 
     elseif self.mood == playerClass.AIMood.AGGRESIVE then
         processAggresiveMood(self, plr, dist, dt)

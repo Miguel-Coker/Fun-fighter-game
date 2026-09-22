@@ -161,7 +161,7 @@ function love.draw()
         game.draw()
         if GameStates.pause then
             love.graphics.setColor(0, 1, 0)
-            love.graphics.print("PAUSED", love.graphics.getWidth() / 2 - 20, love.graphics.getHeight() / 2)
+            love.graphics.print("PAUSED", love.graphics.getWidth() / 2 - 20, love.graphics.getHeight() / 2 - 80)
             love.graphics.setColor(1, 1, 1)
         end
     end
