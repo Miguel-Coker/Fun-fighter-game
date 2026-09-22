@@ -433,6 +433,9 @@ end
 
 function playerClass:draw()
     if self.showCollisionBoxes then
+        love.graphics.setColor(0, 1, 0)
+        love.graphics.polygon("line", self.hurtBox.body:getWorldPoints(self.hurtBox.shape:getPoints()))
+        love.graphics.setColor(1, 0, 0)
         love.graphics.polygon("line", self.hitBox.body:getWorldPoints(self.hitBox.shape:getPoints()))
     end
 
