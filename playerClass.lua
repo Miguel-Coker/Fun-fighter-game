@@ -203,6 +203,10 @@ function playerClass:block()
     self.blockCooldown = BASE_BLOCK_COOLDOWN
 end
 
+function playerClass:getRandomAttackIndex()
+    return Rng:random(1, #self.attacks)
+end
+
 function playerClass:getRandomAttack()
     return self.attacks[Rng:random(1, #self.attacks)]
 end
@@ -228,13 +232,21 @@ local function processDefensiveMood(self, plr, dt)
     end
 end
 
+---@return boolean
 function playerClass:canAttack()
     return (self.attackCooldown <= 0 and self.blocking == false)
 end
 
----@param attack playerClass.attacksEnum
+---@overload fun(attack: integer)
+---@overload fun(attack: Melee)
+---@param attack playerClass.attacksEnum | Melee
 function playerClass:setupAttack(attack)
-    self.attack = self.attacks[attack]
+    if type(attack) == "table" then
+        self.attack = attack
+    elseif type(attack) == "number" then
+        self.attack = self.attacks[attack]
+    end
+
     self.anim = self.attack.anim
     self.wantsToAttack = true
 end
@@ -242,6 +254,7 @@ end
 ---@param self Player
 ---@param plr Player
 ---@param dt number
+---@param dist number the distance between self and
 local function processAggresiveMood(self, plr, dist, dt)
     if dist < 100 then
         self.moving = false
@@ -250,10 +263,15 @@ local function processAggresiveMood(self, plr, dist, dt)
     end
 
     if self:canAttack() then
-        self:setupAttack(playerClass.attacksEnum.kick)
+        self:setupAttack(self:getRandomAttackIndex())
     end
+
+    self:setupAttack(self.attacks[playerClass.attacksEnum.kick])
 end
 
+---@param self Player
+---@param plr Player opponent
+---@param dt number
 local function processNormalMood(self, plr, dt)
     if plr.attacking then
         self.vx = -self.vx
@@ -344,6 +362,7 @@ function playerClass:endAttack()
     self.wantsToAttack = false
 end
 
+---@param x number
 function playerClass:lookTowards(x)
     local playerX = self.hurtBox.body:getX()
 
@@ -355,6 +374,7 @@ function playerClass:lookTowards(x)
 end
 
 ---@param self Player
+---@param dt number
 local function processBlock(self, dt)
     self.blockTime = self.blockTime - dt
 
@@ -365,12 +385,14 @@ local function processBlock(self, dt)
     end
 end
 
+---@param self Player
 local function processAttack(self)
     if self.anim.position == self.attack.attackFrame then
         self.hitBox.fixture:setCategory(self.attackCategory)
     end
 end
 
+---@param dt number
 function playerClass:update(dt)
     self.dashCooldown = self.dashCooldown - dt
     self.rangedAttackCooldown = self.rangedAttackCooldown - dt
