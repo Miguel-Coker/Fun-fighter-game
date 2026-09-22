@@ -118,9 +118,9 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.baseRangedAttackCooldown = 5
 
     player.attacks = {
-        attackClass.meleeAttack.new(10, player.anims.kickAnim),
-        attackClass.meleeAttack.new(15, player.anims.spinKickAnim),
-        attackClass.meleeAttack.new(5, player.anims.punch)
+        attackClass.meleeAttack.new(8, player.anims.kickAnim),
+        attackClass.meleeAttack.new(12, player.anims.spinKickAnim),
+        attackClass.meleeAttack.new(3, player.anims.punch)
     }
 
     ---@type Melee
