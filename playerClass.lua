@@ -193,7 +193,7 @@ local function toPositive(x)
 end
 
 function playerClass:block()
-    if self.blocking or self.blockCooldown > 0 then
+    if self.blocking or self.blockCooldown > 0 or self.attacking then
         return
     end
 
@@ -215,26 +215,23 @@ end
 ---@param plr Player
 ---@param dt number
 local function processDefensiveMood(self, dist, plr, dt)
-    if plr.attacking == false then
-        return
+    if plr.attacking then
+        self.reactionTime = self.reactionTime - dt
     end
 
-    self.reactionTime = self.reactionTime - dt
-
-    if self.reactionTime <= 0 and dist <= 150 then
+    if self.reactionTime <= 0 and dist <= 175 then
         self:block()
 
         if self:canAttack() then
             self:setupAttack(playerClass.attacksEnum.punch)
+            self.reactionTime = BASE_REACTION_TIME
         end
-
-        self.reactionTime = BASE_REACTION_TIME
     end
 end
 
 ---@return boolean
 function playerClass:canAttack()
-    return (self.attackCooldown <= 0 and self.blocking == false)
+    return (self.attackCooldown <= 0 and self.blocking == false and self.attacking == false)
 end
 
 ---@overload fun(attack: integer)
