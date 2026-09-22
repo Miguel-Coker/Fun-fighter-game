@@ -10,7 +10,7 @@ playerFile.player = nil
 local player = nil
 
 function playerFile.load()
-    player = playerClass.new("player", love.graphics.newImage("player2.png"), false, {x = 100, y = 400}, Categories.PLAYER_HIT_BOX, {0.6, 0.6, 1})
+    player = playerClass.new("player", love.graphics.newImage("sprites/player2.png"), false, {x = 100, y = 400}, Categories.PLAYER_HIT_BOX, {0.6, 0.6, 1})
 
     if player == nil then
         error("Failed to create player")
