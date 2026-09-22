@@ -57,9 +57,10 @@ end
 
 ---@param attack playerClass.attacksEnum
 local function tryAttack(attack)
-    player:canAttack()
-    player:setupAttack(attack)
-    player:startAttack()
+    if player:canAttack() then
+        player:setupAttack(attack)
+        player:startAttack()
+    end
 end
 
 function playerFile.keypressed(key)

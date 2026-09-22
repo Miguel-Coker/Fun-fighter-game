@@ -110,7 +110,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.anims.blockAnim = anim.newAnimation(grid('4-14', 4), 0.08)
     player.anims.spinKickAnim = anim.newAnimation(grid('1-14', 3), 0.08)
     player.anims.fireball = anim.newAnimation(fireballGrid('1-2', '1-2'), 0.15)
-    player.anims.punch = anim.newAnimation(grid('5-10', 5), 0.07)
+    player.anims.punch = anim.newAnimation(grid('6-10', 5), 0.07)
 
     ---@type Ranged
     player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.fireball, 600, fireball, name.."fireballbase", cat, love.audio.newSource(audio.data.fireball))
@@ -257,16 +257,18 @@ end
 ---@param dist number the distance between self and
 local function processAggresiveMood(self, plr, dist, dt)
     if dist < 100 then
+        if self:canAttack() then
+            self:setupAttack(self:getRandomAttackIndex())
+        end
         self.moving = false
+
+        if self.attack and self.anim.position == self.attack.attackFrame then
+            self.vx = -self.vx
+            self.moving = true
+        end
     else
         self.moving = true
     end
-
-    if self:canAttack() then
-        self:setupAttack(self:getRandomAttackIndex())
-    end
-
-    self:setupAttack(self.attacks[playerClass.attacksEnum.kick])
 end
 
 ---@param self Player
