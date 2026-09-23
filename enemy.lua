@@ -33,8 +33,6 @@ function enemyFile.update()
     while GameStates.pause == false do
         local dt = love.timer.getDelta()
 
-        print(dt)
-
         enemy.attackCooldown = enemy.attackCooldown - dt
 
         if enemy.wantsToAttack and enemy.attackCooldown <= 0 and enemy.attack then
