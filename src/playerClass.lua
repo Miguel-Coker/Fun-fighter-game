@@ -45,7 +45,8 @@ local BASE_REACTION_TIME = 0.08
 ---@field wantsToAttack boolean
 ---@field reactionTime number
 ---@field mood AIMood
----@field dirX integer
+---@field direction integer
+---@field moveDirection integer
 local playerClass = {}
 playerClass.__index = playerClass
 
@@ -109,7 +110,8 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.wantsToAttack = false
 
     player.canJump = true
-    player.dirX = playerClass.playerDirection.right
+    player.direction = playerClass.playerDirection.right
+    player.moveDirection = playerClass.playerDirection.right
 
     local grid = anim.newGrid(98, 106, player.spriteSheet:getWidth(), player.spriteSheet:getHeight())
     local fireballGrid = anim.newGrid(64, 64, fireball:getWidth(), fireball:getHeight())
@@ -192,11 +194,7 @@ function playerClass:dash()
     self.dashTime = BASE_DASH_TIME
     self.moving = true
     self.dashCooldown = self.baseDashCooldown
-    if self.vx < 0 then
-        self.vx = -DASH_SPEED
-    elseif self.vx > 0 then
-        self.vx = DASH_SPEED
-    end
+    self.vx = self.moveDirection * DASH_SPEED
 end
 
 local function toPositive(x)
@@ -239,6 +237,12 @@ local function processDefensiveMood(self, dist, plr, dt)
         self.reactionTime = self.reactionTime - dt
     end
 
+    if dist > 200 then
+        self.moving = true
+    else
+        self.moving = false
+    end
+
     if self.reactionTime <= 0 and dist <= 175 then
         self:block()
 
@@ -246,6 +250,9 @@ local function processDefensiveMood(self, dist, plr, dt)
             self:setupAttack(playerClass.attacksEnum.punch)
             self.reactionTime = BASE_REACTION_TIME
         end
+
+    elseif self.health < 30 and self.reactionTime <= 0 then
+        self:dash()
     end
 end
 
@@ -273,6 +280,18 @@ end
 ---@param dt number
 ---@param dist number the distance between self and
 local function processAggresiveMood(self, plr, dist, dt)
+    if self.rangedAttackCooldown <= 0 then
+        self.moveDirection = -self.moveDirection
+        self:dash()
+
+        if dist >= 300 then
+            self:startRangedAttack()
+        end
+        
+    elseif dist > 300 then
+        self:dash()
+    end
+
     if dist < 100 then
         if self:canAttack() then
             self:setupAttack(self:getRandomAttackIndex())
@@ -283,6 +302,7 @@ local function processAggresiveMood(self, plr, dist, dt)
             self.vx = -self.vx
             self.moving = true
         end
+
     else
         self.moving = true
     end
@@ -304,25 +324,6 @@ function playerClass:AIMoveSys(plr, dt)
     local dx = plr.hurtBox.body:getX() - self.hurtBox.body:getX()
     local dist = toPositive(dx)
     local vx = dx / dist * self.speed
-
-    if self.rangedAttackCooldown <= 0 then
-        vx = -vx
-
-        self:dash()
-        if dist > 325 then
-            self:startRangedAttack()
-        end
-    else
-        if dist > 300 then
-            self:dash()
-        end
-    end
-
-    if dist <= 240 and not (self.attackCooldown <= 0.4) then
-        self.moving = false
-    else
-        self.moving = true
-    end
 
     if self.mood == playerClass.AIMood.DEFENSIVE then
         processDefensiveMood(self, dist, plr, dt)
@@ -421,6 +422,12 @@ function playerClass:update(dt)
     self.attackCooldown = self.attackCooldown - dt
 
     local hurtBoxXpos = self.hurtBox.body:getX()
+
+    if self.vx < 0 then
+        self.moveDirection = playerClass.playerDirection.left
+    elseif self.vx > 0 then
+        self.moveDirection = playerClass.playerDirection.right
+    end
 
     if self.attack then
         processAttack(self)
