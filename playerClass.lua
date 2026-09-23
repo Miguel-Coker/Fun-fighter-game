@@ -71,6 +71,8 @@ playerClass.AIMood = {
 
 local JUMP_POWER_SCALE = 10
 
+local ATTACK_OFFSET = 50
+
 local fireball = love.graphics.newImage("sprites/fireball2.png")
 
 ---@param name string
@@ -448,7 +450,7 @@ function playerClass:update(dt)
     self.hitBox.body:setX(self.hurtBox.body:getX())
 
     if self.attacking then
-        self.hitBox.body:setX(hurtBoxXpos + self.dirX * 50)
+        self.hitBox.body:setX(hurtBoxXpos + self.dirX * ATTACK_OFFSET)
     end
 end
 
