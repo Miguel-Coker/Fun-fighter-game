@@ -162,12 +162,17 @@ end
 
 ---@param damage  number
 function playerClass:takeDamage(damage)
-    if self.blocking then
-        self.health = self.health - damage / 3
-        
+    local finalDamage = damage
+
+    if self.attacking then
+        finalDamage = damage * 1.2
+    elseif self.blocking then
+        finalDamage = damage / 2
     else
-        self.health = self.health - damage
+        finalDamage = damage
     end
+
+    self.health = self.health - finalDamage
 end
 
 function playerClass:jump()
@@ -382,10 +387,10 @@ function playerClass:lookTowards(x)
 
     if playerX < x then
         self.anim.direction = "right"
-        self.dirX = 1
+        self.dirX = playerClass.playerDirection.right
     elseif playerX > x then
         self.anim.direction = "left"
-        self.dirX = -1
+        self.dirX = playerClass.playerDirection.left
     end
 end
 
