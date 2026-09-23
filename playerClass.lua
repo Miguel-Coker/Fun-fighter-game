@@ -45,6 +45,7 @@ local BASE_REACTION_TIME = 0.08
 ---@field wantsToAttack boolean
 ---@field reactionTime number
 ---@field mood AIMood
+---@field dirX integer
 local playerClass = {}
 playerClass.__index = playerClass
 
@@ -53,6 +54,12 @@ playerClass.attacksEnum = {
     kick = 1,
     spinKick = 2,
     punch = 3
+}
+
+---@enum PlayerDirection
+playerClass.playerDirection = {
+    left = -1,
+    right = 1
 }
 
 ---@enum AIMood
@@ -100,6 +107,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.wantsToAttack = false
 
     player.canJump = true
+    player.dirX = playerClass.playerDirection.right
 
     local grid = anim.newGrid(98, 106, player.spriteSheet:getWidth(), player.spriteSheet:getHeight())
     local fireballGrid = anim.newGrid(64, 64, fireball:getWidth(), fireball:getHeight())
@@ -192,8 +200,13 @@ local function toPositive(x)
     return x
 end
 
+---@return boolean
+function playerClass:canBlock()
+    return not (self.blocking or self.blockCooldown > 0 or self.attacking)
+end
+
 function playerClass:block()
-    if self.blocking or self.blockCooldown > 0 or self.attacking then
+    if self:canBlock() == false then
         return
     end
 
@@ -367,8 +380,10 @@ function playerClass:lookTowards(x)
 
     if playerX < x then
         self.anim.direction = "right"
+        self.dirX = 1
     elseif playerX > x then
         self.anim.direction = "left"
+        self.dirX = -1
     end
 end
 
@@ -396,6 +411,8 @@ function playerClass:update(dt)
     self.dashCooldown = self.dashCooldown - dt
     self.rangedAttackCooldown = self.rangedAttackCooldown - dt
     self.blockCooldown = self.blockCooldown - dt
+
+    local hurtBoxXpos = self.hurtBox.body:getX()
 
     if self.attack then
         processAttack(self)
@@ -429,6 +446,10 @@ function playerClass:update(dt)
     self.hitBox.body:setLinearVelocity(0, 0)
     self.hitBox.body:setY(self.hurtBox.body:getY())
     self.hitBox.body:setX(self.hurtBox.body:getX())
+
+    if self.attacking then
+        self.hitBox.body:setX(hurtBoxXpos + self.dirX * 50)
+    end
 end
 
 function playerClass:draw()

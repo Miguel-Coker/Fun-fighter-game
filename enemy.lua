@@ -47,7 +47,7 @@ function enemyFile.update()
                 enemy.mood = playerClass.AIMood.DEFENSIVE
             end
 
-            enemy:AIMoveSys(player, dt)
+            --enemy:AIMoveSys(player, dt)
             enemy:update(dt)
             enemy:lookTowards(player.hurtBox.body:getX())
             enemy.anim:update(dt)
