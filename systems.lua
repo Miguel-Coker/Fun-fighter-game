@@ -6,6 +6,36 @@ local mod = {}
 mod.vector2 = {}
 mod.vector2.__index = mod.vector2
 
+mod.coroutine = {}
+
+mod.coroutine.sleepingThreads = {} 
+
+function mod.coroutine.update()
+    local currTime = os.clock()
+
+    for co, coData in pairs(mod.coroutine.sleepingThreads) do
+        local sleepTime = coData[1]
+        local coArgs = coData[2]
+
+        if currTime >= sleepTime then
+            mod.coroutine.sleepingThreads[co] = nil
+
+            coroutine.resume(co, coArgs)
+        end
+    end
+end
+
+---@param seconds number
+---@param coArgs any
+function mod.coroutine.wait(seconds, coArgs)
+    local time = os.clock() + seconds
+
+    local co = coroutine.running()
+    mod.coroutine.sleepingThreads[co] = {time, coArgs}
+
+    coroutine.yield()
+end
+
 ---@param x number
 ---@param y number
 ---@return Vector2

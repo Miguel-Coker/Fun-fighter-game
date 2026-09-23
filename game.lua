@@ -26,6 +26,7 @@ local cameraOffsetY
 local background
 
 local healthbar
+
 function game.load()
     audio.load()
     Camera.x = 0

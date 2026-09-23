@@ -1,8 +1,15 @@
 local playerClass = require "playerClass"
+local systems     = require "systems"
 local enemyFile = {}
 
 ---@type Player
 local player = nil
+
+---@type love.Thread
+local enemyThread
+
+---@type love.Channel
+local enemyChannel
 
 ---@param plr Player
 function enemyFile.load(plr)
@@ -20,35 +27,35 @@ function enemyFile.load(plr)
     enemy.hitBox.fixture:setCategory(Categories.NONE)
 
     enemy.baseAttackCooldown = 2
-
-    --[[enemy.hitBox = {}
-    enemy.hitBox.body = love.physics.newBody(World, 500, 400, "dynamic")
-    enemy.hitBox.shape = love.physics.newRectangleShape(10, 10)
-    enemy.hitBox.fixture = love.physics.newFixture(enemy.hitBox.body, enemy.hitBox.shape)
-    enemy.hitBox.fixture:setUserData("enemy_hitbox")
-    enemy.hitBox.fixture:setCategory(1)
-    enemy.hitBox.fixture:setMask(2)]]
 end
 
-function enemyFile.update(dt)
-    enemy.attackCooldown = enemy.attackCooldown - dt
+function enemyFile.update()
+    while GameStates.pause == false do
+        local dt = love.timer.getDelta()
 
-    if enemy.wantsToAttack and enemy.attackCooldown <= 0 and enemy.attack then
-        enemy:startAttack()
+        print(dt)
+
+        enemy.attackCooldown = enemy.attackCooldown - dt
+
+        if enemy.wantsToAttack and enemy.attackCooldown <= 0 and enemy.attack then
+            enemy:startAttack()
+        end
+
+        if enemy.attacking and enemy.attack ~= nil then
+            enemy.anim = enemy.attack.anim
+        end
+
+        if enemy.health < 50 then
+            enemy.mood = playerClass.AIMood.DEFENSIVE
+        end
+
+        enemy:AIMoveSys(player, dt)
+        enemy:update(dt)
+        enemy:lookTowards(player.hurtBox.body:getX())
+        enemy.anim:update(dt)
+
+        systems.coroutine.wait(dt / 10)
     end
-
-    if enemy.attacking and enemy.attack ~= nil then
-        enemy.anim = enemy.attack.anim
-    end
-
-    if enemy.health < 50 then
-        enemy.mood = playerClass.AIMood.DEFENSIVE
-    end
-
-    enemy:AIMoveSys(player, dt)
-    enemy:update(dt)
-    enemy:lookTowards(player.hurtBox.body:getX())
-    enemy.anim:update(dt)
 end
 
 function enemyFile.draw()
