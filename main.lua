@@ -1,8 +1,8 @@
-local player = require("player")
-local enemyFile = require("enemy")
-local menu = require("menu")
-local game = require("game")
-local systems = require("systems")
+local player = require("src.player")
+local enemyFile = require("src.enemy")
+local menu = require("src.menu")
+local game = require("src.game")
+local systems = require("src.systems")
 
 World = love.physics.newWorld(0, 400)
 

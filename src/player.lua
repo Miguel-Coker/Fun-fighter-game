@@ -1,5 +1,5 @@
 local anim = require("libs.anim8")
-local playerClass = require("playerClass")
+local playerClass = require("src.playerClass")
 
 local playerFile = {}
 

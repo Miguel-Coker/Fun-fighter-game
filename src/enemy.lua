@@ -1,5 +1,5 @@
-local playerClass = require "playerClass"
-local systems     = require "systems"
+local playerClass = require "src.playerClass"
+local systems     = require "src.systems"
 local enemyFile = {}
 
 ---@type Player

@@ -1,6 +1,6 @@
-local player = require("player")
-local enemyFile = require("enemy")
-local audio = require("audio")
+local player = require("src.player")
+local enemyFile = require("src.enemy")
+local audio = require("src.audio")
 
 local game = {}
 

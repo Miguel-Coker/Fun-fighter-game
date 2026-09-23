@@ -1,6 +1,6 @@
 local menu = {}
 
-local button = require("button")
+local button = require("src.button")
 
 local function adjustButtons()
     local windowWidth = love.graphics.getWidth()

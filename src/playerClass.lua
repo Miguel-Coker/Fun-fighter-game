@@ -1,6 +1,6 @@
 local anim = require("libs.anim8")
-local attackClass = require("attackClass")
-local audio = require("audio")
+local attackClass = require("src.attackClass")
+local audio = require("src.audio")
 
 local BASE_BLOCK_COOLDOWN = 0.6
 local BASE_DASH_TIME = 0.3
