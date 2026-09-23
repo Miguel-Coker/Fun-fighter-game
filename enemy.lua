@@ -33,21 +33,15 @@ function enemyFile.update()
     while true do
         local dt = love.timer.getDelta()
         if GameStates.pause == false then
-            enemy.attackCooldown = enemy.attackCooldown - dt
-
-            if enemy.wantsToAttack and enemy.attackCooldown <= 0 and enemy.attack then
+            if enemy.wantsToAttack and enemy:canAttack() then
                 enemy:startAttack()
-            end
-
-            if enemy.attacking and enemy.attack ~= nil then
-                enemy.anim = enemy.attack.anim
             end
 
             if enemy.health < 50 then
                 enemy.mood = playerClass.AIMood.DEFENSIVE
             end
 
-            --enemy:AIMoveSys(player, dt)
+            enemy:AIMoveSys(player, dt)
             enemy:update(dt)
             enemy:lookTowards(player.hurtBox.body:getX())
             enemy.anim:update(dt)

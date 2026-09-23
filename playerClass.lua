@@ -413,6 +413,7 @@ function playerClass:update(dt)
     self.dashCooldown = self.dashCooldown - dt
     self.rangedAttackCooldown = self.rangedAttackCooldown - dt
     self.blockCooldown = self.blockCooldown - dt
+    self.attackCooldown = self.attackCooldown - dt
 
     local hurtBoxXpos = self.hurtBox.body:getX()
 
