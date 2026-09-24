@@ -65,9 +65,9 @@ playerClass.playerDirection = {
 
 ---@enum AIMood
 playerClass.AIMood = {
-    AGGRESIVE = 1,
-    DEFENSIVE = 2,
-    NORMAL = 3
+    aggresive = 1,
+    defensive = 2,
+    normal = 3
 }
 
 local JUMP_POWER_SCALE = 10
@@ -104,7 +104,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
 
     player.colour = colour
     player.reactionTime = 0
-    player.mood = playerClass.AIMood.AGGRESIVE
+    player.mood = playerClass.AIMood.aggresive
 
     -- For AI only
     player.wantsToAttack = false
@@ -130,8 +130,8 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.baseRangedAttackCooldown = 5
 
     player.attacks = {
-        attackClass.meleeAttack.new(8, player.anims.kickAnim),
-        attackClass.meleeAttack.new(12, player.anims.spinKickAnim),
+        attackClass.meleeAttack.new(6, player.anims.kickAnim),
+        attackClass.meleeAttack.new(10, player.anims.spinKickAnim),
         attackClass.meleeAttack.new(3, player.anims.punch)
     }
 
@@ -174,6 +174,7 @@ function playerClass:takeDamage(damage)
         finalDamage = damage
     end
 
+    print(finalDamage)
     self.health = self.health - finalDamage
 end
 
@@ -186,7 +187,7 @@ function playerClass:jump()
 end
 
 function playerClass:dash()
-    if self.dashCooldown > 0 or self.dashing then
+    if self.dashCooldown > 0 or self.dashing or self.vx == 0 then
         return
     end
 
@@ -250,9 +251,6 @@ local function processDefensiveMood(self, dist, plr, dt)
             self:setupAttack(playerClass.attacksEnum.punch)
             self.reactionTime = BASE_REACTION_TIME
         end
-
-    elseif self.health < 30 and self.reactionTime <= 0 then
-        self:dash()
     end
 end
 
@@ -292,15 +290,15 @@ local function processAggresiveMood(self, plr, dist, dt)
         self:dash()
     end
 
-    if dist < 100 then
-        if self:canAttack() then
-            self:setupAttack(self:getRandomAttackIndex())
-        end
-        self.moving = false
+    if self.attack and self.anim.position == self.attack.attackFrame + 1 then
+        self.moveDirection = -self.direction
+        self:dash()
+    end
 
-        if self.attack and self.anim.position == self.attack.attackFrame then
-            self.vx = -self.vx
-            self.moving = true
+    if dist < 150 then
+        if self:canAttack() then
+            self.moving = false
+            self:setupAttack(self:getRandomAttackIndex())
         end
 
     else
@@ -325,13 +323,13 @@ function playerClass:AIMoveSys(plr, dt)
     local dist = toPositive(dx)
     local vx = dx / dist * self.speed
 
-    if self.mood == playerClass.AIMood.DEFENSIVE then
+    if self.mood == playerClass.AIMood.defensive then
         processDefensiveMood(self, dist, plr, dt)
 
-    elseif self.mood == playerClass.AIMood.AGGRESIVE then
+    elseif self.mood == playerClass.AIMood.aggresive then
         processAggresiveMood(self, plr, dist, dt)
 
-    elseif self.mood == playerClass.AIMood.NORMAL then
+    elseif self.mood == playerClass.AIMood.normal then
         processNormalMood(self, plr, dt)
     end
 
@@ -350,11 +348,7 @@ function playerClass:startRangedAttack()
     self.rangedAttack.sound:play()
 
     local speed = 0
-    if self.anim.direction == "left" then
-        speed = -self.rangedAttack.speed
-    else
-        speed = self.rangedAttack.speed
-    end
+    speed = self.direction * self.rangedAttack.speed
 
     local weapon = attackClass.rangedAttack.new(
         {x = self.hurtBox.body:getX(), y = self.hurtBox.body:getY() - 20}, 
@@ -388,10 +382,10 @@ function playerClass:lookTowards(x)
 
     if playerX < x then
         self.anim.direction = "right"
-        self.dirX = playerClass.playerDirection.right
+        self.direction = playerClass.playerDirection.right
     elseif playerX > x then
         self.anim.direction = "left"
-        self.dirX = playerClass.playerDirection.left
+        self.direction = playerClass.playerDirection.left
     end
 end
 
@@ -463,7 +457,7 @@ function playerClass:update(dt)
     self.hitBox.body:setX(self.hurtBox.body:getX())
 
     if self.attacking then
-        self.hitBox.body:setX(hurtBoxXpos + self.dirX * ATTACK_OFFSET)
+        self.hitBox.body:setX(hurtBoxXpos + self.direction * ATTACK_OFFSET)
     end
 end
 

@@ -86,6 +86,10 @@ function Camera:worldY(y)
     return (y - self.y) * self.zoom
 end
 
+---@param minX number
+---@param maxX number
+---@param minY number
+---@param maxY number
 function Camera:clamp(minX, maxX, minY, maxY)
     self.x = math.max(minX, math.min(maxX, self.x))
     self.y = math.max(minY, math.min(maxY, self.y))
@@ -113,8 +117,8 @@ function game.update(dt)
         end
     end
 
-    
     if #fireballPositions > 0 then
+        FireballShader:send("num_lights", #fireballPositions)
         FireballShader:send("light_positions", unpack(fireballPositions))
     end
 

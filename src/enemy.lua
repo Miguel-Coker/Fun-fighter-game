@@ -38,7 +38,7 @@ function enemyFile.update()
             end
 
             if enemy.health < 50 then
-                enemy.mood = playerClass.AIMood.DEFENSIVE
+                enemy.mood = playerClass.AIMood.defensive
             end
 
             enemy:AIMoveSys(player, dt)
