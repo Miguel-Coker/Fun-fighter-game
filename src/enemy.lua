@@ -32,7 +32,7 @@ end
 function enemyFile.update()
     while true do
         local dt = love.timer.getDelta()
-        if GameStates.pause == false then
+        if GameStates.pause == false and RoundFinished == false then
             if enemy.wantsToAttack and enemy:canAttack() then
                 enemy:startAttack()
             end

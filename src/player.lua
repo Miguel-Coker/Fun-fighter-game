@@ -64,6 +64,10 @@ local function tryAttack(attack)
 end
 
 function playerFile.keypressed(key)
+    if RoundFinished then
+        return
+    end
+
     if key == "l" then
         tryAttack(playerClass.attacksEnum.kick)
     end

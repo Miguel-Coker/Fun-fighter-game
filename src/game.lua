@@ -27,6 +27,15 @@ local background
 
 local healthbar
 
+local round = 1
+local playerWins = 0
+local enemyWins = 0
+local roundTextShowTime = 3
+
+local winningPlayer = ""
+
+RoundFinished = true
+
 function game.load()
     audio.load()
     Camera.x = 0
@@ -95,7 +104,46 @@ function Camera:clamp(minX, maxX, minY, maxY)
     self.y = math.max(minY, math.min(maxY, self.y))
 end
 
+local function updateRound()
+    if playerWins == 2 then
+        winningPlayer = "Player"
+        return
+    
+    elseif enemyWins == 2 then
+        winningPlayer = "Enemy"
+        return
+    end
+
+    if player.player.health <= 0 then
+        enemyWins = enemyWins + 1
+        RoundFinished = true
+
+    elseif enemy.health <= 0 then
+        playerWins = playerWins + 1
+        RoundFinished = true
+        
+    end
+end
+
+local function startRound()
+    player.load()
+    enemyFile.load(player.player)
+    round = round + 1
+end
+
 function game.update(dt)
+    if RoundFinished then
+        roundTextShowTime = roundTextShowTime - dt
+
+        if roundTextShowTime <= 0 then
+            RoundFinished = false
+            roundTextShowTime = 3
+            startRound()
+        end
+
+        return
+    end
+
     if player.player.dashing then
         Camera:zoomLerp(0.8, dt)
     else
@@ -122,7 +170,11 @@ function game.update(dt)
         FireballShader:send("light_positions", unpack(fireballPositions))
     end
 
+    updateRound()
+
     Camera:attach(player.player.hurtBox.body:getX() - cameraOffsetX, cameraOffsetY, CameraModes.FOLLOW, dt)
+
+    player.update(dt)
 end
 
 local function drawFireballs()
@@ -158,6 +210,20 @@ function game.draw()
 
     drawHealthBar(player.player, 60, 65)
     drawHealthBar(enemy, love.graphics.getWidth() - 140, 65)
+
+    if RoundFinished then
+        love.graphics.print(string.format("Round %d", round), love.graphics.getWidth() / 2 - 3, love.graphics.getHeight() / 2 - 50)
+    end
+
+    if roundTextShowTime <= 0.5 then
+        love.graphics.print("Fight!", love.graphics.getWidth() / 2, love.graphics.getHeight() /2 - 20)
+    end
+
+    if winningPlayer ~= "" then
+        love.graphics.print(string.format("%s won!", winningPlayer), love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
+        love.timer.sleep(3)
+        love.event.quit()
+    end
 end
 
 return game

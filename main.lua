@@ -32,6 +32,10 @@ local function beginContact(bodyA, bodyB)
         return
     end
 
+    if enemy.attack == nil or player.player.attack == nil then
+        return
+    end
+
     if (userA == "player_fireball" and userB == "enemy_hurtbox" or userB == "player_fireball" and userA == "enemy_hurtbox") then
         enemy.health = enemy.health - player.player.rangedAttack.damage
         attackCooldown = 0.2
@@ -124,6 +128,10 @@ function love.keypressed(key)
         GameStates.pause = not GameStates.pause
     end
 
+    if RoundFinished then
+        return
+    end
+
     if key == "h" then
         player.player.showCollisionBoxes = not player.player.showCollisionBoxes
         enemy.showCollisionBoxes = not enemy.showCollisionBoxes
@@ -156,7 +164,6 @@ function love.update(dt)
 
     if GameStates.play and not GameStates.pause then
         game.update(dt)
-        player.update(dt)
         World:update(dt)
     end
 end
