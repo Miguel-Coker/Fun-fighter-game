@@ -32,10 +32,6 @@ local function beginContact(bodyA, bodyB)
         return
     end
 
-    if enemy.attack == nil or player.player.attack == nil then
-        return
-    end
-
     if (userA == "player_fireball" and userB == "enemy_hurtbox" or userB == "player_fireball" and userA == "enemy_hurtbox") then
         enemy.health = enemy.health - player.player.rangedAttack.damage
         attackCooldown = 0.2
@@ -120,6 +116,8 @@ function love.load()
     coroutine.resume(enemyUpdate)
 end
 
+local showCollisionBoxes = false
+
 ---@diagnostic disable-next-line: duplicate-set-field
 function love.keypressed(key)
     menu.keypressed(key)
@@ -135,6 +133,7 @@ function love.keypressed(key)
     if key == "h" then
         player.player.showCollisionBoxes = not player.player.showCollisionBoxes
         enemy.showCollisionBoxes = not enemy.showCollisionBoxes
+        showCollisionBoxes = not showCollisionBoxes
     end 
 
     player.keypressed(key)

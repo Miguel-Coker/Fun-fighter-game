@@ -174,7 +174,6 @@ function playerClass:takeDamage(damage)
         finalDamage = damage
     end
 
-    print(finalDamage)
     self.health = self.health - finalDamage
 end
 

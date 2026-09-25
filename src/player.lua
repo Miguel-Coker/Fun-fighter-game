@@ -26,8 +26,6 @@ function playerFile.load()
 end
 
 function playerFile.update(dt)
-    player.attackCooldown = player.attackCooldown - dt
-
     if not player.dashing then
         player.moving = false
     end

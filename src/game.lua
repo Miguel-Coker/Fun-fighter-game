@@ -126,15 +126,22 @@ local function updateRound()
 end
 
 local function startRound()
-    player.load()
-    enemyFile.load(player.player)
+    player.player.health = 100
+    enemy.health = 100
+
+    player.player.hurtBox.body:setX(100)
+    player.player.hurtBox.body:setY(350)
+    enemy.hurtBox.body:setX(700)
+    enemy.hurtBox.body:setY(350)
+
     round = round + 1
 end
 
-function game.update(dt)
-    if RoundFinished then
-        roundTextShowTime = roundTextShowTime - dt
+local winningPlayerTime = 4
 
+function game.update(dt)
+    if RoundFinished and playerWins < 2 and enemyWins < 2 then
+        roundTextShowTime = roundTextShowTime - dt
         if roundTextShowTime <= 0 then
             RoundFinished = false
             roundTextShowTime = 3
@@ -142,6 +149,10 @@ function game.update(dt)
         end
 
         return
+    end
+
+    if winningPlayer ~= "" then
+        winningPlayerTime = winningPlayerTime - dt
     end
 
     if player.player.dashing then
@@ -170,11 +181,14 @@ function game.update(dt)
         FireballShader:send("light_positions", unpack(fireballPositions))
     end
 
-    updateRound()
-
     Camera:attach(player.player.hurtBox.body:getX() - cameraOffsetX, cameraOffsetY, CameraModes.FOLLOW, dt)
 
     player.update(dt)
+
+    updateRound()
+    if winningPlayerTime <= 0 then
+        love.event.quit()
+    end
 end
 
 local function drawFireballs()
@@ -203,6 +217,13 @@ function game.draw()
     --love.graphics.setColor(1, 1, 1
     love.graphics.setShader(FireballShader)
     love.graphics.draw(background, 0, 0, 0, love.graphics.getWidth() / background:getWidth(), love.graphics.getHeight() / background:getHeight())
+    
+    if player.player.showCollisionBoxes then
+        love.graphics.polygon("line", Floor.body:getWorldPoints(Floor.shape:getPoints()))
+        love.graphics.polygon("line", LeftWall.body:getWorldPoints(LeftWall.shape:getPoints()))
+        love.graphics.polygon("line", RightWall.body:getWorldPoints(RightWall.shape:getPoints()))
+    end
+
     player.draw()
     enemyFile.draw()
     drawFireballs()
@@ -211,18 +232,16 @@ function game.draw()
     drawHealthBar(player.player, 60, 65)
     drawHealthBar(enemy, love.graphics.getWidth() - 140, 65)
 
+    if winningPlayer ~= "" then
+        love.graphics.print(string.format("%s wins!", winningPlayer), love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
+    end
+
     if RoundFinished then
         love.graphics.print(string.format("Round %d", round), love.graphics.getWidth() / 2 - 3, love.graphics.getHeight() / 2 - 50)
     end
 
     if roundTextShowTime <= 0.5 then
         love.graphics.print("Fight!", love.graphics.getWidth() / 2, love.graphics.getHeight() /2 - 20)
-    end
-
-    if winningPlayer ~= "" then
-        love.graphics.print(string.format("%s won!", winningPlayer), love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
-        love.timer.sleep(3)
-        love.event.quit()
     end
 end
 
