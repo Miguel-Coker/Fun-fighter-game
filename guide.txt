@@ -1,0 +1,9 @@
+W - jump
+A - move left
+D = move right
+space - block
+left shift - dash
+J - spin kick
+K - punch
+L - side kick
+I - throw fireball
