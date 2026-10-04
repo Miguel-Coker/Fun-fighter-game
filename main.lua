@@ -76,6 +76,7 @@ local enemyUpdate
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function love.load()
+    print(love.getVersion())
     love.window.setFullscreen(true)
     love.graphics.setDefaultFilter("nearest", "nearest")
 
