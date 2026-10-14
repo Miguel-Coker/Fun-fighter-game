@@ -2,7 +2,7 @@ local anim = require("libs.anim8")
 local attackClass = require("src.attackClass")
 local audio = require("src.audio")
 
-local BASE_BLOCK_COOLDOWN = 0.6
+local BASE_BLOCK_COOLDOWN = 0.5
 local BASE_DASH_TIME = 0.3
 local DASH_SPEED = 600
 local BASE_REACTION_TIME = 0.08
@@ -130,9 +130,9 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.baseRangedAttackCooldown = 5
 
     player.attacks = {
-        attackClass.meleeAttack.new(7, player.anims.kickAnim),
-        attackClass.meleeAttack.new(11, player.anims.spinKickAnim),
-        attackClass.meleeAttack.new(4, player.anims.punch)
+        attackClass.meleeAttack.new(7, player.anims.kickAnim, 0.4),
+        attackClass.meleeAttack.new(11, player.anims.spinKickAnim, 1),
+        attackClass.meleeAttack.new(4, player.anims.punch, 0.35)
     }
 
     ---@type Melee
@@ -338,7 +338,7 @@ function playerClass:AIMoveSys(plr, dt)
 end
 
 function playerClass:startAttack()
-    self.attackCooldown = self.baseAttackCooldown
+    self.attackCooldown = self.attack.cooldown
     self.attacking = true
 end
 

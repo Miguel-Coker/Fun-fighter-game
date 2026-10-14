@@ -4,20 +4,23 @@ local mod = {}
 ---@field anim Animation
 ---@field damage number
 ---@field attackFrame integer
+---@field cooldown number
 mod.meleeAttack = {}
 mod.meleeAttack.__index = mod.meleeAttack
 
-function mod.meleeAttack.new(damage, anim)
+function mod.meleeAttack.new(damage, anim, cooldown)
     local instance = setmetatable({}, mod.meleeAttack)
     if type(damage) ~= "table" then
         instance.anim = anim
         instance.damage = damage
         instance.attackFrame = #instance.anim.frames - 1
+        instance.cooldown = cooldown
     else
         local data = damage
         instance.damage = data.damage
         instance.anim = data.anim
         instance.attackFrame = #instance.anim.frames - 1
+        instance.cooldown = data.cooldown
     end
     return instance
 end
