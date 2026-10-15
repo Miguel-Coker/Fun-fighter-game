@@ -1,1 +1,9 @@
-Nninja sprite is from
+Ninja 3D model and 3D animations from https://www.mixamo.com/
+
+Fireball sound effect by floraphonic from https://pixabay.com/
+
+anim8 library by Enrique García Cota from https://github.com/kikito/anim8
+
+sone library by Cameron McHenry from https://github.com/camchenry/sone
+
+All other code and media are made by Miguel Coker Delgado (project owner)
