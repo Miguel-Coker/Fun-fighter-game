@@ -5,12 +5,6 @@ local enemyFile = {}
 ---@type Player
 local player = nil
 
----@type love.Thread
-local enemyThread
-
----@type love.Channel
-local enemyChannel
-
 function enemyFile.startRound()
     enemy.health = 100
 
