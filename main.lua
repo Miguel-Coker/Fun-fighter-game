@@ -120,8 +120,6 @@ function love.load()
     coroutine.resume(enemyUpdate)
 end
 
-local showCollisionBoxes = false
-
 ---@diagnostic disable-next-line: duplicate-set-field
 function love.keypressed(key)
     menu.keypressed(key)
@@ -135,9 +133,7 @@ function love.keypressed(key)
     end
 
     if key == "h" then
-        player.player.showCollisionBoxes = not player.player.showCollisionBoxes
-        enemy.showCollisionBoxes = not enemy.showCollisionBoxes
-        showCollisionBoxes = not showCollisionBoxes
+        ShowCollisionBoxes = not ShowCollisionBoxes
     end 
 
     player.keypressed(key)

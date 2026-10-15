@@ -59,6 +59,12 @@ function mod.rangedAttack.new(pos, damage, anim, speed, sprite, name, cat, sound
     return instance
 end
 
+function mod.rangedAttack:drawCollisionBoxes()
+    love.graphics.setColor(0, 0, 1)
+    love.graphics.polygon("line", self.body:getWorldPoints(self.shape:getPoints()))
+    love.graphics.setColor(1, 1, 1)
+end
+
 function mod.rangedAttack:draw()
     self.anim:draw(self.sprite, self.body:getX() - 32, self.body:getY() - 32, 0, 1.2, 1.2)
 end

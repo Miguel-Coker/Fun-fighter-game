@@ -32,9 +32,9 @@ local BASE_REACTION_TIME = 0.08
 ---@field attack Melee
 ---@field attacks table
 ---@field rangedAttacks table
----@field hurtBox table
+---@field hurtBox { body: love.Body, shape: love.PolygonShape, fixture: love.Fixture}
 ---@field rangedAttack Ranged
----@field hitBox table
+---@field hitBox { body: love.Body, shape: love.PolygonShape, fixture: love.Fixture}
 ---@field vx number
 ---@field vy number
 ---@field showCollisionBoxes boolean
@@ -157,8 +157,6 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.hitBox.body:setFixedRotation(true)
     player.hitBox.fixture:setUserData(name.."_hitbox")
     player.hitBox.fixture:setCategory(Categories.NONE)
-
-    player.showCollisionBoxes = false
     return player
 end
 
@@ -462,14 +460,15 @@ function playerClass:update(dt)
     end
 end
 
-function playerClass:draw()
-    if self.showCollisionBoxes then
-        love.graphics.setColor(0, 1, 0)
-        love.graphics.polygon("line", self.hurtBox.body:getWorldPoints(self.hurtBox.shape:getPoints()))
-        love.graphics.setColor(1, 0, 0)
-        love.graphics.polygon("line", self.hitBox.body:getWorldPoints(self.hitBox.shape:getPoints()))
-    end
+function playerClass:drawCollisionBoxes()
+    love.graphics.setColor(1, 0, 0)
+    love.graphics.polygon("line", self.hitBox.body:getWorldPoints(self.hitBox.shape:getPoints()))
+    love.graphics.setColor(0, 1, 0)
+    love.graphics.polygon("line", self.hurtBox.body:getWorldPoints(self.hurtBox.shape:getPoints()))
+    love.graphics.setColor(1, 1, 1)
+end
 
+function playerClass:draw()
     love.graphics.setColor(unpack(self.colour))
     self.anim:draw(self.spriteSheet, self.hurtBox.body:getX(), self.hurtBox.body:getY(), 0, 2.8, 2.8, 49, 53)
     love.graphics.setColor(1, 1, 1)

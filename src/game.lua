@@ -4,6 +4,8 @@ local audio = require("src.audio")
 
 local game = {}
 
+ShowCollisionBoxes = false
+
 ---@class Camera
 ---@field x number
 ---@field y number
@@ -209,6 +211,9 @@ end
 
 local function drawFireballs()
     for _, fb in ipairs(Fireballs) do
+        if ShowCollisionBoxes then
+            fb:drawCollisionBoxes()
+        end
         fb:draw()
     end
 end
@@ -235,10 +240,12 @@ function game.draw()
     love.graphics.setShader(FireballShader)
     love.graphics.draw(background, 0, 0, 0, GameWidth / background:getWidth(), GameHeight / background:getHeight())
     
-    if player.player.showCollisionBoxes then
+    if ShowCollisionBoxes then
         love.graphics.polygon("line", Floor.body:getWorldPoints(Floor.shape:getPoints()))
         love.graphics.polygon("line", LeftWall.body:getWorldPoints(LeftWall.shape:getPoints()))
         love.graphics.polygon("line", RightWall.body:getWorldPoints(RightWall.shape:getPoints()))
+        enemy:drawCollisionBoxes()
+        player.player:drawCollisionBoxes()
     end
     
     player.draw()
