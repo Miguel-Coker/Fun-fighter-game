@@ -193,7 +193,6 @@ function game.update(dt)
         FireballShader:send("light_positions", unpack(fireballPositions))
     end
 
-    Camera:attach(player.player.hurtBox.body:getX() - cameraOffsetX, cameraOffsetY, CameraModes.FOLLOW, dt)
     Camera:clamp(0, 0, 0, 0)
     player.update(dt)
 
