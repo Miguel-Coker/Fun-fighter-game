@@ -144,7 +144,7 @@ local function startRound()
     player.player.health = 100
     enemy.health = 100
 
-    player.player.hurtBox.body:setX(100)
+    player.player.hurtBox.body:setX(150)
     player.player.hurtBox.body:setY(350)
     enemy.hurtBox.body:setX(700)
     enemy.hurtBox.body:setY(350)

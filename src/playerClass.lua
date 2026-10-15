@@ -249,6 +249,8 @@ local function processDefensiveMood(self, dist, plr, dt)
         if self:canAttack() then
             self:setupAttack(playerClass.attacksEnum.punch)
             self.reactionTime = BASE_REACTION_TIME
+            self.moving = true
+            self.moveDirection = -self.direction
         end
     end
 end
@@ -281,7 +283,7 @@ local function processAggresiveMood(self, plr, dist, dt)
         self.moveDirection = -self.moveDirection
         self:dash()
 
-        if dist >= 300 then
+        if dist >= 350 then
             self:startRangedAttack()
         end
         
