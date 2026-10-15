@@ -1,3 +1,4 @@
+-- GAMEPLAY --
 W - jump
 A - move left
 D = move right
@@ -7,6 +8,9 @@ J - spin kick
 K - punch
 L - side kick
 I - throw fireball
+
+-- MENU --
+escape - open menu
 
 -- DEBUG -- 
 H - show collision boxes
