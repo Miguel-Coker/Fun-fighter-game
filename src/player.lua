@@ -16,7 +16,8 @@ function playerFile.startRound()
 end
 
 function playerFile.load()
-    player = playerClass.new("player", love.graphics.newImage("sprites/player2.png"), false, {x = 100, y = 400}, Categories.PLAYER_HIT_BOX, {0.6, 0.6, 1})
+    local colour = {0.6, 0.6, 1}
+    player = playerClass.new("player", love.graphics.newImage("sprites/player2.png"), false, {x = 100, y = 400}, Categories.PLAYER_HIT_BOX, colour)
 
     if player == nil then
         error("Failed to create player")
@@ -88,17 +89,9 @@ function playerFile.keypressed(key)
         player:startRangedAttack()
     end
 
-    --[[if key == "j" then
-        tryAttack(playerClass.attacksEnum.punch)
-    end]]
-
     if key == "space" and player.attacking == false then
         player:block()
     end
-
-    --[[if key == "j" and not player.blocking then
-        player.attack = player.attacks[playerClass.attacksEnum.punch]
-    end]]
 
     if (key == "w" or key == "up") then
         player:jump()

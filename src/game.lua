@@ -24,8 +24,6 @@ CameraModes = {
     FOLLOW = 1
 }
 
-local cameraOffsetX
-local cameraOffsetY
 ---@type love.Image
 local background
 
@@ -171,10 +169,7 @@ function game.update(dt)
     else
         Camera:zoomLerp(1.1, dt)
     end
-    cameraOffsetX = (GameWidth / 2 - 20)
-    cameraOffsetY = 0
 
-    local sx, sy = getScale()
     for i, r in ipairs(Fireballs) do
         r.lifeTime = r.lifeTime - dt
         r.body:setLinearVelocity(r.speed, 0)
@@ -225,11 +220,6 @@ function game.draw()
     local sx, sy = getScale()
     love.graphics.translate(-Camera.x * sx, -Camera.y * sy)
     love.graphics.scale(sx, sy)
-    --love.graphics.setColor(0, 1, 0)
-    --love.graphics.polygon("fill", Floor.body:getWorldPoints(Floor.shape:getPoints()))
-    --love.graphics.polygon("fill", LeftWall.body:getWorldPoints(LeftWall.shape:getPoints()))
-    --love.graphics.polygon("fill", RightWall.body:getWorldPoints(RightWall.shape:getPoints()))
-    --love.graphics.setColor(1, 1, 1
     love.graphics.setShader(FireballShader)
     love.graphics.draw(background, 0, 0, 0, GameWidth / background:getWidth(), GameHeight / background:getHeight())
     

@@ -16,7 +16,8 @@ end
 ---@param plr Player
 function enemyFile.load(plr)
     local spritesheet = love.graphics.newImage("sprites/player2.png")
-    enemy = playerClass.new("enemy", spritesheet, true, {x = 700, y = 400}, Categories.PLAYER_HURT_BOX, {1, 0.6, 0.6})
+    local colour = {1, 0.6, 0.6}
+    enemy = playerClass.new("enemy", spritesheet, true, {x = 700, y = 400}, Categories.PLAYER_HURT_BOX, colour)
     player = plr
     if player == nil then
         error("Failed to load player")

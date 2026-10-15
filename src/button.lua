@@ -33,15 +33,11 @@ end
 function button:checkPressed()
     if love.mouse.getX() >= self.x and love.mouse.getX() <= self.x + self.baseWidth then
         if love.mouse.getY() >= self.y and love.mouse.getY() <= self.y + self.baseHeight then
-            --[[self.width = self.baseWidth * 0.9
-            self.height = self.baseHeight * 0.9]]
             self.colour = {0.7, 0.7, 0.7}
             return true
         end
     end
-
-    --[[self.width = self.baseWidth
-    self.height = self.baseHeight]]
+    
     self.colour = {1, 1, 1}
     return false
 end
