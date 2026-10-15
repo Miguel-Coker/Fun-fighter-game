@@ -4,7 +4,7 @@ local audio = require("src.audio")
 
 local BASE_BLOCK_COOLDOWN = 0.5
 local BASE_DASH_TIME = 0.3
-local DASH_SPEED = 600
+local DASH_SPEED = 700
 local BASE_REACTION_TIME = 0.08
 
 ---@class Player

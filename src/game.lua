@@ -43,7 +43,7 @@ function game.load()
     Camera.x = 0
     Camera.y = 0
     Camera.speed = 8
-    Camera.zoom = 1
+    Camera.zoom = 1.1
 
     ---@type Ranged[]
     Fireballs = {}
@@ -171,9 +171,9 @@ function game.update(dt)
     end
 
     if player.player.dashing then
-        Camera:zoomLerp(0.8, dt)
+        Camera:zoomLerp(0.9, dt)
     else
-        Camera:zoomLerp(1, dt)
+        Camera:zoomLerp(1.1, dt)
     end
     cameraOffsetX = (GameWidth / 2 - 20)
     cameraOffsetY = 0
