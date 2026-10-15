@@ -9,6 +9,8 @@ local game = {}
 ---@field y number
 ---@field speed number
 ---@field zoom number
+---@field sx number
+---@field sy number
 Camera = {}
 
 local fireballPositions = {}
@@ -54,6 +56,14 @@ function game.load()
     healthbar = love.graphics.newImage("sprites/healthbar.png")
 end
 
+---@return number, number
+local function getScale()
+    local sx = Camera.zoom * love.graphics.getWidth() / GameWidth
+    local sy = Camera.zoom * love.graphics.getHeight() / GameHeight
+
+    return sx, sy
+end
+
 ---@param amplitude number
 function Camera:shake(amplitude)
     self.x = self.x + Rng:random(1, amplitude)
@@ -75,11 +85,14 @@ function Camera:attach(x, y, mode, dt)
 end
 
 function Camera:screenX(x)
-    return (x + self.x) / self.zoom
+    local sx = getScale()
+
+    return (x + self.x) / sx
 end
 
 function Camera:screenY(y)
-    return (y + self.y) / self.zoom
+    local _, sy = getScale()
+    return (y + self.y) / sy
 end
 
 function Camera:zoomLerp(x, dt)
@@ -88,11 +101,13 @@ function Camera:zoomLerp(x, dt)
 end
 
 function Camera:worldX(x)
-    return (x - self.x) * self.zoom
+    local sx = getScale()
+    return (x - self.x) * sx
 end
 
 function Camera:worldY(y)
-    return (y - self.y) * self.zoom
+    local _, sy = getScale()
+    return (y - self.y) * sy
 end
 
 ---@param minX number
@@ -160,9 +175,10 @@ function game.update(dt)
     else
         Camera:zoomLerp(1, dt)
     end
-    cameraOffsetX = (love.graphics.getWidth() / 2 - 20)
+    cameraOffsetX = (GameWidth / 2 - 20)
     cameraOffsetY = 0
 
+    local sx, sy = getScale()
     for i, r in ipairs(Fireballs) do
         r.lifeTime = r.lifeTime - dt
         r.body:setLinearVelocity(r.speed, 0)
@@ -182,7 +198,7 @@ function game.update(dt)
     end
 
     Camera:attach(player.player.hurtBox.body:getX() - cameraOffsetX, cameraOffsetY, CameraModes.FOLLOW, dt)
-
+    Camera:clamp(0, 0, 0, 0)
     player.update(dt)
 
     updateRound()
@@ -208,22 +224,23 @@ end
 
 function game.draw()
     love.graphics.push()
-    love.graphics.translate(-Camera.x * Camera.zoom, -Camera.y * Camera.zoom)
-    love.graphics.scale(Camera.zoom, Camera.zoom)
+    local sx, sy = getScale()
+    love.graphics.translate(-Camera.x * sx, -Camera.y * sy)
+    love.graphics.scale(sx, sy)
     --love.graphics.setColor(0, 1, 0)
     --love.graphics.polygon("fill", Floor.body:getWorldPoints(Floor.shape:getPoints()))
     --love.graphics.polygon("fill", LeftWall.body:getWorldPoints(LeftWall.shape:getPoints()))
     --love.graphics.polygon("fill", RightWall.body:getWorldPoints(RightWall.shape:getPoints()))
     --love.graphics.setColor(1, 1, 1
     love.graphics.setShader(FireballShader)
-    love.graphics.draw(background, 0, 0, 0, love.graphics.getWidth() / background:getWidth(), love.graphics.getHeight() / background:getHeight())
+    love.graphics.draw(background, 0, 0, 0, GameWidth / background:getWidth(), GameHeight / background:getHeight())
     
     if player.player.showCollisionBoxes then
         love.graphics.polygon("line", Floor.body:getWorldPoints(Floor.shape:getPoints()))
         love.graphics.polygon("line", LeftWall.body:getWorldPoints(LeftWall.shape:getPoints()))
         love.graphics.polygon("line", RightWall.body:getWorldPoints(RightWall.shape:getPoints()))
     end
-
+    
     player.draw()
     enemyFile.draw()
     drawFireballs()

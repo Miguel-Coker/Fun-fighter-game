@@ -60,7 +60,7 @@ function mod.rangedAttack.new(pos, damage, anim, speed, sprite, name, cat, sound
 end
 
 function mod.rangedAttack:draw()
-    self.anim:draw(self.sprite, self.body:getX() - 32, self.body:getY() - 32)
+    self.anim:draw(self.sprite, self.body:getX() - 32, self.body:getY() - 32, 0, 1.2, 1.2)
 end
 
 return mod

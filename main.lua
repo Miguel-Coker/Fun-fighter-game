@@ -6,6 +6,9 @@ local systems = require("src.systems")
 
 World = love.physics.newWorld(0, 400)
 
+GameWidth = 1920
+GameHeight = 1080
+
 ---@enum Collision_categories
 Categories = {
     PLAYER_HURT_BOX = 1,
@@ -89,7 +92,7 @@ function love.load()
     game.load()
 
     Floor = {}
-    Floor.body = love.physics.newBody(World, 1000, love.graphics.getHeight() / 1.4, "static")
+    Floor.body = love.physics.newBody(World, 1000, GameHeight / 1.5, "static")
     Floor.shape = love.physics.newRectangleShape(2000, 100)
     Floor.fixture = love.physics.newFixture(Floor.body, Floor.shape)
     Floor.fixture:setUserData("floor")
@@ -103,7 +106,7 @@ function love.load()
     LeftWall.fixture:setCategory(Categories.FLOOR)
 
     RightWall = {}
-    RightWall.body = love.physics.newBody(World, love.graphics.getWidth(), 400, "static")
+    RightWall.body = love.physics.newBody(World, GameWidth, 400, "static")
     RightWall.shape = love.physics.newRectangleShape(50, 600)
     RightWall.fixture = love.physics.newFixture(RightWall.body, RightWall.shape)
     RightWall.fixture:setUserData("right_wall")

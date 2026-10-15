@@ -125,7 +125,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.anims.punch = anim.newAnimation(grid('6-10', 5), 0.07)
 
     ---@type Ranged
-    player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.fireball, 600, fireball, name.."fireballbase", cat, love.audio.newSource(audio.data.fireball))
+    player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.fireball, 800, fireball, name.."fireballbase", cat, love.audio.newSource(audio.data.fireball))
     player.rangedAttackCooldown = 5
     player.baseRangedAttackCooldown = 5
 
@@ -142,7 +142,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
 
     player.hurtBox = {}
     player.hurtBox.body = love.physics.newBody(World, pos.x, pos.y, "dynamic")
-    player.hurtBox.shape = love.physics.newRectangleShape(128, 220)
+    player.hurtBox.shape = love.physics.newRectangleShape(140, 240)
     player.hurtBox.fixture = love.physics.newFixture(player.hurtBox.body, player.hurtBox.shape)
     player.hurtBox.fixture:setUserData(name.."_hurtbox")
     player.hurtBox.body:setFixedRotation(true)
@@ -152,7 +152,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
 
     player.hitBox = {}
     player.hitBox.body = love.physics.newBody(World, pos.x, pos.y, "dynamic")
-    player.hitBox.shape = love.physics.newRectangleShape(128, 220)
+    player.hitBox.shape = love.physics.newRectangleShape(140, 240)
     player.hitBox.fixture = love.physics.newFixture(player.hitBox.body, player.hitBox.shape)
     player.hitBox.body:setFixedRotation(true)
     player.hitBox.fixture:setUserData(name.."_hitbox")
@@ -469,7 +469,7 @@ function playerClass:draw()
     end
 
     love.graphics.setColor(unpack(self.colour))
-    self.anim:draw(self.spriteSheet, self.hurtBox.body:getX(), self.hurtBox.body:getY(), 0, 2.5, 2.5, 49, 53)
+    self.anim:draw(self.spriteSheet, self.hurtBox.body:getX(), self.hurtBox.body:getY(), 0, 2.8, 2.8, 49, 53)
     love.graphics.setColor(1, 1, 1)
 end
 
