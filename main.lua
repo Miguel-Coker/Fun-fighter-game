@@ -4,7 +4,7 @@ local menu = require("src.menu")
 local game = require("src.game")
 local systems = require("src.systems")
 
-World = love.physics.newWorld(0, 400)
+World = love.physics.newWorld(0, 1000)
 
 GameWidth = 1920
 GameHeight = 1080

@@ -89,7 +89,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.maxHealth = 100
     player.baseAttackCooldown = 0.8
     player.attackCooldown = 0
-    player.jumpPower = -200 * JUMP_POWER_SCALE
+    player.jumpPower = -330 * JUMP_POWER_SCALE
     player.attacking = false
     player.dashing = false
     player.dashTime = BASE_DASH_TIME
