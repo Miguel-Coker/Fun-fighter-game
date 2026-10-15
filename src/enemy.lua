@@ -11,6 +11,14 @@ local enemyThread
 ---@type love.Channel
 local enemyChannel
 
+function enemyFile.startRound()
+    enemy.health = 100
+
+    enemy.hurtBox.body:setX(700)
+    enemy.hurtBox.body:setY(350)
+    enemy.mood = playerClass.AIMood.aggresive
+end
+
 ---@param plr Player
 function enemyFile.load(plr)
     local spritesheet = love.graphics.newImage("sprites/player2.png")

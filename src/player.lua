@@ -9,6 +9,12 @@ playerFile.player = nil
 ---@type Player
 local player = nil
 
+function playerFile.startRound()
+    player.hurtBox.body:setX(150)
+    player.hurtBox.body:setY(350)
+    player.health = 100
+end
+
 function playerFile.load()
     player = playerClass.new("player", love.graphics.newImage("sprites/player2.png"), false, {x = 100, y = 400}, Categories.PLAYER_HIT_BOX, {0.6, 0.6, 1})
 
