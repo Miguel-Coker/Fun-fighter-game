@@ -162,7 +162,6 @@ end
 
 ---@param damage  number
 function playerClass:takeDamage(damage)
-    print(self.blocking)
     local finalDamage = damage
 
     if self.attacking then
