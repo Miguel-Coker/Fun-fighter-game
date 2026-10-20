@@ -131,7 +131,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
 
     player.attacks = {
         attackClass.meleeAttack.new(7, player.anims.kickAnim, 0.4),
-        attackClass.meleeAttack.new(11, player.anims.spinKickAnim, 1),
+        attackClass.meleeAttack.new(11, player.anims.spinKickAnim, 1, 8),
         attackClass.meleeAttack.new(4, player.anims.punch, 0.35)
     }
 
@@ -162,6 +162,7 @@ end
 
 ---@param damage  number
 function playerClass:takeDamage(damage)
+    print(self.blocking)
     local finalDamage = damage
 
     if self.attacking then

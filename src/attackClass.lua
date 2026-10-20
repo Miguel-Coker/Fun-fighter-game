@@ -8,18 +8,18 @@ local mod = {}
 mod.meleeAttack = {}
 mod.meleeAttack.__index = mod.meleeAttack
 
-function mod.meleeAttack.new(damage, anim, cooldown)
+function mod.meleeAttack.new(damage, anim, cooldown, attackFrame)
     local instance = setmetatable({}, mod.meleeAttack)
     if type(damage) ~= "table" then
         instance.anim = anim
         instance.damage = damage
-        instance.attackFrame = #instance.anim.frames - 1
+        instance.attackFrame = attackFrame or #instance.anim.frames - 1
         instance.cooldown = cooldown
     else
         local data = damage
         instance.damage = data.damage
         instance.anim = data.anim
-        instance.attackFrame = #instance.anim.frames - 1
+        instance.attackFrame = data.attackFrame or #instance.anim.frames - 1 
         instance.cooldown = data.cooldown
     end
     return instance
