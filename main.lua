@@ -47,6 +47,7 @@ local function beginContact(bodyA, bodyB)
 
     if (userA == "player_hitbox" and userB == "enemy_hurtbox" or userA == "enemy_hurtbox" and userB == "player_hitbox") then
         enemy:takeDamage(player.player.attack.damage)
+
         attackCooldown = 0.2
     end
 

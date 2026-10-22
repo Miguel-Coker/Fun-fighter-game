@@ -46,6 +46,20 @@ function mod.vector2.new(x, y)
     return vec2
 end
 
+mod.table = {}
+
+---@param tbl table
+---@return table
+function mod.table.clone(tbl)
+    local newTable = {}
+
+    for k, v in pairs(tbl) do
+        newTable[k] = v
+    end
+
+    return newTable
+end
+
 ---@param pos1 Vector2
 ---@param w1 number
 ---@param h1 number

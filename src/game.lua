@@ -47,7 +47,6 @@ function game.load()
 
     ---@type Ranged[]
     Fireballs = {}
-
     FireballShader = love.graphics.newShader("shaders/fireball.glsl")
     FireballShader:send("num_lights", 2)
     FireballShader:send("light_colour", {1, 1, 1})
