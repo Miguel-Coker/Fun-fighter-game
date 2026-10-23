@@ -116,9 +116,6 @@ function love.load()
     menu.load()
     player.load()
     enemyFile.load(player.player)
-
-    enemyUpdate = coroutine.create(enemyFile.update)
-    coroutine.resume(enemyUpdate)
 end
 
 ---@diagnostic disable-next-line: duplicate-set-field
@@ -159,8 +156,6 @@ end
 function love.update(dt)
     attackCooldown = attackCooldown - dt
     menu.update(dt)
-
-    systems.coroutine.update()
 
     if GameStates.play and not GameStates.pause then
         game.update(dt)

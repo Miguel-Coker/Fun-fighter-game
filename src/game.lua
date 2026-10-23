@@ -189,6 +189,7 @@ function game.update(dt)
 
     Camera:clamp(0, 0, 0, 0)
     player.update(dt)
+    enemyFile.update(dt)
 
     updateRound()
     if winningPlayerTime <= 0 then
