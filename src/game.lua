@@ -83,12 +83,16 @@ function Camera:attach(x, y, mode, dt)
     end
 end
 
+---@param x number
+---@return number
 function Camera:screenX(x)
     local sx = getScale()
 
     return (x + self.x) / sx
 end
 
+---@param y number
+---@return number
 function Camera:screenY(y)
     local _, sy = getScale()
     return (y + self.y) / sy
