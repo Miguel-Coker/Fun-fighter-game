@@ -1,5 +1,4 @@
 local playerClass = require "src.playerClass"
-local systems     = require "src.systems"
 local enemyFile = {}
 
 ---@type Player
@@ -11,6 +10,7 @@ function enemyFile.startRound()
     enemy.hurtBox.body:setX(700)
     enemy.hurtBox.body:setY(350)
     enemy.mood = playerClass.AIMood.aggresive
+    enemy.rangedAttackCooldown = enemy.baseRangedAttackCooldown
 end
 
 ---@param plr Player
