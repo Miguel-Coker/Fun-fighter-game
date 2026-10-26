@@ -6,6 +6,6 @@ anim8 library by Enrique García Cota from https://github.com/kikito/anim8
 
 sone library by Cameron McHenry from https://github.com/camchenry/sone
 
-All other code and media are made by Miguel Coker Delgado (project owner)
+All other code and media is made by Miguel Coker Delgado (project owner)
 
 LOVE2D game framework by Micheal Hommel as well as open-source contributors. https://github.com/love2d/love
