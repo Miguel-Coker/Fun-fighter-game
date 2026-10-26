@@ -1,6 +1,7 @@
 local anim = require("libs.anim8")
 local attackClass = require("src.attackClass")
 local audio = require("src.audio")
+local systems = require("src.systems")
 
 local BASE_BLOCK_COOLDOWN = 0.5
 local BASE_DASH_TIME = 0.3
@@ -45,6 +46,7 @@ local BASE_REACTION_TIME = 0.08
 ---@field wantsToAttack boolean
 ---@field reactionTime number
 ---@field mood AIMood
+---@field hitTime number
 ---@field direction integer
 ---@field moveDirection integer
 local playerClass = {}
@@ -76,6 +78,8 @@ local ATTACK_OFFSET = 50
 
 local fireball = love.graphics.newImage("sprites/fireball2.png")
 
+local BASE_HIT_TIME = 0.42
+
 ---@param name string
 ---@param spriteSheet table
 ---@param isAI boolean
@@ -102,6 +106,8 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.baseBlockTime = 0.3
     player.blockCooldown = 0
 
+    player.hitTime = 0
+
     player.colour = colour
     player.reactionTime = 0
     player.mood = playerClass.AIMood.aggresive
@@ -123,6 +129,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.anims.spinKickAnim = anim.newAnimation(grid('1-14', 3), 0.08)
     player.anims.fireball = anim.newAnimation(fireballGrid('1-2', '1-2'), 0.15)
     player.anims.punch = anim.newAnimation(grid('6-10', 5), 0.07)
+    player.anims.hitReact = anim.newAnimation(grid('7-14', 6), 0.06)
 
     ---@type Ranged
     player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.fireball, 800, fireball, name.."fireballbase", cat, love.audio.newSource(audio.data.fireball))
@@ -162,6 +169,8 @@ end
 
 ---@param damage  number
 function playerClass:takeDamage(damage)
+    self.anim = self.anims.hitReact
+
     local finalDamage = damage
 
     if self.attacking then
@@ -173,6 +182,12 @@ function playerClass:takeDamage(damage)
     end
 
     self.health = self.health - finalDamage
+
+    if systems.between(40, 50, self.health) then
+        audio.bank.punch:play()
+    else
+        audio.bank.hit:play()
+    end
 end
 
 function playerClass:jump()
@@ -420,6 +435,15 @@ function playerClass:update(dt)
         self.moveDirection = playerClass.playerDirection.left
     elseif self.vx > 0 then
         self.moveDirection = playerClass.playerDirection.right
+    end
+
+    if self.anim == self.anims.hitReact then
+        self.hitTime = self.hitTime - dt
+    end
+
+    if self.hitTime <= 0 then
+        self.anim = self.anims.idleAnim
+        self.hitTime = BASE_HIT_TIME
     end
 
     if self.attack then
