@@ -18,6 +18,10 @@ local function player2(self)
     self.hide = true
     menu.main.start.hide = true
     GameStates.player2 = true
+
+    if love.joystick.getJoystickCount() == 0 then
+        error("Gamepad needed for 2 player mode")
+    end
 end
 
 function menu.load()

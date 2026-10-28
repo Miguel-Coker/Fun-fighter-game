@@ -11,7 +11,7 @@ local player = nil
 
 function playerFile.startRound()
     player.hurtBox.body:setX(150)
-    player.hurtBox.body:setY(350)
+    player.hurtBox.body:setY(GameHeight / 2)
     player.health = 100
 end
 
