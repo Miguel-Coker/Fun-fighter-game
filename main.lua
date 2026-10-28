@@ -76,8 +76,6 @@ GameStates = {
     player2 = false
 }
 
-local enemyUpdate
-
 ---@diagnostic disable-next-line: duplicate-set-field
 function love.load()
     print(love.getVersion())
@@ -88,12 +86,22 @@ function love.load()
 
     World:setCallbacks(beginContact, endContact)
 
-    ---@type love.Joystick[]
-    Joysticks = love.joystick.getJoysticks()
-
-    for i, v in ipairs(Joysticks) do
-        print(i, v, v:getName())
-    end
+    Joysticks = nil
+    SelectedJoyStickMap = nil
+    JoystickMaps = {
+        joycon = {
+            jump = "b",
+            punch = "y",
+            spinKick = "x",
+            kick = "a"
+        },
+        xbox = {
+            jump = "a",
+            punch = "x",
+            spinKick = "y",
+            kick = "b"
+        }
+    }
 
     game.load()
 
@@ -158,8 +166,8 @@ function love.mousepressed(x, y, button)
 end
 
 ---@diagnostic disable-next-line: duplicate-set-field
-function love.joystickpressed(joystick, button)
-    enemyFile.joystickpressed(joystick, button)
+function love.gamepadpressed(joystick, button)
+    enemyFile.gamepadpressed(joystick, button)
 end
 
 function love.joystickaxis(joystick, axis, value)

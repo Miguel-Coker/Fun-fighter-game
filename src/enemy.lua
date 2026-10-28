@@ -79,32 +79,32 @@ end
 
 ---@param joystick love.Joystick
 ---@param button integer
-function enemyFile.joystickpressed(joystick, button)
+function enemyFile.gamepadpressed(joystick, button)
     if RoundFinished then
         return
     end
 
-    if Joysticks[1]:isGamepadDown("a") then
+    if button == SelectedJoyStickMap.kick then
         tryAttack(playerClass.attacksEnum.kick)
     end
 
-    if Joysticks[1]:isGamepadDown("x") then
+    if button == SelectedJoyStickMap.punch then
         tryAttack(playerClass.attacksEnum.punch)
     end
 
-    if Joysticks[1]:isGamepadDown("y") then
+    if button == SelectedJoyStickMap.spinKick then
         tryAttack(playerClass.attacksEnum.spinKick)
     end
 
-    if Joysticks[1]:isGamepadDown("rightshoulder") and not enemy.blocking and enemy.rangedAttackCooldown <= 0 then
+    if button == "rightshoulder" and not enemy.blocking and enemy.rangedAttackCooldown <= 0 then
         enemy:startRangedAttack()
     end
 
-    if Joysticks[1]:isGamepadDown("leftshoulder") and enemy.attacking == false then
+    if button == "leftshoulder" and enemy.attacking == false then
         enemy:block()
     end
 
-    if Joysticks[1]:isGamepadDown("dpup") or Joysticks[1]:isGamepadDown("b") then
+    if button == "dpup" or Joysticks[1]:isGamepadDown(SelectedJoyStickMap.jump) then
         enemy:jump()
     end
 end

@@ -22,6 +22,15 @@ local function player2(self)
     if love.joystick.getJoystickCount() == 0 then
         error("Gamepad needed for 2 player mode")
     end
+
+    ---@type love.Joystick[]
+    Joysticks = love.joystick.getJoysticks()
+
+    if Joysticks[1]:getName():find("joy") then
+        SelectedJoyStickMap = JoystickMaps.joycon
+    else
+        SelectedJoyStickMap = JoystickMaps.xbox
+    end
 end
 
 function menu.load()
