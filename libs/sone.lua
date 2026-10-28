@@ -538,7 +538,7 @@ end
 --]=]
 --- @param sound SoundData
 --- @param seconds number How long the fade will take.
---- @param fadeType FadeType (optional) Which fade curve to use. Default is linear.
+--- @param fadeType string (optional) Which fade curve to use. Default is linear.
 --- @return SoundData
 function sone.fadeOut(sound, seconds, fadeType)
     fadeType = fadeType or "linear"

@@ -13,13 +13,21 @@ local function adjustButtons()
     menu.settings.exit.y = windowHeight / 2
 end
 
+local function player2(self)
+    GameStates.play = true
+    self.hide = true
+    menu.main.start.hide = true
+    GameStates.player2 = true
+end
+
 function menu.load()
     menu.sprites = {
         play = love.graphics.newImage("sprites/buttons/play.png"),
         settings = love.graphics.newImage("sprites/buttons/settings.png"),
         --pause = love.graphics.newImage("sprites/buttons/pause.png"),
         exit = love.graphics.newImage("sprites/buttons/exit.png"),
-        fullscreen = love.graphics.newImage("sprites/buttons/fullscreen.png")
+        fullscreen = love.graphics.newImage("sprites/buttons/fullscreen.png"),
+        player2 = love.graphics.newImage("sprites/buttons/2player.png")
 
     }
 
@@ -37,7 +45,8 @@ function menu.load()
                     menu.selectedMenu = menu.settings
                 end
             end),
-        start = button.new(windowWidth / 2 - 60, windowHeight / 4, menu.sprites.play, function(self) GameStates.play = true self.hide = true end)
+        start = button.new(windowWidth / 2 - 60, windowHeight / 4, menu.sprites.play, function(self) GameStates.play = true self.hide = true menu.main.player2.hide = true end),
+        player2 = button.new(windowWidth / 2 - 60, windowHeight / 4 + 100,menu.sprites.player2, player2)
     }
     menu.settings = {
         exit = button.new(windowWidth / 2 - menu.sprites.exit:getWidth() / 2, windowHeight / 2, menu.sprites.exit, love.event.quit),

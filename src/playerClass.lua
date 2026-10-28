@@ -100,6 +100,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.baseDashCooldown = 1
     player.dashCooldown = 0
     player.attackCategory = cat
+    player.moving = true
 
     player.blocking = false
     player.blockTime = 0
@@ -170,6 +171,7 @@ end
 ---@param damage  number
 function playerClass:takeDamage(damage)
     self.anim = self.anims.hitReact
+    self.anim:gotoFrame(1)
 
     local finalDamage = damage
 
@@ -302,6 +304,10 @@ local function processAggresiveMood(self, plr, dist, dt)
         
     elseif dist > 300 then
         self:dash()
+    end
+
+    if plr.attacking and dist <= 250 then
+        self:block()
     end
 
     if self.attack and self.anim.position == self.attack.attackFrame + 1 then
@@ -460,7 +466,7 @@ function playerClass:update(dt)
     end
 
     local _, vy = self.hurtBox.body:getLinearVelocity()
-
+    self.vy = vy
     if not self.moving then
         self.vx = 0
     end

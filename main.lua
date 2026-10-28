@@ -2,7 +2,6 @@ local player = require("src.player")
 local enemyFile = require("src.enemy")
 local menu = require("src.menu")
 local game = require("src.game")
-local systems = require("src.systems")
 
 World = love.physics.newWorld(0, 1000)
 
@@ -73,7 +72,8 @@ end
 GameStates = {
     play = false,
     pause = false,
-    settings = false
+    settings = false,
+    player2 = false
 }
 
 local enemyUpdate
@@ -88,7 +88,12 @@ function love.load()
 
     World:setCallbacks(beginContact, endContact)
 
+    ---@type love.Joystick[]
     Joysticks = love.joystick.getJoysticks()
+
+    for i, v in ipairs(Joysticks) do
+        print(i, v, v:getName())
+    end
 
     game.load()
 
@@ -150,6 +155,15 @@ end
 ---@diagnostic disable-next-line: duplicate-set-field
 function love.mousepressed(x, y, button)
     menu.mousepressed(x, y, button)
+end
+
+---@diagnostic disable-next-line: duplicate-set-field
+function love.joystickpressed(joystick, button)
+    enemyFile.joystickpressed(joystick, button)
+end
+
+function love.joystickaxis(joystick, axis, value)
+	enemyFile.joystickaxis(joystick, axis, value)
 end
 
 ---@diagnostic disable-next-line: duplicate-set-field

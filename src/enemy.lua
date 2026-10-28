@@ -1,5 +1,4 @@
 local playerClass = require "src.playerClass"
-local systems     = require "src.systems"
 local enemyFile = {}
 
 ---@type Player
@@ -9,7 +8,7 @@ function enemyFile.startRound()
     enemy.health = 100
 
     enemy.hurtBox.body:setX(700)
-    enemy.hurtBox.body:setY(350)
+    enemy.hurtBox.body:setY(400)
     enemy.mood = playerClass.AIMood.aggresive
 end
 
@@ -44,10 +43,78 @@ function enemyFile.update(dt)
         enemy.mood = playerClass.AIMood.defensive
     end
 
-    enemy:AIMoveSys(player, dt)
+    local neededAxisValue = 0.9
+
+    if enemy.vy < -2 or enemy.vy > 2 then
+        neededAxisValue = 0.1
+    end
+
+    if GameStates.player2 == false then
+        enemy:AIMoveSys(player, dt)
+    else
+        if not enemy.dashing then
+            enemy.moving = false
+            if Joysticks[1]:isGamepadDown("dpright") or Joysticks[1]:getAxis(1) >= neededAxisValue then
+                enemy.moving = true
+                enemy.vx = enemy.speed
+            elseif Joysticks[1]:isGamepadDown("dpleft") or Joysticks[1]:getAxis(1) <= -neededAxisValue then
+                enemy.vx = -enemy.speed
+                enemy.moving = true
+            end
+        end
+    end
     enemy:update(dt)
     enemy:lookTowards(player.hurtBox.body:getX())
     enemy.anim:update(dt)
+end
+
+---@param attack playerClass.attacksEnum
+local function tryAttack(attack)
+    if enemy:canAttack() then
+        enemy:setupAttack(attack)
+        enemy:startAttack()
+    end
+end
+
+---@param joystick love.Joystick
+---@param button integer
+function enemyFile.joystickpressed(joystick, button)
+    if RoundFinished then
+        return
+    end
+
+    if Joysticks[1]:isGamepadDown("a") then
+        tryAttack(playerClass.attacksEnum.kick)
+    end
+
+    if Joysticks[1]:isGamepadDown("x") then
+        tryAttack(playerClass.attacksEnum.punch)
+    end
+
+    if Joysticks[1]:isGamepadDown("y") then
+        tryAttack(playerClass.attacksEnum.spinKick)
+    end
+
+    if Joysticks[1]:isGamepadDown("rightshoulder") and not enemy.blocking and enemy.rangedAttackCooldown <= 0 then
+        enemy:startRangedAttack()
+    end
+
+    if Joysticks[1]:isGamepadDown("leftshoulder") and enemy.attacking == false then
+        enemy:block()
+    end
+
+    if Joysticks[1]:isGamepadDown("dpup") or Joysticks[1]:isGamepadDown("b") then
+        enemy:jump()
+    end
+end
+
+---@param joystick love.Joystick
+---@param axis number
+---@param value number
+function enemyFile.joystickaxis(joystick, axis, value)
+    if axis == 6 and value == 1 then
+        enemy:dash()
+    end
 end
 
 function enemyFile.draw()
