@@ -47,7 +47,7 @@ function enemyFile.update(dt)
     local neededAxisValue = 0.9
 
     if enemy.vy < -2 or enemy.vy > 2 then
-        neededAxisValue = 0.1
+        neededAxisValue = 0.5
     end
 
     if GameStates.player2 == false then
