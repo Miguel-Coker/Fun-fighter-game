@@ -86,7 +86,7 @@ function playerFile.keypressed(key)
     end
 
     if key == "i" and not player.blocking and player.rangedAttackCooldown <= 0 then
-        player:startRangedAttack()
+        player:setupRangedAttack()
     end
 
     if key == "space" and player.attacking == false then

@@ -97,7 +97,7 @@ function enemyFile.gamepadpressed(joystick, button)
     end
 
     if button == "rightshoulder" and not enemy.blocking and enemy.rangedAttackCooldown <= 0 then
-        enemy:startRangedAttack()
+        enemy:setupRangedAttack()
     end
 
     if button == "leftshoulder" and enemy.attacking == false then

@@ -129,6 +129,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.anims.fireball = anim.newAnimation(fireballGrid('1-2', '1-2'), 0.15)
     player.anims.punch = anim.newAnimation(grid('6-10', 5), 0.07)
     player.anims.hitReact = anim.newAnimation(grid('7-13', 6), 0.06)
+    player.anims.castfireball = anim.newAnimation(grid('2-14', 7), 0.06)
 
     ---@type Ranged
     player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.fireball, 800, fireball, name.."fireballbase", cat, love.audio.newSource(audio.data.fireball))
@@ -365,6 +366,10 @@ function playerClass:startAttack()
     self.attacking = true
 end
 
+function playerClass:setupRangedAttack()
+    self.anim = self.anims.castfireball
+end
+
 function playerClass:startRangedAttack()
     self.rangedAttackCooldown = self.baseRangedAttackCooldown
     self.rangedAttack.sound:play()
@@ -445,13 +450,14 @@ function playerClass:update(dt)
         self.moveDirection = playerClass.playerDirection.right
     end
 
-    if self.anim == self.anims.hitReact then
-        self.hitTime = self.hitTime - dt
-    end
-
     if self.anim == self.anims.hitReact and self.anim.position == #self.anim.frames then
         self.anim = self.anims.idleAnim
         self.anims.hitReact:gotoFrame(1)
+
+    elseif self.anim == self.anims.castfireball and self.anim.position == #self.anim.frames then
+        self.anim = self.anims.idleAnim
+        self.anims.castfireball:gotoFrame(1)
+        self:startRangedAttack()
     end
 
     if self.attack then
