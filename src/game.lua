@@ -178,7 +178,7 @@ function game.update(dt)
         r.body:setLinearVelocity(r.speed, 0)
         r.anim:update(dt)
 
-        fireballPositions[i] = {Camera:worldX(r.body:getX()), Camera:worldY(r.body:getY()), FIREBALL_LIGHT_RADIUS}
+        fireballPositions[i] = {Camera:worldX(r.body:getX()), Camera:worldY(r.body:getY()), FIREBALL_LIGHT_RADIUS * getScale()}
         if r.lifeTime <= 0 then
             table.remove(Fireballs, i)
             table.remove(fireballPositions, i)
