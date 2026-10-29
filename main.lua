@@ -149,7 +149,11 @@ function love.keypressed(key)
 
     player.keypressed(key)
 
-    if key == "i" and player.player.rangedAttackCooldown == 5 then
+    if GameStates.player2 then
+        return
+    end
+
+    if key == "i" and player.player.anim == player.player.anims.castfireball then
         enemy:dash()
         enemy:jump()
     end
@@ -182,6 +186,18 @@ function love.update(dt)
     if GameStates.play and not GameStates.pause then
         game.update(dt)
         World:update(dt)
+
+    elseif GameStates.settings and Joysticks then
+        if Joysticks[1]:isGamepadDown("dpright") then
+            love.mouse.setX(love.mouse.getX() + 400 * dt)
+        elseif Joysticks[1]:isGamepadDown("dpleft") then
+            love.mouse.setX(love.mouse.getX() - 200 * dt)
+        end
+        if Joysticks[1]:isGamepadDown("dpup") then
+            love.mouse.setY(love.mouse.getY() - 400 * dt)
+        elseif Joysticks[1]:isGamepadDown("dpdown") then
+            love.mouse.setX(love.mouse.getX() - 200 * dt)
+        end
     end
 end
 

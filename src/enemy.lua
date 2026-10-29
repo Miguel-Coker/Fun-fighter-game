@@ -1,4 +1,5 @@
 local playerClass = require "src.playerClass"
+local menu        = require "src.menu"
 local enemyFile = {}
 
 ---@type Player
@@ -33,7 +34,7 @@ function enemyFile.load(plr)
 end
 
 function enemyFile.update(dt)
-    if GameStates.pause or RoundFinished then
+    if RoundFinished then
         return
     end
     if enemy.wantsToAttack and enemy:canAttack() then
@@ -92,6 +93,10 @@ function enemyFile.gamepadpressed(joystick, button)
         tryAttack(playerClass.attacksEnum.punch)
     end
 
+    if button == "start" then
+        menu.main.settings:activate()
+    end
+
     if button == SelectedJoyStickMap.spinKick then
         tryAttack(playerClass.attacksEnum.spinKick)
     end
@@ -115,6 +120,10 @@ end
 function enemyFile.joystickaxis(joystick, axis, value)
     if axis == 6 and value == 1 then
         enemy:dash()
+    end
+
+    if GameStates.settings == false then
+        return
     end
 end
 
