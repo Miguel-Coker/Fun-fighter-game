@@ -180,6 +180,7 @@ function game.update(dt)
 
         fireballPositions[i] = {Camera:worldX(r.body:getX()), Camera:worldY(r.body:getY()), FIREBALL_LIGHT_RADIUS * getScale()}
         if r.lifeTime <= 0 then
+            r:destroy()
             table.remove(Fireballs, i)
             table.remove(fireballPositions, i)
             break
