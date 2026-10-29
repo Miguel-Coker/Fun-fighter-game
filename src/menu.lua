@@ -67,22 +67,22 @@ function menu.load()
     }
 
     menu.selectedMenu = menu.main
+    menu.selectedButton = nil
 end
 
-local selectedButton = nil
 function menu.update(dt)
     for _, b in pairs(menu.selectedMenu) do
         if menu.main.settings:checkPressed() then
-            selectedButton = menu.main.settings
+            menu.selectedButton = menu.main.settings
         elseif b:checkPressed() and not b.hide then
-            selectedButton = b
+            menu.selectedButton = b
         end
     end
 end
 
 function menu.mousepressed(x, y, mButton)
-    if selectedButton and mButton == 1 and selectedButton:checkPressed() then
-        selectedButton.func(selectedButton)
+    if menu.selectedButton and mButton == 1 and menu.selectedButton:checkPressed() then
+        menu.selectedButton.func(menu.selectedButton)
     end
 end
 

@@ -81,7 +81,15 @@ end
 ---@param joystick love.Joystick
 ---@param button integer
 function enemyFile.gamepadpressed(joystick, button)
-    if RoundFinished then
+    if button == "start" then
+        menu.main.settings:activate()
+    end
+
+    if button == "a" and menu.selectedButton:checkPressed() then
+        menu.selectedButton:activate()
+    end
+
+    if RoundFinished or GameStates.pause then
         return
     end
 
@@ -91,10 +99,6 @@ function enemyFile.gamepadpressed(joystick, button)
 
     if button == SelectedJoyStickMap.punch then
         tryAttack(playerClass.attacksEnum.punch)
-    end
-
-    if button == "start" then
-        menu.main.settings:activate()
     end
 
     if button == SelectedJoyStickMap.spinKick then

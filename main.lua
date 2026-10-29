@@ -171,10 +171,16 @@ end
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function love.gamepadpressed(joystick, button)
+    if GameStates.player2 == false then
+        return
+    end
     enemyFile.gamepadpressed(joystick, button)
 end
 
 function love.joystickaxis(joystick, axis, value)
+    if GameStates.player2 == false or GameStates.pause then
+        return
+    end
 	enemyFile.joystickaxis(joystick, axis, value)
 end
 
@@ -189,14 +195,14 @@ function love.update(dt)
 
     elseif GameStates.settings and Joysticks then
         if Joysticks[1]:isGamepadDown("dpright") then
-            love.mouse.setX(love.mouse.getX() + 400 * dt)
+            love.mouse.setX(love.mouse.getX() + 200 * dt)
         elseif Joysticks[1]:isGamepadDown("dpleft") then
             love.mouse.setX(love.mouse.getX() - 200 * dt)
         end
         if Joysticks[1]:isGamepadDown("dpup") then
-            love.mouse.setY(love.mouse.getY() - 400 * dt)
+            love.mouse.setY(love.mouse.getY() - 200 * dt)
         elseif Joysticks[1]:isGamepadDown("dpdown") then
-            love.mouse.setX(love.mouse.getX() - 200 * dt)
+            love.mouse.setY(love.mouse.getY() + 200 * dt)
         end
     end
 end
