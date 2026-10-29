@@ -20,7 +20,7 @@ local function player2(self)
     GameStates.player2 = true
 
     if love.joystick.getJoystickCount() == 0 then
-        error("Gamepad needed for 2 player mode")
+        error("Gamepad required for 2 player mode")
     end
 
     ---@type love.Joystick[]

@@ -61,7 +61,6 @@ end
 
 function mod.rangedAttack:destroy()
     self.body:destroy()
-    self.fixture:destroy()
     self.shape:release()
 end
 

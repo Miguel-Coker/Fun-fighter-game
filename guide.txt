@@ -1,16 +1,17 @@
 -- GAMEPLAY --
-W - jump
-A - move left
-D = move right
-space - block
-left shift - dash
-J - spin kick
-K - punch
-L - side kick
-I - throw fireball
+W/d-pad up/xbx A/nin B - jump
+A/d-pad left/left stick - move left
+D/d-pad right/left stick - move right
+space/xbx LB/nin L - block
+left shift/xbx RT/nin ZR - dash
+J/xbx Y/nin X - spin kick
+K/xbx X/nin Y - punch
+L/xbx B/nin A - side kick
+I/xbx RB/nin R - throw fireball
 
 -- MENU --
-escape - open menu
+escape/xbx menu/nin + open/close menu
+xbx A/nin A - click button
 
 -- DEBUG -- 
 H - show collision boxes
