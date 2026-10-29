@@ -26,11 +26,7 @@ local function player2(self)
     ---@type love.Joystick[]
     Joysticks = love.joystick.getJoysticks()
 
-    if Joysticks[1]:getName():find("joy") then
-        SelectedJoyStickMap = JoystickMaps.joycon
-    else
-        SelectedJoyStickMap = JoystickMaps.xbox
-    end
+    SelectedJoyStickMap = JoystickMaps.xbox
 end
 
 function menu.load()

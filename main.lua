@@ -177,7 +177,7 @@ function love.gamepadpressed(joystick, button)
     enemyFile.gamepadpressed(joystick, button)
 end
 
-function love.joystickaxis(joystick, axis, value)
+function love.gamepadaxis(joystick, axis, value)
     if GameStates.player2 == false or GameStates.pause then
         return
     end

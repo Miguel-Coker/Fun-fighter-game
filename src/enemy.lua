@@ -56,10 +56,10 @@ function enemyFile.update(dt)
     else
         if not enemy.dashing then
             enemy.moving = false
-            if Joysticks[1]:isGamepadDown("dpright") or Joysticks[1]:getAxis(1) >= neededAxisValue then
+            if Joysticks[1]:isGamepadDown("dpright") or Joysticks[1]:getGamepadAxis("leftx") >= neededAxisValue then
                 enemy.moving = true
                 enemy.vx = enemy.speed
-            elseif Joysticks[1]:isGamepadDown("dpleft") or Joysticks[1]:getAxis(1) <= -neededAxisValue then
+            elseif Joysticks[1]:isGamepadDown("dpleft") or Joysticks[1]:getGamepadAxis("leftx") <= -neededAxisValue then
                 enemy.vx = -enemy.speed
                 enemy.moving = true
             end
@@ -121,7 +121,7 @@ end
 ---@param joystick love.Joystick
 ---@param axis number
 ---@param value number
-function enemyFile.joystickaxis(joystick, axis, value)
+function enemyFile.gamepadaxis(joystick, axis, value)
     if axis == 6 and value == 1 then
         enemy:dash()
     end
