@@ -1,4 +1,7 @@
 -- GAMEPLAY --
+Gamepad controls are only avaliable for 2 player mode.
+One player uses keybaord and the other uses the contoller
+
 W/d-pad up/xbx A/nin B - jump
 A/d-pad left/left stick - move left
 D/d-pad right/left stick - move right
@@ -10,7 +13,7 @@ L/xbx B/nin A - side kick
 I/xbx RB/nin R - throw fireball
 
 -- MENU --
-escape/xbx menu/nin + open/close menu
+escape/xbx menu/nin '+' - open/close menu
 xbx A/nin A - click button
 
 -- DEBUG -- 
