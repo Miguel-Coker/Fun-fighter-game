@@ -483,7 +483,6 @@ function playerClass:update(dt)
     end
 
     local _, vy = self.hurtBox.body:getLinearVelocity()
-    self.vy = vy
     if not self.moving then
         self.vx = 0
     end
@@ -497,7 +496,8 @@ function playerClass:update(dt)
         self.moving = false
     end
 
-    self.hurtBox.body:setLinearVelocity(self.vx, vy)
+    self.vy = vy
+    self.hurtBox.body:setLinearVelocity(self.vx, self.vy)
     self.hitBox.body:setLinearVelocity(0, 0)
     self.hitBox.body:setY(self.hurtBox.body:getY())
     self.hitBox.body:setX(self.hurtBox.body:getX())

@@ -181,7 +181,7 @@ function love.gamepadaxis(joystick, axis, value)
     if GameStates.player2 == false or GameStates.pause then
         return
     end
-	enemyFile.joystickaxis(joystick, axis, value)
+	enemyFile.gamepadaxis(joystick, axis, value)
 end
 
 ---@diagnostic disable-next-line: duplicate-set-field

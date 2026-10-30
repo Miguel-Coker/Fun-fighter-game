@@ -33,6 +33,26 @@ function enemyFile.load(plr)
     enemy.baseAttackCooldown = 2
 end
 
+local function player2MoveSys()
+     local neededAxisValue = 0.9
+
+    if enemy.vy < -2 or enemy.vy > 2 then
+        neededAxisValue = 0.5
+    end
+
+    if enemy.dashing then
+        return
+    end
+    enemy.moving = false
+    if Joysticks[1]:isGamepadDown("dpright") or Joysticks[1]:getGamepadAxis("leftx") >= neededAxisValue then
+        enemy.moving = true
+        enemy.vx = enemy.speed
+    elseif Joysticks[1]:isGamepadDown("dpleft") or Joysticks[1]:getGamepadAxis("leftx") <= -neededAxisValue then
+        enemy.vx = -enemy.speed
+        enemy.moving = true
+    end
+end
+
 function enemyFile.update(dt)
     if RoundFinished then
         return
@@ -46,26 +66,10 @@ function enemyFile.update(dt)
         enemy.mood = playerClass.AIMood.defensive
     end
 
-    local neededAxisValue = 0.9
-
-    if enemy.vy < -2 or enemy.vy > 2 then
-        neededAxisValue = 0.5
-    end
-
     if GameStates.player2 == false then
         enemy:AIMoveSys(player, dt)
     else
-        if enemy.dashing then
-            return
-        end
-        enemy.moving = false
-        if Joysticks[1]:isGamepadDown("dpright") or Joysticks[1]:getGamepadAxis("leftx") >= neededAxisValue then
-            enemy.moving = true
-            enemy.vx = enemy.speed
-        elseif Joysticks[1]:isGamepadDown("dpleft") or Joysticks[1]:getGamepadAxis("leftx") <= -neededAxisValue then
-            enemy.vx = -enemy.speed
-            enemy.moving = true
-        end
+        player2MoveSys()
     end
 
     enemy:update(dt)
@@ -119,12 +123,8 @@ end
 ---@param axis number
 ---@param value number
 function enemyFile.gamepadaxis(joystick, axis, value)
-    if axis == 6 and value == 1 then
+    if axis == "triggerright" and value == 1 then
         enemy:dash()
-    end
-
-    if GameStates.settings == false then
-        return
     end
 end
 
