@@ -53,6 +53,16 @@ function game.load()
 
     background = love.graphics.newImage("sprites/background.png")
     healthbar = love.graphics.newImage("sprites/healthbar.png")
+
+    --[[ParticleSystem = love.graphics.newParticleSystem(love.graphics.newImage("sprites/fireparticle.png"))
+    ParticleSystem:setEmitterLifetime(-1)
+    ParticleSystem:setEmissionRate(3)
+    ParticleSystem:setParticleLifetime(5, 5)
+    ParticleSystem:setLinearAcceleration(0, 50, 0, 300)
+    ParticleSystem:setBufferSize(100)
+    ParticleSystem:setSpread(math.rad(90))
+    ParticleSystem:setTangentialAcceleration(-20, 20)
+    ParticleSystem:setSpin(0, 5)]]
 end
 
 ---@return number, number
@@ -167,6 +177,13 @@ function game.update(dt)
         winningPlayerTime = winningPlayerTime - dt
     end
 
+    --[[ParticleSystem:setPosition(love.mouse.getPosition())
+    ParticleSystem:update(dt)
+
+    if love.keyboard.isDown("e") then
+        ParticleSystem:emit(2)
+    end]]
+
     if player.player.dashing then
         Camera:zoomLerp(0.9, dt)
     else
@@ -240,6 +257,7 @@ function game.draw()
     enemyFile.draw()
     drawFireballs()
     love.graphics.pop()
+    --love.graphics.draw(ParticleSystem)
 
     drawHealthBar(player.player, 60, 65)
     drawHealthBar(enemy, love.graphics.getWidth() - 140, 65)

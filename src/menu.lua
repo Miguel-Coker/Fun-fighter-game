@@ -23,6 +23,10 @@ local function player2(self)
         error("Gamepad required for 2 player mode")
     end
 
+    if Joysticks[1]:isGamepad() == false then
+        error("Gamepad is not supported by Love2D. Use a supported gamepad instead")
+    end
+
     ---@type love.Joystick[]
     Joysticks = love.joystick.getJoysticks()
 

@@ -37,6 +37,7 @@ function enemyFile.update(dt)
     if RoundFinished then
         return
     end
+
     if enemy.wantsToAttack and enemy:canAttack() then
         enemy:startAttack()
     end
@@ -54,17 +55,19 @@ function enemyFile.update(dt)
     if GameStates.player2 == false then
         enemy:AIMoveSys(player, dt)
     else
-        if not enemy.dashing then
-            enemy.moving = false
-            if Joysticks[1]:isGamepadDown("dpright") or Joysticks[1]:getGamepadAxis("leftx") >= neededAxisValue then
-                enemy.moving = true
-                enemy.vx = enemy.speed
-            elseif Joysticks[1]:isGamepadDown("dpleft") or Joysticks[1]:getGamepadAxis("leftx") <= -neededAxisValue then
-                enemy.vx = -enemy.speed
-                enemy.moving = true
-            end
+        if enemy.dashing then
+            return
+        end
+        enemy.moving = false
+        if Joysticks[1]:isGamepadDown("dpright") or Joysticks[1]:getGamepadAxis("leftx") >= neededAxisValue then
+            enemy.moving = true
+            enemy.vx = enemy.speed
+        elseif Joysticks[1]:isGamepadDown("dpleft") or Joysticks[1]:getGamepadAxis("leftx") <= -neededAxisValue then
+            enemy.vx = -enemy.speed
+            enemy.moving = true
         end
     end
+
     enemy:update(dt)
     enemy:lookTowards(player.hurtBox.body:getX())
     enemy.anim:update(dt)
@@ -83,9 +86,8 @@ end
 function enemyFile.gamepadpressed(joystick, button)
     if button == "start" then
         menu.main.settings:activate()
-    end
 
-    if button == "a" and menu.selectedButton:checkPressed() then
+    elseif button == "a" and menu.selectedButton:checkPressed() then
         menu.selectedButton:activate()
     end
 
@@ -95,25 +97,20 @@ function enemyFile.gamepadpressed(joystick, button)
 
     if button == SelectedJoyStickMap.kick then
         tryAttack(playerClass.attacksEnum.kick)
-    end
 
-    if button == SelectedJoyStickMap.punch then
+    elseif button == SelectedJoyStickMap.punch then
         tryAttack(playerClass.attacksEnum.punch)
-    end
 
-    if button == SelectedJoyStickMap.spinKick then
+    elseif button == SelectedJoyStickMap.spinKick then
         tryAttack(playerClass.attacksEnum.spinKick)
-    end
 
-    if button == "rightshoulder" and not enemy.blocking and enemy.rangedAttackCooldown <= 0 then
+    elseif button == "rightshoulder" and not enemy.blocking and enemy.rangedAttackCooldown <= 0 then
         enemy:setupRangedAttack()
-    end
 
-    if button == "leftshoulder" and enemy.attacking == false then
+    elseif button == "leftshoulder" and enemy.attacking == false then
         enemy:block()
-    end
 
-    if button == "dpup" or Joysticks[1]:isGamepadDown(SelectedJoyStickMap.jump) then
+    elseif button == "dpup" or Joysticks[1]:isGamepadDown(SelectedJoyStickMap.jump) then
         enemy:jump()
     end
 end

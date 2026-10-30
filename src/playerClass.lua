@@ -129,7 +129,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.anims.fireball = anim.newAnimation(fireballGrid('1-2', '1-2'), 0.15)
     player.anims.punch = anim.newAnimation(grid('6-10', 5), 0.07)
     player.anims.hitReact = anim.newAnimation(grid('7-13', 6), 0.06)
-    player.anims.castfireball = anim.newAnimation(grid('2-14', 7), 0.06)
+    player.anims.castfireball = anim.newAnimation(grid('2-14', 7), 0.07)
 
     ---@type Ranged
     player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.fireball, 800, fireball, name.."fireballbase", cat, love.audio.newSource(audio.data.fireball))
@@ -177,6 +177,14 @@ function playerClass:takeDamage(damage)
 
     if self.attacking then
         finalDamage = damage * 1.2
+        self.anim:gotoFrame(1)
+        self:endAttack()
+        self.anim = self.anims.hitReact
+
+    elseif self.anim == self.anims.castfireball then
+        self.anim:gotoFrame(1)
+        self.anim = self.anims.hitReact
+    
     elseif self.blocking then
         finalDamage = damage / 2
     else
@@ -261,7 +269,7 @@ local function processDefensiveMood(self, dist, plr, dt)
         self.moving = false
     end
 
-    if self.reactionTime <= 0 and dist <= 175 then
+    if self.reactionTime <= 0 and dist <= 180 then
         self:block()
 
         if self:canAttack() then
@@ -302,7 +310,7 @@ local function processAggresiveMood(self, plr, dist, dt)
         self:dash()
 
         if dist >= 350 then
-            self:startRangedAttack()
+            self:setupRangedAttack()
         end
         
     elseif dist > 300 then
@@ -374,19 +382,19 @@ function playerClass:startRangedAttack()
     self.rangedAttackCooldown = self.baseRangedAttackCooldown
     self.rangedAttack.sound:play()
 
-    local speed = 0
-    speed = self.direction * self.rangedAttack.speed
+    local speed = self.direction * self.rangedAttack.speed
 
     local weapon = attackClass.rangedAttack.new(
         {x = self.hurtBox.body:getX(), y = self.hurtBox.body:getY() - 20}, 
-        self.rangedAttack.damage, 
+        self.rangedAttack.damage,
         self.rangedAttack.anim,
         speed,
         self.rangedAttack.sprite,
         self.name.."_fireball",
         self.rangedAttack.fixture:getCategory()
     )
-    weapon.anim.direction = self.anim.direction
+    
+    weapon.anim.direction = self.anims.castfireball.direction
     table.insert(Fireballs, weapon)
 end
 
@@ -456,6 +464,7 @@ function playerClass:update(dt)
 
     elseif self.anim == self.anims.castfireball and self.anim.position == #self.anim.frames then
         self.anim = self.anims.idleAnim
+        self.moving = false
         self.anims.castfireball:gotoFrame(1)
         self:startRangedAttack()
     end
