@@ -65,6 +65,8 @@ function menu.load()
         exit = button.new(windowWidth / 2 - menu.sprites.exit:getWidth() / 2, windowHeight / 2, menu.sprites.exit, love.event.quit),
         toggleFullscreen = button.new(windowWidth / 2 - menu.sprites.fullscreen:getHeight(), windowHeight / 2 - 94, menu.sprites.fullscreen, function()love.window.setFullscreen(not love.window.getFullscreen()) adjustButtons() end)
     }
+    
+    menu.main.settings.hide = true
 
     menu.selectedMenu = menu.main
     menu.selectedButton = nil
@@ -72,7 +74,7 @@ end
 
 function menu.update(dt)
     for _, b in pairs(menu.selectedMenu) do
-        if menu.main.settings:checkPressed() then
+        if menu.main.settings:checkPressed() and not b.hide then
             menu.selectedButton = menu.main.settings
         elseif b:checkPressed() and not b.hide then
             menu.selectedButton = b

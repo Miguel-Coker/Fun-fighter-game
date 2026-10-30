@@ -229,11 +229,17 @@ local function drawFireballs()
 end
 
 ---@param plr Player
-local function drawHealthBar(plr, x, y)
-    local percentPlayer = plr.health / plr.maxHealth
-    love.graphics.draw(healthbar, x, y)
-    love.graphics.setColor(1 - percentPlayer, percentPlayer, 0)
-    love.graphics.rectangle("fill", x + 2, y + 1, percentPlayer * 120, 29)
+local function drawHealthBar(plr, x, y, mode)
+    local healthPercent = plr.health / plr.maxHealth
+    local scale = 256
+    love.graphics.draw(healthbar, x, y, 0, 2, 1)
+    love.graphics.setColor(1 - healthPercent, healthPercent, 0)
+    if mode == "left" then
+        love.graphics.rectangle("fill", x + 2, y + 1, healthPercent * scale, 28)
+    
+    elseif mode == "right" then
+        love.graphics.rectangle("fill", x + scale, y + 1, -healthPercent * scale, 28)
+    end
     love.graphics.setColor(1, 1, 1)
 end
 
@@ -259,8 +265,8 @@ function game.draw()
     love.graphics.pop()
     --love.graphics.draw(ParticleSystem)
 
-    drawHealthBar(player.player, 60, 65)
-    drawHealthBar(enemy, love.graphics.getWidth() - 140, 65)
+    drawHealthBar(player.player, 10, 25, "left")
+    drawHealthBar(enemy, love.graphics.getWidth() - 266, 25, "right")
 
     if winningPlayer ~= "" then
         love.graphics.print(string.format("%s wins!", winningPlayer), love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
