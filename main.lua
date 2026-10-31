@@ -97,7 +97,7 @@ function love.load()
         },
         xbox = {
             jump = "a",
-            punch = "x",
+            punch = "x", 
             spinKick = "y",
             kick = "b"
         }
