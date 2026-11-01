@@ -73,7 +73,7 @@ playerClass.AIMood = {
 }
 
 local JUMP_POWER_SCALE = 10
-
+local ANIM_SPEED = 0.07
 local ATTACK_OFFSET = 50
 
 local fireball = love.graphics.newImage("sprites/fireball2.png")
@@ -101,8 +101,6 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.moving = true
 
     player.blocking = false
-    player.blockTime = 0
-    player.baseBlockTime = 0.3
     player.blockCooldown = 0
 
     player.hitTime = 0
@@ -122,14 +120,14 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     local fireballGrid = anim.newGrid(64, 64, fireball:getWidth(), fireball:getHeight())
 
     player.anims = {}
-    player.anims.idleAnim = anim.newAnimation(grid('1-14', 1), 0.1)
-    player.anims.kickAnim = anim.newAnimation(grid('2-13', 2), 0.07)
-    player.anims.blockAnim = anim.newAnimation(grid('4-14', 4), 0.08)
-    player.anims.spinKickAnim = anim.newAnimation(grid('1-14', 3), 0.08)
+    player.anims.idleAnim = anim.newAnimation(grid('1-14', 1), ANIM_SPEED)
+    player.anims.kickAnim = anim.newAnimation(grid('2-13', 2), ANIM_SPEED)
+    player.anims.blockAnim = anim.newAnimation(grid('4-7', 4), ANIM_SPEED)
+    player.anims.spinKickAnim = anim.newAnimation(grid('1-14', 3), ANIM_SPEED)
     player.anims.fireball = anim.newAnimation(fireballGrid('1-2', '1-2'), 0.15)
-    player.anims.punch = anim.newAnimation(grid('6-10', 5), 0.07)
-    player.anims.hitReact = anim.newAnimation(grid('7-13', 6), 0.06)
-    player.anims.castfireball = anim.newAnimation(grid('2-14', 7), 0.07)
+    player.anims.punch = anim.newAnimation(grid('6-10', 5), ANIM_SPEED)
+    player.anims.hitReact = anim.newAnimation(grid('7-13', 6), ANIM_SPEED)
+    player.anims.castfireball = anim.newAnimation(grid('2-14', 7), ANIM_SPEED)
 
     ---@type Ranged
     player.rangedAttack = attackClass.rangedAttack.new({x = 0, y = 0}, 10, player.anims.fireball, 800, fireball, name.."fireballbase", cat, love.audio.newSource(audio.data.fireball))
@@ -243,7 +241,6 @@ function playerClass:block()
 
     self.blocking = true
     self.anim = self.anims.blockAnim
-    self.blockTime = self.baseBlockTime
     self.blockCooldown = BASE_BLOCK_COOLDOWN
 end
 
@@ -427,9 +424,7 @@ end
 ---@param self Player
 ---@param dt number
 local function processBlock(self, dt)
-    self.blockTime = self.blockTime - dt
-
-    if self.blockTime <= 0 then
+    if self.anim.position == #self.anim.frames then
         self.blocking = false
         self.anim:gotoFrame(1)
         self.anim = self.anims.idleAnim
