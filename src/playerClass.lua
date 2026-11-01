@@ -120,7 +120,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     local fireballGrid = anim.newGrid(64, 64, fireball:getWidth(), fireball:getHeight())
 
     player.anims = {}
-    player.anims.idleAnim = anim.newAnimation(grid('1-14', 1), ANIM_SPEED)
+    player.anims.idleAnim = anim.newAnimation(grid('1-14', 1), 0.09)
     player.anims.kickAnim = anim.newAnimation(grid('2-13', 2), ANIM_SPEED)
     player.anims.blockAnim = anim.newAnimation(grid('4-7', 4), ANIM_SPEED)
     player.anims.spinKickAnim = anim.newAnimation(grid('1-14', 3), ANIM_SPEED)
