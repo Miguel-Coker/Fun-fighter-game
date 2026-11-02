@@ -122,7 +122,7 @@ function playerClass.new(name, spriteSheet, isAI, pos, cat, colour)
     player.anims = {}
     player.anims.idleAnim = anim.newAnimation(grid('1-14', 1), 0.09)
     player.anims.kickAnim = anim.newAnimation(grid('2-13', 2), ANIM_SPEED)
-    player.anims.blockAnim = anim.newAnimation(grid('4-7', 4), ANIM_SPEED)
+    player.anims.blockAnim = anim.newAnimation(grid('4-7', 4), 0.09)
     player.anims.spinKickAnim = anim.newAnimation(grid('1-14', 3), ANIM_SPEED)
     player.anims.fireball = anim.newAnimation(fireballGrid('1-2', '1-2'), 0.15)
     player.anims.punch = anim.newAnimation(grid('6-10', 5), ANIM_SPEED)
@@ -199,6 +199,8 @@ function playerClass:takeDamage(damage)
     else
         audio.bank.hit:play()
     end
+
+    print(self.name.. " Damage: "..finalDamage)
 end
 
 function playerClass:jump()
@@ -266,7 +268,7 @@ local function processDefensiveMood(self, dist, plr, dt)
         self.moving = false
     end
 
-    if self.reactionTime <= 0 and dist <= 180 then
+    if self.reactionTime <= 0 and dist <= 200 then
         self:block()
 
         if self:canAttack() then

@@ -12,6 +12,7 @@ function enemyFile.startRound()
     enemy.hurtBox.body:setY(GameHeight / 2)
     enemy.mood = playerClass.AIMood.aggresive
     enemy.rangedAttackCooldown = enemy.baseRangedAttackCooldown
+    enemy:endAttack()
 end
 
 ---@param plr Player
