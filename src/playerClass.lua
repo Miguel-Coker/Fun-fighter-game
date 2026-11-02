@@ -264,6 +264,10 @@ local function processDefensiveMood(self, dist, plr, dt)
 
     if dist > 200 then
         self.moving = true
+
+        if self.rangedAttackCooldown <= 0 then
+            self:setupRangedAttack()
+        end
     else
         self.moving = false
     end
