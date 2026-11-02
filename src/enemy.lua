@@ -8,7 +8,7 @@ local player = nil
 function enemyFile.startRound()
     enemy.health = 100
 
-    enemy.hurtBox.body:setX(700)
+    enemy.hurtBox.body:setX(GameWidth - 500)
     enemy.hurtBox.body:setY(GameHeight / 2)
     enemy.mood = playerClass.AIMood.aggresive
     enemy.rangedAttackCooldown = enemy.baseRangedAttackCooldown

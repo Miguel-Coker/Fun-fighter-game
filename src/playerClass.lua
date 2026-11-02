@@ -3,14 +3,14 @@ local attackClass = require("src.attackClass")
 local audio = require("src.audio")
 local systems = require("src.systems")
 
-local BASE_BLOCK_COOLDOWN = 0.5
+local BASE_BLOCK_COOLDOWN = 0.4
 local BASE_DASH_TIME = 0.3
 local DASH_SPEED = 800
 local BASE_REACTION_TIME = 0.08
 
 ---@class Player
 ---@field name string
----@field anims { [string]: Animation }
+---@field anims { idleAnim: Animation, kickAnim: Animation, punch: Animation, blockAnim: Animation, spinKickAnim: Animation, fireball: Animation, hitReact: Animation, castfireball: Animation }
 ---@field anim Animation
 ---@field spriteSheet love.Image
 ---@field speed number
@@ -272,7 +272,11 @@ local function processDefensiveMood(self, dist, plr, dt)
         self.moving = false
     end
 
-    if self.reactionTime <= 0 and dist <= 200 then
+    if self.reactionTime > 0 then
+        return
+    end
+
+    if systems.between(200, 230, dist) then
         self:block()
 
         if self:canAttack() then
@@ -281,6 +285,10 @@ local function processDefensiveMood(self, dist, plr, dt)
             self.moving = true
             self.moveDirection = -self.direction
         end
+
+    elseif dist <= 150 then
+        self.moveDirection = -self.direction
+        self:dash()
     end
 end
 
