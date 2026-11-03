@@ -1,6 +1,7 @@
 local menu = {}
 
 local button = require("src.button")
+local systems= require("src.systems")
 
 local function adjustButtons()
     local windowWidth = love.graphics.getWidth()
@@ -21,16 +22,22 @@ local function player2(self)
 
     if love.joystick.getJoystickCount() == 0 then
         error("Gamepad required for 2 player mode")
+    end 
+
+    ---@type Joystick[]
+    Joysticks = {}
+
+    for _, j in ipairs(love.joystick.getJoysticks()) do
+        local joystick = systems.joystck.new(j)
+      
+        if j:getName():find("Nintendo") then
+            joystick.inputMap = JoystickMaps.nintendo
+        else
+            joystick.inputMap = JoystickMaps.xbox
+        end
+
+        table.insert(Joysticks, joystick)
     end
-
-    ---@type love.Joystick[]
-    Joysticks = love.joystick.getJoysticks()
-
-    if Joysticks[1]:isGamepad() == false then
-        error("Gamepad is not supported by Love2D. Use a supported gamepad instead")
-    end
-
-    SelectedJoyStickMap = JoystickMaps.xbox
 end
 
 function menu.load()

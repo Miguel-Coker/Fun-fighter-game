@@ -45,10 +45,10 @@ local function player2MoveSys()
         return
     end
     enemy.moving = false
-    if Joysticks[1]:isGamepadDown("dpright") or Joysticks[1]:getGamepadAxis("leftx") >= neededAxisValue then
+    if Joysticks[1].base:isGamepadDown("dpright") or Joysticks[1].base:getGamepadAxis("leftx") >= neededAxisValue then
         enemy.moving = true
         enemy.vx = enemy.speed
-    elseif Joysticks[1]:isGamepadDown("dpleft") or Joysticks[1]:getGamepadAxis("leftx") <= -neededAxisValue then
+    elseif Joysticks[1].base:isGamepadDown("dpleft") or Joysticks[1].base:getGamepadAxis("leftx") <= -neededAxisValue then
         enemy.vx = -enemy.speed
         enemy.moving = true
     end
@@ -100,13 +100,13 @@ function enemyFile.gamepadpressed(joystick, button)
         return
     end
 
-    if button == SelectedJoyStickMap.kick then
+    if button == Joysticks[1].inputMap.kick then
         tryAttack(playerClass.attacksEnum.kick)
 
-    elseif button == SelectedJoyStickMap.punch then
+    elseif button == Joysticks[1].inputMap.punch then
         tryAttack(playerClass.attacksEnum.punch)
 
-    elseif button == SelectedJoyStickMap.spinKick then
+    elseif button == Joysticks[1].inputMap.spinKick then
         tryAttack(playerClass.attacksEnum.spinKick)
 
     elseif button == "rightshoulder" and not enemy.blocking and enemy.rangedAttackCooldown <= 0 then
@@ -115,7 +115,7 @@ function enemyFile.gamepadpressed(joystick, button)
     elseif button == "leftshoulder" and enemy.attacking == false then
         enemy:block()
 
-    elseif button == "dpup" or Joysticks[1]:isGamepadDown(SelectedJoyStickMap.jump) then
+    elseif button == "dpup" or Joysticks[1].base:isGamepadDown(Joysticks[1].inputMap.jump) then
         enemy:jump()
     end
 end

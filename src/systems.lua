@@ -6,6 +6,19 @@ local mod = {}
 mod.vector2 = {}
 mod.vector2.__index = mod.vector2
 
+---@class Joystick : love.Joystick
+---@field inputMap table
+mod.joystck = {}
+mod.joystck._index = mod.joystck
+
+---@return Joystick
+function mod.joystck.new(loveJoystick)
+    local joystick = setmetatable({}, mod.joystck)
+    joystick.base = loveJoystick
+    joystick.inputMap = nil
+    return joystick
+end
+
 mod.coroutine = {}
 
 mod.coroutine.sleepingThreads = {} 

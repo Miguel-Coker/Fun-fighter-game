@@ -87,9 +87,8 @@ function love.load()
     World:setCallbacks(beginContact, endContact)
 
     Joysticks = nil
-    SelectedJoyStickMap = nil
     JoystickMaps = {
-        joycon = {
+        nintendo = {
             jump = "b",
             punch = "y",
             spinKick = "x",
@@ -194,14 +193,14 @@ function love.update(dt)
         World:update(dt)
 
     elseif GameStates.settings and Joysticks then
-        if Joysticks[1]:isGamepadDown("dpright") then
+        if Joysticks[1].base:isGamepadDown("dpright") then
             love.mouse.setX(love.mouse.getX() + 200 * dt)
-        elseif Joysticks[1]:isGamepadDown("dpleft") then
+        elseif Joysticks[1].base:isGamepadDown("dpleft") then
             love.mouse.setX(love.mouse.getX() - 200 * dt)
         end
-        if Joysticks[1]:isGamepadDown("dpup") then
+        if Joysticks[1].base:isGamepadDown("dpup") then
             love.mouse.setY(love.mouse.getY() - 200 * dt)
-        elseif Joysticks[1]:isGamepadDown("dpdown") then
+        elseif Joysticks[1].base:isGamepadDown("dpdown") then
             love.mouse.setY(love.mouse.getY() + 200 * dt)
         end
     end
